@@ -1,0 +1,34 @@
+$primary-color: #e4d93d;
+$primary-color-light1: lighten($primary-color, 10%);
+$primary-color-light2: lighten($primary-color, 20%);
+$mustard: #3dc104;
+$mustard-light: lighten($mustard, 25%);
+$mustard-dark: darken($mustard, 25%);
+$logo-green: rgb(28, 76, 0);
+$body-bg: #fbfbfb;
+$footer-bg: #eee;
+
+$accent: rgb(91, 221, 65);
+
+$text-main: #3a3a3a;
+
+$border-color: rgb(91, 221, 65);
+
+$alert-warning-txt: #eb8459;
+$alert-warning-bg: #fffceb;
+$alert-success-txt: #467b25;
+$alert-success-bg: #e0fab0;
+$alert-info-txt: #4072a5;
+$alert-info-bg: #ecf7fd;
+$alert-danger-txt: #e45d3d;
+$alert-danger-bg: #fff1f0;
+
+
+
+
+
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

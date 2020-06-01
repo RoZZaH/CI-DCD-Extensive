@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+{% for tourdate in tourdates %}
+<div class="card">
+    {% if tourdate.image_file %}
+        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/'+tourdate.image_file ) }}" > {# filename=tourdate.media.tour_media.pictures.square #}
+    {% else %}
+        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/defaultband.jpg') }}" >
+    {% endif %}
+    {{ tourdate.cls }}
+    {{ tourdate._cls }}
+    <h2 class="card-title">{{ tourdate.org_title }}</h2>
+    <p class="card-body">{{ tourdate.description }} | {{ tourdate.strapline }}<br>
+       {{ tourdate.profile }}</p>
+    <p class="card-show-time"><span>15</span> April<br>2020</p>
+    <a href="#" class="card-btn">Buy Tickets</a>
+</div>
+{% endfor %}
+{% endblock content %}

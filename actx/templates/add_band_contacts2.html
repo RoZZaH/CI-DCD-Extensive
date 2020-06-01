@@ -1,0 +1,194 @@
+<html>
+    <head>
+        <title>Lap logging</title>
+
+        {# Import JQuery #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <script>
+            /**
+             * Adjust the indices of form fields when removing items.
+             */
+            function adjustIndices(removedIndex) {
+                let $forms = $('.subform')
+
+                $forms.each(i => {
+                    let $form = $(this)
+                    let index = parseInt($form.data('index'))
+                    let newIndex = index - 1
+
+                    if (index < removedIndex) {
+                        // Skip
+                        return true
+                    }
+
+                    // Change ID in form itself
+                    $form.attr('id', $form.attr('id').replace(index, newIndex));
+                    $form.data('index', newIndex);
+
+                    // Change IDs in form inputs
+                    $form.find('input').each(function(j) {
+                        let $field = $(this)
+                        $field.attr('id', $field.attr('id').replace(index, newIndex))
+                        $field.attr('name', $field.attr('name').replace(index, newIndex))
+                    })
+                })
+            }
+
+            /**
+             * Remove a form.
+             */
+            function removeForm() {
+                let $removedForm = $(this).closest('.subform');
+                let removedIndex = parseInt($removedForm.data('index'));
+               // console.log(removedIndex)
+                $removedForm.remove();
+
+                // Update indices
+                //adjustIndices(removedIndex);
+            }
+
+            /**
+             * Add a new form.
+             */
+            function addForm() {
+                let stuff = this.parentNode.dataset.inx
+                console.log(stuff) //.getAttribute("data-inx"))
+        /*        let $templateForm = $('#contact-_-form'); // #lap_
+
+                if (!$templateForm) {
+                    console.log('[ERROR] Cannot find template');
+                    return;
+                } */
+
+                // Get Last index
+                let $lastForm =  $('.subform').last();
+
+                let newIndex = 0;
+
+                if ($lastForm.length > 0) {
+                    newIndex = parseInt($lastForm.data('index')) + 1;
+                }
+
+                // Maximum of 20 subforms
+                if (newIndex > 20) {
+                    console.log('[WARNING] Reached maximum number of elements');
+                    return;
+                }
+
+                // Add elements
+                /* let $newForm = $templateForm.clone(); */
+            
+                if(stuff == "member") {
+
+                let $newForm = ` 
+                <div id="contact-${newIndex}-form" class="subform" data-index="${newIndex}">
+                <label for="contacts-${newIndex}-namec">Runner name</label>
+                <input id="contacts-${newIndex}-namec" name="contacts-${newIndex}-namec" type="text" value="">
+
+                <label for="contacts-${newIndex}-number">Lap time</label>
+                <input id="contacts-${newIndex}-number" name="contacts-${newIndex}-number" type="text">
+
+                <a class="remove" href="#">Remove</a>
+                <hr/>
+                </div>
+                `
+                $('#subforms-container').append($newForm);
+            }
+                /*
+                $newForm.attr('id', $newForm.attr('id').replace('_', newIndex));
+                $newForm.data('index', newIndex);
+
+                $newForm.find('input').each(function(idx) {
+                    let $item = $(this);
+
+                    $item.attr('id', $item.attr('id').replace('_', newIndex));
+                    $item.attr('name', $item.attr('name').replace('_', newIndex));
+                });
+                */
+                // Append
+                //$('#subforms-container').append($newForm);
+                //$newForm.addClass('subform');
+                //$newForm.removeClass('is-hidden');
+                //$newForm.find('#add').click(addForm);
+    
+                //$newForm.find('.remove').click(removeForm);
+               // let newFormz = document.querySelectorAll(".remove")
+                //console.log(newFormz)
+                //console.log([ ...newFormz ])
+                [ ...document.querySelectorAll(".remove") ].forEach( el => el.addEventListener("click", removeForm))
+            }
+
+
+            $(document).ready(function() {
+                $('#add').click(addForm);
+                $('.remove').click(removeForm);
+            });
+        </script>
+
+        <style>
+            .is-hidden {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- <a id="add" href="#">Add Lap</a> -->
+
+        {# Show all subforms #}
+        <form id="lap-form" action="" method="POST" role="form">
+            {{ form.hidden_tag() }}
+            {{ form.bandname.label(class='form-control-label') }}
+            {{ form.bandname(class='form-control from-control-lg') }}
+            <fieldset data-inx="member">
+            <!-- /subform -->
+            <div id="subforms-container">
+                {# {% for subform in form.laps %}  #}
+                {% for subform in form.contacts %}
+                    <div id="contact-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
+                        {{ subform.namec.label }}
+                        {{ subform.namec }}
+
+                        {{ subform.number.label }}
+                        {{ subform.number }}
+
+                        <a class="remove" href="#">Remove</a>
+
+                    </div>
+                    <hr/>
+                 {% endfor %}
+            </div>
+            <button type="button" id="add" href="#">Add Lap</button>
+
+            <hr/>
+            <button type="submit">Save</button>
+        </form>
+
+        {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+
+        {# Form template #}
+        {# <div id="contact-_-form" class="is-hidden" data-index="_">
+            <label for="contacts-_-namec">Runner name</label>
+            <input id="contacts-_-namec" name="contacts-_-namec" type="text" value="">
+
+            <label for="contacts-_-number">Lap time</label>
+            <input id="contacts-_-number" name="contacts-_-number" type="text">
+
+            <a class="remov" href="#">Remove</a>
+            <hr/>
+        </div> #}
+
+        {# Show submitted data #}
+        {% if data is defined %}
+            <p>Received data: {{ data }}</p>
+        {% endif %}
+
+        {# Show races #}
+        {# {% for race in races %}
+            <p><a href="{{ url_for('bands.show_contacts', band_name=race.bandname) }}">Race {{ race.bandname }}</a> | {{ race.profile }}</p>
+        {% endfor %} #}
+    </body>
+</html>

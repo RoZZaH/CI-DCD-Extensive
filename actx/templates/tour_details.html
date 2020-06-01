@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<div class="container">
+<div class="content-block" id="datab" data-genrelist="{{ genrelist | safe }}" >
+    <form method="POST" enctype="multipart/form-data" ><!-- allow file upload -->
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Tour Details</legend>
+            {{ form.org_type(value=otype) }}
+            {{ form.org_name.label }}
+                {% if form.org_name.errors %}
+                    {{ form.org_name(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.org_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.org_name }}
+                {% endif %}
+            {{ form.tour_title.label }}
+                {% if form.tour_title.errors %}
+                    {{ form.tour_title(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.tour_title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.tour_title }}
+                {% endif %}
+            {{ form.tour_description.label }}
+                {% if form.tour_description.errors %}
+                    {{ form.tour_description(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.tour_description.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.tour_description }}
+                {% endif %}
+            {{ form.strapline.label }}
+                {% if form.strapline.errors %}
+                    {{ form.strapline(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.strapline.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.strapline }}
+                {% endif %}
+            {{ form.genres.label }}
+                {% if form.genres.errors %}
+                    {{ form.genres(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.genres.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.genres }}
+                {% endif %}
+
+            
+            {{ form.tour_text.label }}
+                {% if form.tour_text.errors %}
+                    {{ form.tour_text(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.tour_text.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.tour_text }}
+                {% endif %}
+            {{ form.picture.label(value="Tour Picture") }}
+                {% if form.picture.errors %}
+                    {{ form.picture }}
+                    <div class="invalid-file">
+                    {% for error in form.picture.errors %}
+                        <span class="text-danger">{{ error }}</span><br>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.picture }}
+                {% endif %}
+
+            <fieldset data-inx="dates">
+            <!-- /subform -->
+            <div id="subforms-container-date">
+                {% for subform in form.tour_dates %}
+                    <div id="date-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
+                        {{ subform.td_date.label }}
+                        {{ subform.td_date(type="date") }}
+                        {{ subform.td_time_hh.label }}
+                        {{ subform.td_time_hh }}
+                        {{ subform.td_time_mm.label }}
+                        {{ subform.td_time_mm }}
+                        {{ subform.td_time_ampm.label }}
+                        {{ subform.td_time_ampm }}
+
+                        {{ subform.td_hometown.origin_county.label(value="Venue County") }}
+                        {{ subform.td_hometown.origin_county }}
+                        {{ subform.td_hometown.origin_town.label(value="Venue Town") }}
+                        {{ subform.td_hometown.origin_town }}
+
+                        {{ subform.td_venue.label }}
+                        {{ subform.td_venue }}
+
+                        {{ subform.td_venue_url.label }}
+                        {{ subform.td_venue_url }}
+                        {{ subform.td_venue_phones.label }}
+                        {{ subform.td_venue_phones }}
+                        {{ subform.td_ticket_urls.label }}
+                        {{ subform.td_ticket_urls }}
+
+                        <a class="remove" href="#">Remove</a>
+
+                    </div>
+                 {% endfor %}
+            </div>
+                <button type="button" class="add" href="#">Add Date</button>
+            </fieldset>
+
+
+        </fieldset>
+            {{ form.submit(class="btn btn-outline-info") }}
+    </form>
+    {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+    {% if data is defined %}
+            <p>Received data: {{ data }}</p>
+        {% endif %}
+</div>
+</div>
+<!-- JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+{% assets "org_band_js" %}
+<script src="{{ ASSET_URL }}" ></script>
+{% endassets %}
+
+
+{% endblock content %}

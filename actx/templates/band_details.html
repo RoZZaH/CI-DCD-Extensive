@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<div class="container">
+<div class="content-block" id="datab" data-genrelist="{{ genrelist | safe }}" >
+    <form method="POST" enctype="multipart/form-data" ><!-- allow file upload -->
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Add New Organisation/Band</legend>
+            {{ form.org_type(value=otype) }}
+            {{ form.org_name.label }}
+                {% if form.org_name.errors %}
+                    {{ form.org_name(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.org_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.org_name(value=oname) }}
+                {% endif %}
+            {{ form.description.label }}
+                {% if form.description.errors %}
+                    {{ form.description(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.description.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.description }}
+                {% endif %}
+            {{ form.strapline.label }}
+                {% if form.strapline.errors %}
+                    {{ form.strapline(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.strapline.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.strapline }}
+                {% endif %}
+            {{ form.genres.label }}
+                {% if form.genres.errors %}
+                    {{ form.genres(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.genres.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.genres }}
+                {% endif %}
+            {{ form.hometown.origin_county.label }}
+                {{ form.hometown.origin_county }}
+
+             {{ form.hometown.origin_town.label }}
+                {{ form.hometown.origin_town }}
+            
+            {{ form.profile.label }}
+                {% if form.profile.errors %}
+                    {{ form.profile(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.profile.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.profile }}
+                {% endif %}
+            {{ form.picture.label }}
+                {% if form.picture.errors %}
+                    {{ form.picture }}
+                    <div class="invalid-file">
+                    {% for error in form.picture.errors %}
+                        <span class="text-danger">{{ error }}</span><br>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.picture }}
+                {% endif %}
+        </fieldset>
+            {{ form.submit(class="btn btn-outline-info") }}
+    </form>
+     {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+    {% if data is defined %}
+            <p>Received data: {{ data }}</p>
+        {% endif %}
+</div>
+</div>
+    {# <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> #}
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    {% assets "org_band_js" %}
+      <script src="{{ ASSET_URL }}" ></script>
+    {% endassets %}
+
+
+{% endblock content %}

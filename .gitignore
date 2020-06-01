@@ -1,0 +1,11 @@
+*.json
+*.csv
+*.txt
+*.cfg
+*.code-workspace
+**/__pycache__
+**/static/.webassets-cache/*
+**/static/gen/*
+
+#exception
+!**/static/gen/.gitkeep

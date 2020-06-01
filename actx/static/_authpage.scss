@@ -1,0 +1,171 @@
+
+h1 {
+    font-size: 1rem;
+}
+
+form {
+    grid-column: 1 / span 2;
+    display: grid;
+    grid-template-columns: 1em 16ch 1em 1fr 1em;
+    grid-gap: 1em 0;
+    border: 1px solid grey;
+    border-radius: 6px;
+    font-size: 1.25rem;
+    padding: 2em 0 1.5em;
+    // align-items: center;
+}
+
+.is-invalid {
+    border: 1px solid red;
+    font-size: 1.1rem;
+    padding: 0.2em;
+}
+
+.invalid-feedback {
+    margin: 0;
+    padding: 0;
+    grid-column: 4;
+    color: firebrick;
+    font-size: 1rem;
+    line-height: 1em;
+    position: relative;
+    top: -0.5em;
+}
+
+.is-hidden {
+    display: none;
+}
+
+fieldset {
+    display: contents;
+}
+
+legend {
+    position: relative;
+    top: -2.8em;
+    left: 0;
+    padding: 0.2rem 1ch 0.3rem;
+    background: $body-bg;
+    white-space: nowrap;
+    width: fit-content;
+    grid-column: 2;
+}
+
+
+label {
+    grid-column: 2;
+    /* border: 1px dotted pink; */
+    width: 16ch;
+    text-align: left;
+}
+
+.loginform > label {
+    text-align: right;
+}
+
+textarea, select, input {
+    grid-column: 4;
+    height: 1.5em;
+}
+
+textarea {
+    font-size: 0.9rem;
+    line-height: 1.5em;
+    height: 9em;
+}
+
+textarea.td_phones {
+    font-size: 0.9rem;
+    line-height: 1.1em;
+    height: 5em;
+}
+
+fieldset > div {
+    grid-column: 1 / -1;
+}
+.subform {
+    border: 1px solid pink;
+    display: grid;
+    grid-template-columns: 1em 16ch 1em 1fr 1em;
+}
+
+.subform .remove {
+    display: block;
+    grid-column: -3;
+    justify-self: end;
+}
+
+button.add{
+    grid-column: 2;
+    width: 100%;
+}
+
+.invalid-file {
+    grid-column: 2 / -2;
+}
+
+
+input[type=checkbox].form-check  {
+    grid-column: 2;
+    justify-self: end;
+    transform: scale(1.25);
+    border: 1px solid transparent;
+    box-shadow: none;
+}
+
+label.form-check  {
+    grid-column: 4;
+    font-size: 0.9em;
+    text-align: left;
+    align-self: center;
+}
+
+span.forgot-password {
+    grid-column: 4;
+}
+
+.btn-form-submit {
+    color: #fff;
+    font-weight: 500;
+    grid-column: 4;
+    font-size: 1.25rem;
+    background: $mustard;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    padding: 0.35rem 0.65rem;
+    width: 18ch;
+    height: 100%;
+}
+
+.media {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.rounded-circle {
+    border-radius: 50%;
+    grid-column: 1;
+}
+.media-body {
+    grid-column: 2;
+}
+
+.account-img {
+    height: 125px;
+    width: 125px;
+    margin-right: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .account-heading {
+    font-size: 2.5rem;
+  }
+
+  .text-danger {
+      color: $alert-danger-txt;
+      background-color: $alert-danger-bg;
+      padding: 0.25em;
+      border-radius: 2px;
+      grid-column: 2;
+      line-height: 1.5em;
+  }

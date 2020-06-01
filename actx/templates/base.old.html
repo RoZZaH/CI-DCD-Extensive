@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACTX</title>
+    <link rel="stylesheet" href="{{ url_for('css', filename='style.css') }}" type="text/css" />
+</head>
+<body>
+<div id="wrapper">
+    <header>
+    <h1 class="logo">ACTX<br><small>Band + Tour Information</small></h1>
+    <nav class="nav primary-nav">
+        <ul>
+            <li class="main-menu__item"><a href="#">Bands (A-Z)</a></li>
+            <li class="main-menu__item"><a href="#">Tour Dates (by Region)</a></li>
+            <li class="main-menu__item"><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+    <nav class="nav secondary-nav">
+        <ul>
+            <li class="main-menu__item"><a href="{{ url_for('user.register')}}">Register</a>
+            <li class="main-menu__item"><a href="{{ url_for('user.login')}}">Login</a>
+        </ul>
+    </nav>
+    </header>
+    <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock content %}    
+    </main>
+    <aside>
+        <ol>
+            <li>Some
+            <li>text
+            <li>for the
+            <li>aside
+        </ol>
+    </aside>
+    <footer>
+    <p>ACTX &copy; 2020</p>
+    </footer>
+</div>
+</body>
+</html>

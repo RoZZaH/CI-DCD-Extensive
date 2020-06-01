@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+flask = "*"
+flask-wtf = "*"
+email-validator = "*"
+flask-mongoengine = "*"
+flask-assets = "*"
+cssmin = "*"
+jsmin = "*"
+libsass = "*"
+flask-login = "*"
+flask-bcrypt = "*"
+pillow = "*"
+python-resize-image = "*"
+
+[requires]
+python_version = "3.8"

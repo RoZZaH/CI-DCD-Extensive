@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<div class="container">
+<div class="content-block" id="datab" data-genrelist="{{ genrelist | safe }}" >
+
+    <form method="POST" action="{{ url_for('user.venue_edit') }}"><!-- allow file upload -->
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Organisation Details</legend>
+            {{ form.org_type }} {# hidden #}
+            {{ form.venue_address.refname(value="ref") }}
+            {{ form.venue_name.label }}
+                {% if form.venue_name.errors %}
+                    {{ form.venue_name(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_name }}
+                {% endif %}
+            {{ form.venue_description.label }}
+                {% if form.venue_description.errors %}
+                    {{ form.venue_description(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_description.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_description }}
+                {% endif %}
+            {{ form.venue_hometown.origin_county.label }}
+                {{ form.venue_hometown.origin_county }}
+
+             {{ form.venue_hometown.origin_town.label }}
+                {{ form.venue_hometown.origin_town }}
+     
+
+            {{ form.venue_address.specifically.label }}
+                {% if form.venue_address.specifically.errors %}
+                    {{ form.venue_address.specifically(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.specifically.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.specifically }}
+                {% endif %}
+
+            {{ form.venue_address.address_lines.label }}
+                {% if form.venue_address.address_lines.errors %}
+                    {{ form.venue_address.address_lines(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.address_lines.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.address_lines }}
+                {% endif %}
+
+            {{ form.venue_address.post_eir_code.label }}
+                {{ form.venue_address.post_eir_code }}
+    
+            {{ form.venue_address.contact_1.label }}
+                {% if form.venue_address.contact_1.errors %}
+                    {{ form.venue_address.contact_1(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.contact_1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.contact_1 }}
+                {% endif %}
+            {{ form.venue_address.contact_title_1.label }}
+                {% if form.venue_address.contact_title_1.errors %}
+                    {{ form.venue_address.contact_title_1(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.contact_title_1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.contact_title_1 }}
+                {% endif %}
+            {{ form.venue_address.contact_2.label }}
+                {% if form.venue_address.contact_2.errors %}
+                    {{ form.venue_address.contact_2(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.contact_2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.contact_2 }}
+                {% endif %}
+            {{ form.venue_address.contact_title_2.label }}
+                {% if form.venue_address.contact_title_2.errors %}
+                    {{ form.venue_address.contact_title_2(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.contact_title_2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.contact_title_2 }}
+                {% endif %}
+            {{ form.venue_address.email_1.label }}
+                {% if form.venue_address.email_1.errors %}
+                    {{ form.venue_address.email_1(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.email_1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.email_1 }}
+                {% endif %}
+            {{ form.venue_address.email_2.label }}
+                {% if form.venue_address.email_2.errors %}
+                    {{ form.venue_address.email_2(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.email_2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.email_2 }}
+                {% endif %}
+            {{ form.venue_address.phone_1.label }}
+                {% if form.venue_address.phone_1.errors %}
+                    {{ form.venue_address.phone_1(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.phone_1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.phone_1 }}
+                {% endif %}
+            {{ form.venue_address.phone_2.label }}
+                {% if form.venue_address.phone_2.errors %}
+                    {{ form.venue_address.phone_2(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.phone_2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.phone_2 }}
+                {% endif %}
+            {{ form.venue_address.mobile_1.label }}
+                {% if form.venue_address.mobile_1.errors %}
+                    {{ form.venue_address.mobile_1(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.mobile_1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.mobile_1 }}
+                {% endif %}
+            {{ form.venue_address.mobile_2.label }}
+                {% if form.venue_address.mobile_2.errors %}
+                    {{ form.venue_address.mobile_2(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.mobile_2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.mobile_2 }}
+                {% endif %}
+            {{ form.venue_address.website_1.label }}
+                {% if form.venue_address.website_1.errors %}
+                    {{ form.venue_address.website_1(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.website_1.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.website_1 }}
+                {% endif %}
+            {{ form.venue_address.website_2.label }}
+                {% if form.venue_address.website_2.errors %}
+                    {{ form.venue_address.website_2(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_address.website_2.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_address.website_2 }}
+                {% endif %}
+            {{ form.venue_accessibility.label }}
+                {% if form.venue_accessibility.errors %}
+                    {{ form.venue_accessibility(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_accessibility.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_accessibility }}
+                {% endif %}
+            {{ form.venue_directions.label }}
+                {% if form.venue_directions.errors %}
+                    {{ form.venue_directions(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.venue_directions.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.venue_directions }}
+                {% endif %}
+
+
+
+
+
+        </fieldset>
+            {{ form.submit(class="btn btn-outline-info") }}
+    </form>
+</div>
+   {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+
+
+        {# Show submitted data #}
+        {% if data is defined %}
+            <p>Received data: {{ data }}</p>
+        {% endif %}
+
+</div>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    {% assets "home_js" %}
+      <script src="{{ ASSET_URL }}" ></script>
+    {% endassets %}
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        {% assets "org_band_js" %}
+      <script src="{{ ASSET_URL }}" ></script>
+    {% endassets %}
+
+
+
+{% endblock content %}
