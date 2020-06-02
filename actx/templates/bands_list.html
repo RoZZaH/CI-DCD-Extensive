@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+{% for band in bands %}
+<hr>
+<div class="card">
+    {# {% if band.image_file %}
+        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/'+band.image_file ) }}" > {# filename=band.media.tour_media.pictures.square #}
+  {#}  {% else %}
+        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/defaultband.jpg') }}" >
+    {% endif %} #}
+    <h2 class="card-title">
+        {% if current_user.is_authenticated  %}
+        <a href="{{ url_for('bands.manage_band_profile', band_name=band.org_title) }}">{{ band.org_title }}</a> {#  {{ band._cls }} #}
+        {% else %}
+        <a href="{{ url_for('bands.bands_list', band_name=band.org_title) }}">{{ band.org_title }}</a>
+        {% endif %}
+    </h2>
+    <p class="card-body">{{ band.description }}</p>
+    {% if current_user.is_authenticated  %}
+    <p class="card-body"><a href="{{ url_for('bands.manage_band_profile',  band_name=band.org_title) }}">Edit Band Profile</a> | <a href="{{ url_for('bands.manage_tours', band_name=band.org_title) }}">Manage Tours </a></p>
+    {% else %}
+    {# <p class="card-body"><a href="#">Edit Band Profile</a> | <a href="{{ url_for('bands.manage_tours', band_name=band.org_title) }}">Tours </a></p> #}
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock content %}
