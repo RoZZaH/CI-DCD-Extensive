@@ -3,7 +3,9 @@ from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
 #from actx.users.forms import HomeTownForm
 from actx.models.entities import User, Towns
-from wtforms import Form, BooleanField, PasswordField, StringField, SubmitField, TextAreaField, SelectField, FormField, FieldList, IntegerField
+from wtforms import (BooleanField, Form, FormField, FieldList, HiddenField, 
+                    #IntegerField,
+                     PasswordField, SelectField, StringField, SubmitField, TextAreaField,)
 
 from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError
 
@@ -46,48 +48,37 @@ class HomeTownForm(Form):
                             render_kw={"class": "origin-county"})
     origin_town = SelectField("From Town/Locale",
                                 choices=[],
-                                render_kw={"class": "origin-town"}) #depends on above
+                                render_kw={"class": "origin-town"},
+                                validate_choice=False) #depends on above
 
 
 
-class ContactForm(Form):
-    # SubForm
-    namec = StringField('Contact Name')
-    number = StringField('PhonexNumber')
-
-
-class LapForm(Form):
-    """
-    Subform.
-    CSRF is disabled for this subform (using `Form` as parent class) because
-    it is never used by itself.
-    """
-    runner = StringField('Runner name')
-    lap_time = IntegerField('Lap time')
-
-
-class CreateBandForm(FlaskForm):
-    bandname = StringField("Band Name", 
+class CreateUpdateBandForm(FlaskForm):
+    org_type = HiddenField()
+    band_name = StringField("Band Name",
+                            render_kw={"placeholder": "Org Name / Band / Venue"},
                             validators=[DataRequired()])
-    # genres = StringField("Musical Genres", )#validators=[DataRequired(), Length(min=3, max=120)])
-    # profile = TextAreaField("Profile",) # validators=[DataRequired()])
-    hometown = FieldList(FormField(HomeTownForm))
-    # members k v i.e. locals Neil Hannon
-    contacts = FieldList(FormField(ContactForm), min_entries=1, max_entries=8)
-    members = FieldList(FormField(ContactForm), min_entries=1, max_entries=8)
-    submit = SubmitField("Create")
+    description = StringField("Description",
+                            render_kw={"placeholder": "Ska Reggae Band from Belfast"},
+                            validators=[DataRequired()])
+    strapline = StringField("Band Motto / Strapline",
+                            render_kw={"id": "testLower"})
+    profile = TextAreaField("Profile",
+                            render_kw={"placeholder": "Brief Bio/History Band Origins and Direction"},
+                            validators=[DataRequired()])
+    genres = StringField("Musical Genres", 
+                            render_kw={"id": "testInput",
+                                       "style":"text-transform: lowercase;"
+                                       })
+    picture = FileField("Update Band Picture",
+                            validators=[FileAllowed(["jpg", "jpeg", "png"])])
+    member_instruments = StringField("Instrument(s)")
+    member_name = StringField("Band Member")
+    hometown = FormField(HomeTownForm)
+    created_by = HiddenField()
+#    contacts = FieldList(FormField(ContactForm), min_entries=1, max_entries=8)
+#    links = FieldList(FormField())
+#    media_assets = FieldList(FormField())
+    submit = SubmitField("Save")
 
-
-
-
-
-# class MainForm(FlaskForm):
-#     """Parent form."""
-#     name = StringField("Race Name",
-#                             validators=[DataRequired(), Length(min=3, max=120)])
-#     laps = FieldList(
-#         FormField(LapForm),
-#         min_entries=1,
-#         max_entries=20
-#     )
 

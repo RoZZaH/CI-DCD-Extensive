@@ -3,6 +3,7 @@
 *.txt
 *.cfg
 *.code-workspace
+misc
 **/__pycache__
 **/static/.webassets-cache/*
 **/static/gen/*

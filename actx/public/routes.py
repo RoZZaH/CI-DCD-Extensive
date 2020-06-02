@@ -41,17 +41,3 @@ def show_grid():
     return render_template("grid.html")
 
 
-@public.route('/town/<county>')
-def get_towns(county):
-    # [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
-    towns = Towns.objects(county=county)
-
-    townsArray = []
-
-    for town in towns:
-        townObj = {}
-        townObj["val"] = town.town
-        townObj["name"] = town.town
-        townsArray.append(townObj)
-
-    return jsonify({"towns": townsArray})

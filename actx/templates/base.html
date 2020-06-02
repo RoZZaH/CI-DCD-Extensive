@@ -25,7 +25,7 @@
         </div>
         <div class="navigation">
         <ul class="primary-nav">
-        <li class="main-menu__item"><a href="#">Bands <small>(A-Z)</small></a></li>
+        <li class="main-menu__item"><a href="{{ url_for('bands.bands_list') }}">Bands <small>(A-Z)</small></a></li>
         <li class="main-menu__item"><a href="#" class="current">Tour Dates <small>(by location)</small></a></li>
         <li class="main-menu__item"><a href="#">Contact</a></li>
         </ul>
@@ -34,6 +34,7 @@
             {% if current_user.is_authenticated  %}
             <li class=""><a href="{{ url_for('user.logout')}}">Log Out</a></li>
             <li class=""><a href="{{ url_for('user.account')}}">Settings</a></li>
+            <li class=""><a href="{{ url_for('bands.add_band')}}">New Band</a></li>
             {% else %}
             <li class=""><a href="{{ url_for('user.login')}}">Login</a></li>
             <li class=""><a href="{{ url_for('user.register')}}">Register</a></li>

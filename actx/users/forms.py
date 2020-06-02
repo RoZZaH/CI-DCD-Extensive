@@ -193,34 +193,6 @@ class OrganisationDetailsForm(FlaskForm):
 
 
 
-class BandDetailsForm(FlaskForm):
-    org_type = HiddenField()
-    org_name = StringField("Name",
-                            render_kw={"placeholder": "Org Name / Band / Venue"},
-                            validators=[DataRequired()])
-    description = StringField("Description",
-                            render_kw={"placeholder": "Ska Reggae Band from Belfast"},
-                            validators=[DataRequired()])
-    strapline = StringField("Band Motto / Strapline",
-                            render_kw={"id": "testLower"})
-    profile = TextAreaField("Profile",
-                            render_kw={"placeholder": "Brief Bio/History Band Origins and Direction"},
-                            validators=[DataRequired()])
-    genres = StringField("Musical Genres", 
-                            render_kw={"id": "testInput",
-                                       "style":"text-transform: lowercase;"
-                                       })
-    picture = FileField("Update Band Picture",
-                            validators=[FileAllowed(["jpg", "jpeg", "png"])])
-    member_instruments = StringField("Instrument(s)")
-    member_name = StringField("Band Member")
-    hometown = FormField(HomeTownForm)
-    created_by = HiddenField()
-#    contacts = FieldList(FormField(ContactForm), min_entries=1, max_entries=8)
-#    links = FieldList(FormField())
-#    media_assets = FieldList(FormField())
-    submit = SubmitField("Save")
-
 class TourDateFormlet(Form):
     td_date = DateField("Date")
     td_time_hh = SelectField("Time-Hour",

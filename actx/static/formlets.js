@@ -155,16 +155,6 @@ document.addEventListener("DOMContentLoaded", function(){
     /* find wtforms datefield */
     $('#subforms-container-date').find('input[type=date]').attr("value", today); //attr("value", today);
 
-    loadTowns("Antrim").then(
-        data => {
-            ANTRIM_TOWNS = data;
-            county_select = [ ...document.querySelectorAll("select.origin-county") ].pop()
-            //[ ...document.querySelectorAll("select.origin-town") ].pop()
-            county_select == "Antrim" ? console.log("Aye") : console.log("Nah")
-            console.log(county_select.value)
-            
-            //innerHTML = ANTRIM_TOWNS
-        }
-    )
+
 
 });

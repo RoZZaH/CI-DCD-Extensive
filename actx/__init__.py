@@ -42,11 +42,12 @@ login_manager = LoginManager(app)
 initialise_db(app)
 login_manager.login_view = "user.login"
 login_manager.login_message_category = "info" #boostrap category for flash message
-# from actx.movies.routes import api
+
+from actx.api.routes import api
 from actx.public.routes import public
 from actx.users.routes import user
 from actx.bands.routes import bands
-# app.register_blueprint(api)
+app.register_blueprint(api)
 app.register_blueprint(public)
 app.register_blueprint(bands)
 app.register_blueprint(user)
