@@ -10,6 +10,7 @@ bundles = {
         output="gen/home.%(version)s.css"
     ),
     "org_band_js": Bundle(
+        "jquery.min.js", #v3.3.1
         "tags.js",
         "autofill.js",
         "hometown.js",

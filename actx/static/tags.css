@@ -23,7 +23,7 @@
 }
 .tags-wrapper li.tag {
 	font-family:verdana;
-	font-size:11px;
+	font-size: 0.8rem; // rg
 	border-radius:3px;
 	list-style: none;
 	background-clip: padding-box;

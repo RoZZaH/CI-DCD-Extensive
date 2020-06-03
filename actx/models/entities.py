@@ -56,7 +56,7 @@ org_types = ["organisation", "band", "venue"]
 
 
 class Organisation(db.DynamicDocument):
-    org_title = db.StringField(max_length=120, required=True)
+    org_title = db.StringField(max_length=120, required=True) #Unique=True
     created_by = db.ReferenceField('User')
     date_created = db.DateTimeField(required=True, default=datetime.utcnow)
     owned_by = db.ListField(db.ReferenceField('User')) # role
@@ -74,12 +74,18 @@ class Organisation(db.DynamicDocument):
         "allow_inheritance": True
     }
 
+
+class BandMember(db.EmbeddedDocument):
+    musician = db.StringField()
+    instruments = db.ListField(db.StringField())
+
+
 class Band(Organisation):
     image_file =  db.StringField(max_length=20, required=True, default='defaultband.jpg')
     genres = db.ListField(db.StringField(default='unclassified'))
     strapline = db.StringField(max_length=120)
     tours = db.ListField(db.ReferenceField('Tour'))
-    members = db.MapField(db.StringField())
+    members = db.EmbeddedDocumentListField(BandMember)
     meta = {
         "allow_inheritance": True
     }

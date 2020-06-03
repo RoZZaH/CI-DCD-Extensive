@@ -1,4 +1,4 @@
-import os, secrets, re
+import os, secrets, re, json
 from datetime import datetime
 from PIL import Image # Pillow
 from flask import (Blueprint, flash, current_app, jsonify,
@@ -6,8 +6,8 @@ from flask import (Blueprint, flash, current_app, jsonify,
     url_for)
 from flask_login import current_user, login_required, login_user, logout_user
 
-from actx.models.entities import Band, Towns, User
-from actx.bands.forms import CreateUpdateBandForm
+from actx.models.entities import Band, Towns, User, Tour, BandMember
+from actx.bands.forms import CreateUpdateBandForm, TourDetailsForm
 from actx import pictures_folder, profile_pics
 from actx.api.routes import list_genres
 from actx.utils.helpers import *
@@ -57,7 +57,8 @@ def add_band():
         return redirect(url_for('public.show_tourdates'))
     form.hometown.origin_town.choices = [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
     genres = list_genres()
-    return render_template("band_create_update_form.html", form=form, genrelist=genres)
+    form_legend = "Add Band Profile"
+    return render_template("band_create_update_form.html", form=form, genrelist=genres, form_legend = form_legend)
 
 
 
@@ -88,8 +89,18 @@ def manage_band_profile(band_name):
         if form.picture.data:
             band.image_file = picture_file
         band.save()
+        band.members.clear()
+        # return request.form
+        for member in form.band_members.data:
+            new_member = BandMember(
+                musician = member.pop("musician"),
+                instruments = extract_tags(member.pop("instruments"))
+            )
+            band.members.append(new_member)
+        band.save()
+
         return redirect(url_for('bands.bands_list'))
-    
+    #elif request.method == "GET":
     form.band_name.data = band.org_title
     form.genres.data = ",".join(map(str,band.genres))
     form.strapline.data = band.strapline
@@ -97,17 +108,13 @@ def manage_band_profile(band_name):
     form.profile.data = band.profile
     form.hometown.origin_county.data = band.hometown["county"]
     form.hometown.origin_town.data = band.hometown["town"]
-    if form.hometown.origin_county.data is not None:
-        #form.hometown.origin_town.choices = [(otown.town, otown.town) for otown in Towns.objects(county=form.hometown.origin_county.data)]
-        selected_county=form.hometown.origin_county.data
-    else:
-        selected_county= "Antrim"
-    if form.hometown.origin_town.data is not None:
-        selected_town = form.hometown.origin_town.data
-    else:
-        selected_town = "none"
+    selected_county=form.hometown.origin_county.data if form.hometown.origin_county.data is not None else "Antrim"
+    selected_town=form.hometown.origin_town.data if form.hometown.origin_town.data is not None else "none"
+    image_file = url_for('static_media', filename="band_profile_pics/" + band.image_file)
     genres = list_genres()
-    return render_template("band_create_update_form.html", form=form, genrelist=genres, selected_county=selected_county, selected_town=selected_town)
+    form_legend="Edit Band Profile"
+    return render_template("band_create_update_form.html", form=form, genrelist=genres, form_legend=form_legend,
+                            selected_county=selected_county, selected_town=selected_town, image_file=image_file)
 
 
     

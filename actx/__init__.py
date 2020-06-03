@@ -36,6 +36,7 @@ def static_media(filename):
 
 pictures_folder = os.path.join(app.root_path, 'media')
 profile_pics = os.path.join(pictures_folder, "user_profile_pics")
+band_pics = os.path.join(pictures_folder, "band_profile_pics")
 
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)

@@ -3,11 +3,11 @@ from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
 #from actx.users.forms import HomeTownForm
 from actx.models.entities import User, Towns
-from wtforms import (BooleanField, Form, FormField, FieldList, HiddenField, 
+from wtforms import (BooleanField, DateField, Form, FormField, FieldList, HiddenField, 
                     #IntegerField,
-                     PasswordField, SelectField, StringField, SubmitField, TextAreaField,)
+                      PasswordField, SelectField, StringField, SubmitField, TextAreaField,)
 
-from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError
+from wtforms.validators import DataRequired, Optional, Length, EqualTo, Email, URL, ValidationError
 
 
 class HomeTownForm(Form):
@@ -52,6 +52,11 @@ class HomeTownForm(Form):
                                 validate_choice=False) #depends on above
 
 
+class BandMemberFormlet(Form):
+    instruments = StringField("Instrument(s)",
+                            render_kw={"placeholder":"use commas, between, instruments"})
+    musician = StringField("Musician's Name")
+
 
 class CreateUpdateBandForm(FlaskForm):
     org_type = HiddenField()
@@ -72,8 +77,7 @@ class CreateUpdateBandForm(FlaskForm):
                                        })
     picture = FileField("Update Band Picture",
                             validators=[FileAllowed(["jpg", "jpeg", "png"])])
-    member_instruments = StringField("Instrument(s)")
-    member_name = StringField("Band Member")
+    band_members = FieldList(FormField(BandMemberFormlet), min_entries=1)
     hometown = FormField(HomeTownForm)
     created_by = HiddenField()
 #    contacts = FieldList(FormField(ContactForm), min_entries=1, max_entries=8)
@@ -82,3 +86,85 @@ class CreateUpdateBandForm(FlaskForm):
     submit = SubmitField("Save")
 
 
+class TourDateFormlet(Form):
+    td_date = DateField("Date")
+    td_time_hh = SelectField("Time-Hour",
+                        choices=[
+                                (1,"1"),
+                                (2,"2"),
+                                (3,"3"),
+                                (4,"4"),
+                                (5,"5"),
+                                (6,"6"),
+                                (7,"7"),
+                                (8,"8"),
+                                (9,"9"),
+                                (10,"10"),
+                                (11, "11"),
+                                (0,"12")],
+                            default=8,
+                            validate_choice=False,
+                            render_kw={"class": "td_time_hh"})
+    td_time_ampm = SelectField("AM/PM",
+                                choices=[(0, "AM"), (12, "PM")],
+                                default=12,
+                                validate_choice=False,
+                                render_kw={"class": "td_time_ampm"})
+    td_time_mm = SelectField("Time-Mins",
+                                choices=[(0, "00"),(15, "15"),(30, "30"), (45, "45")], 
+                                default=0,
+                                validate_choice=False,
+                                render_kw={"class": "td_time_mm"})
+    td_status = SelectField("Status",
+                            choices=[
+                                ("tbc", "T.B.C."),
+                                ("confirmed", "Confirmed"),
+                                ("cancelled", "Cancelled"),
+                                ("rescheduled", "Rescheduled")
+                            ], default="tbc")
+    td_hometown = FormField(HomeTownForm)
+    td_location = StringField("Specifically",
+                            render_kw={"placeholder": "specific location if not listed in Town"},)
+    
+    td_venue = SelectField("Venue Name", choices=[(1,"TestVenue")], 
+                            default=1, validate_choice=False)
+    td_venue_url = StringField("Venue Website",
+                                validators=[Optional(),URL()])
+    td_venue_phones = TextAreaField("Booking Phone Numbers",
+                                render_kw={"class":"td_phones"})
+    td_ticket_urls = TextAreaField("Ticket links",
+                                render_kw={"class":"td_phones"})
+
+
+
+
+class TourDetailsForm(FlaskForm):
+    org_type = HiddenField()
+    org_name = StringField("Name",
+                            render_kw={"placeholder": "Org Name / Band / Venue"},
+                            validators=[DataRequired()])
+    tour_description = StringField("Tour Description",
+                            render_kw={"placeholder": "Ska Reggae Band from Belfast"},
+                            validators=[DataRequired()])
+    tour_title = StringField("Tour Title", 
+                            validators=[DataRequired()])
+    strapline = StringField("Tour Strapline",
+                            render_kw={"id": "testLower", 
+                                       "placeholder": "100yrs of Tom Jones"})
+    tour_text = TextAreaField("Tour Text",
+                            render_kw={"placeholder": "Brief Bio/History Band Origins and Direction"},
+                            validators=[DataRequired()])
+    genres = StringField("Musical Genres", 
+                            render_kw={"id": "testInput",
+                                       "style":"text-transform: lowercase;"
+                                       })
+    picture = FileField("Upload Tour Picture",
+                            validators=[FileAllowed(["jpg", "jpeg", "png"])])
+    tour_dates = FieldList(FormField(TourDateFormlet), min_entries=1)
+    member_instruments = StringField("Instrument(s)")
+    member_name = StringField("Band Member")
+    created_by = HiddenField()
+#    contacts = FieldList(FormField(ContactForm), min_entries=1, max_entries=8)
+#    links = FieldList(FormField())
+#    media_assets = FieldList(FormField())
+    submit = SubmitField("Save")

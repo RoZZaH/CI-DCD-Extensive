@@ -95,14 +95,13 @@ if(stuff == "member") {
 
     let $newForm = ` 
     <div id="member-${newIndex}-form" class="subform" data-index="${newIndex}">
-    <label for="members-${newIndex}-namec">Member key</label>
-    <input id="members-${newIndex}-namec" name="members-${newIndex}-namec" type="text" value="">
+        <label for="members-${newIndex}-instrument" class="instrument-label">Instrument(s)</label>
+        <input id="members-${newIndex}-instrument" name="members-${newIndex}-instrument" class="instrument-input" type="text" value="" placeholder="use commas, between, instruments" >
 
-    <label for="members-${newIndex}-number">Member value</label>
-    <input id="members-${newIndex}-number" name="members-${newIndex}-number" type="text">
+        <label for="members-${newIndex}-band_member" class="band-member-label">Musician's Name</label>
+        <input id="members-${newIndex}-band_member" name="members-${newIndex}-band_member" class="band-member-input" type="text">
 
-    <a class="remove" href="#">Remove</a>
-    <hr/>
+        <a class="remove btn-subform" href="#">Remove</a>
     </div>
     `
     $('#subforms-container-member').append($newForm);

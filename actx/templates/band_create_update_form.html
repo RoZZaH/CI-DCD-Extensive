@@ -6,9 +6,10 @@
     <form method="POST" enctype="multipart/form-data" ><!-- allow file upload -->
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Add New Organisation/Band</legend>
+            <legend class="border-bottom mb-4">{{ form_legend }}</legend>
+            <img class="band-img" src="{{ image_file }}">
             {{ form.org_type(value="band") }}
-            {{ form.band_name.label }}
+            {{ form.band_name.label(class="float-right") }}
                 {% if form.band_name.errors %}
                     {{ form.band_name(class="is-invalid") }}
                     <div class="invalid-feedback">
@@ -19,7 +20,7 @@
                 {% else %}
                     {{ form.band_name }}
                 {% endif %}
-            {{ form.description.label }}
+            {{ form.description.label(class="float-right")  }}
                 {% if form.description.errors %}
                     {{ form.description(class="is-invalid") }}
                     <div class="invalid-feedback">
@@ -30,7 +31,7 @@
                 {% else %}
                     {{ form.description }}
                 {% endif %}
-            {{ form.strapline.label }}
+            {{ form.strapline.label(class="float-right") }}
                 {% if form.strapline.errors %}
                     {{ form.strapline(class="is-invalid") }}
                     <div class="invalid-feedback">
@@ -40,34 +41,6 @@
                     </div>
                 {% else %}
                     {{ form.strapline }}
-                {% endif %}
-            {{ form.genres.label }}
-                {% if form.genres.errors %}
-                    {{ form.genres(class="is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.genres.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.genres }}
-                {% endif %}
-            {{ form.hometown.origin_county.label }}
-                {{ form.hometown.origin_county }}
-
-             {{ form.hometown.origin_town.label }}
-                {{ form.hometown.origin_town }}
-            
-            {{ form.profile.label }}
-                {% if form.profile.errors %}
-                    {{ form.profile(class="is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.profile.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.profile }}
                 {% endif %}
             {{ form.picture.label }}
                 {% if form.picture.errors %}
@@ -80,8 +53,56 @@
                 {% else %}
                     {{ form.picture }}
                 {% endif %}
+            {{ form.genres.label(class="push-down") }}
+                {% if form.genres.errors %}
+                    {{ form.genres(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.genres.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.genres(class="push-down") }}
+                {% endif %}
+
+            {{ form.hometown.origin_county.label }}
+                {{ form.hometown.origin_county }}
+            {{ form.hometown.origin_town.label }}
+                {{ form.hometown.origin_town }}
+
+            {{ form.profile.label }}
+                {% if form.profile.errors %}
+                    {{ form.profile(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.profile.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.profile }}
+                {% endif %}
+
+            <fieldset data-inx="member">
+            <!-- /subform -->
+            <div id="subforms-container-member">
+                {# {% for subform in form.laps %}  #}
+                {% for subform in form.band_members %}
+                    <div id="member-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
+                        {{ subform.instruments.label(class="instrument-label") }}
+                        {{ subform.instruments(class="instrument-input") }}
+
+                        {{ subform.musician.label(class="band-member-label") }}
+                        {{ subform.musician(class="band-member-input") }}
+
+                        <a class="remove btn-subform" href="#">Remove</a>
+
+                    </div>
+                 {% endfor %}
+            </div>
+            <button type="button" class="add btn-subform" href="#">Add Band Member</button>
+            </fieldset>
         </fieldset>
-            {{ form.submit(class="btn btn-outline-info") }}
+        {{ form.submit(class="btn btn-outline-info") }}
     </form>
      {% if form.errors %}
             {{ form.errors }}
@@ -91,8 +112,6 @@
         {% endif %}
 </div>
 </div>
-
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     {% assets "org_band_js" %}
     <script src="{{ ASSET_URL }}" ></script>

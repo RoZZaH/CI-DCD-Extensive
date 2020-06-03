@@ -4,7 +4,7 @@
 <h2 class="card-title">BAND NAME/Org Name</h2>
 <ul>
 {% for tour in tours %}
-    <li><a href="{{ url_for('user.edit_tour', tour_id = tour.id) }}">{{ tour.tour_title }}</a></li>
+    <li><a href="{{ url_for('bands.edit_tour', tour_id = tour.id) }}">{{ tour.tour_title }}</a></li>
 
 {% endfor %}
 </div>
