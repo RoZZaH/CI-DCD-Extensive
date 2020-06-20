@@ -28,7 +28,7 @@ bands = Blueprint('bands', __name__) # import_name , usually the current module
 @bands.route("/bands/<band_name>/") #, methods=("GET", "POST")
 def bands_list(band_name=None):
     if band_name is not None:
-        bands = Band.objects(org_title=band_name).first()
+        bands = Band.objects(band_name=band_name).first()
     else:
         bands = Band.objects.order_by('-date_created')
     return render_template("bands_list.html", bands=bands)
@@ -38,26 +38,55 @@ def bands_list(band_name=None):
 def add_band():
     form = CreateUpdateBandForm()
     if form.validate_on_submit():
-        if form.picture.data:
-            output_size = (400,400)
-            picture_file = save_picture(form.picture.data, output_size)
-
+        return request.form
+        # if form.picture.data:
+        #     output_size = (400,400)
+        #     picture_file = save_picture(form.picture.data, output_size)
+# {
+#   "band_members-0-instruments": "vocals", 
+#   "band_members-0-musician": "Ross", 
+#   "band_name": "Test Band", 
+#   "contact_details-contact_emails-0-email_address": "ross_geoghegan@hotmail.com", 
+#   "contact_details-contact_emails-0-email_title": "Enquiries", 
+#   "contact_details-contact_generic_title": "", 
+#   "contact_details-contact_name": "", 
+#   "contact_details-contact_numbers-0-mobile": "True", 
+#   "contact_details-contact_numbers-0-number": "+44470988363", 
+#   "contact_details-contact_title": "", 
+#   "created_by": "", 
+#   "csrf_token": "ImRiNWNkZmE5YjBiNGQxMjg2MGZmNjJlNWJlZTBhMmIxYjY1NWUzZmUi.Xu4tYQ._GQ1AsCEO1_HDWQ58G6dR-FZ4BY", 
+#   "description": "Test Description", 
+#   "enquiries_url": "https://www.live.ie", 
+#   "genres": "", 
+#   "hometown-origin_county": "Wexford", 
+#   "hometown-origin_town": "Adamstown", 
+#   "members-1-band_member": "Ray McClure", 
+#   "members-1-instrument": "guitar", 
+#   "profile": "History", 
+#   "strapline": "Motto", 
+#   "submit": "Save"
+# }
         user = User.objects(id=current_user.id).first()
         band = Band(
-                org_title=form.band_name.data,
-                hometown={"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data},
+                band_name=form.band_name.data,
                 description = form.description.data,
+                genres = extract_tags(form.genres.data),
+                hometown={"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data},
                 profile = form.profile.data,
                 strapline = form.strapline.data,
-                genres = extract_tags(form.genres.data)
+                band_members = form.band_members.data,
+                media_assets = form.media_assets.data,
+                contact_details = form.contact_details.data,
+                links = form.links.data
+
                 )
-        if form.picture.data:
-            band.image_file = picture_file
+        # if form.picture.data:
+        #     band.image_file = picture_file
         band.save()
         return redirect(url_for('public.show_tourdates'))
     form.hometown.origin_town.choices = [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
     genres = list_genres()
-    form_legend = "Add Band Profile"
+    form_legend = "Add Band"
     return render_template("band_create_update_form.html", form=form, genrelist=genres, form_legend = form_legend)
 
 

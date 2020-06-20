@@ -1,6 +1,6 @@
 from flask import jsonify, Blueprint, request, render_template
 
-from actx.models.entities import Band, bands, tours, Towns
+from actx.models.entities import Band, Towns
 
 public = Blueprint('public', __name__) # import_name , usually the current module
 

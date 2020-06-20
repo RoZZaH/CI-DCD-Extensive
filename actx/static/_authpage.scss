@@ -185,6 +185,33 @@ label.form-check  {
 }
 
 
+.numbers {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.numbers label,
+.numbers input {
+   font-size: 1em;
+   width: auto;
+   margin-right: 0.5rem;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    width: auto;
+}
+
+.numbers label {
+    justify-self: flex-start;
+}
+
+input.number-field {
+    margin-left: auto;
+    justify-self: flex-end;
+}
+
+
 
 
 span.forgot-password {

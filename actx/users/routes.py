@@ -6,10 +6,8 @@ from flask import (Blueprint, flash, current_app, jsonify,
     redirect, render_template, request, Response,
     url_for)
 from flask_bcrypt import generate_password_hash, check_password_hash
-from actx.models.entities import Address, User, Towns, Organisation, Band, Venue, Tour, TourDate
-from actx.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm, 
-                                CreateOrganisationForm, OrganisationDetailsForm, AddressForm, 
-                                CreateVenueForm)
+from actx.models.entities import User, Towns, Band #Venue, Tour, TourDate
+from actx.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm)
 from flask_login import current_user, login_required, login_user, logout_user
 from actx import pictures_folder, profile_pics
 

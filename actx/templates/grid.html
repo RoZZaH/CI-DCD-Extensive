@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACTX Grid</title>
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+
+        <!-- link to google fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+
+    {% assets "home_css" %}
+      <link rel="stylesheet" href="{{ ASSET_URL }}" >
+    {% endassets %}
+</head>
+<body>
+    
+</body>
+</html>
+   <header class="main-grid">
+   <nav class="main-menu">
+    <div class="logo">
+     <a href="#">ACT<span>&times;</span></a>
+    </div>
+    <div class="navigation">
+     <ul class="primary-nav">
+       <li class="main-menu__item"><a href="#">Our clients</a></li>
+       <li class="main-menu__item"><a href="#" class="current">Products</a></li>
+       <li class="main-menu__item"><a href="#">Contact</a></li>
+     </ul>
+     <!-- <a mobile menu toggle -->
+     <ul class="secondary-nav">
+        <li class=""><a href="#">Login</a></li>
+        <li class=""><a href="#">Register</a></li>
+     </ul>
+     </div>
+   </nav>
+  </header>
+  
+   <main class="main-grid">
+   <div class="content-area bordered">
+     <h2>Welcome!</h2>
+ 
+     <p>
+       Content {{ content }}
+     </p>
+    </div>
+            <div class="sidebar">
+            <p>sidebar</p>
+        </div>
+   </main>
+
+
+   <footer class="main-grid footer">
+    <div class="footer-main bordered">
+     <p>
+       &copy; 2018 DemoSite. White&amp;Sons LLC. All rights (perhaps) reserved.
+     </p>
+    </div>
+   </footer>
+ </div>
+</body>
+</html>

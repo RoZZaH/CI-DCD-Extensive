@@ -5,7 +5,7 @@ from flask_login import current_user
 from actx.models.entities import User, Towns
 from wtforms import (BooleanField, DateField, Form, FormField, FieldList, HiddenField, 
                     #IntegerField,
-                      PasswordField, SelectField, StringField, SubmitField, TextAreaField,)
+                      PasswordField, RadioField, SelectField, StringField, SubmitField, TextAreaField,)
 
 from wtforms.validators import DataRequired, Optional, Length, EqualTo, Email, URL, ValidationError
 
@@ -58,9 +58,41 @@ class BandMemberFormlet(Form):
     musician = StringField("Musician's Name")
 
 
+class PhoneFormlet(Form):
+    mobile = RadioField("Mobile Y/N", 
+                        choices=[("True","mobile"),("False","landline")],
+                        render_kw={},
+                        default="True")
+    number = StringField("Number",
+                        render_kw={"placeholder":"+353", "class":"number-field"},
+                        validators=[Length(max=30)])
+
+
+class EmailFormlet(Form):
+    email_title = StringField("Email Title",
+                            render_kw={"placeholder": "Enquiries" },
+                            validators=[DataRequired()])
+    email_address = StringField("Email Address",
+                            render_kw={"placeholder": "Enquiries" },
+                            validators=[DataRequired(), Email()])
+
+
+class ContactFormlet(Form):
+    contact_name = StringField("Booking Contact",
+                            render_kw={"placeholder": "Band Booking Contact's Name" })
+    contact_title = StringField("Booking Contact Title",
+                            render_kw={"placeholder": "Title e.g. Band Leader or Band Manager" })
+    contact_generic_title = StringField("Generic Contact Name",
+                            render_kw={"placeholder": "e.g. Enquiries or Bookings" })
+    contact_emails = FieldList(FormField(EmailFormlet), min_entries=1)
+    contact_numbers = FieldList(FormField(PhoneFormlet), min_entries=1)
+
+
+# class LinksFormelet(Form)
+
 class CreateUpdateBandForm(FlaskForm):
-    org_type = HiddenField()
-    band_name = StringField("Band Name",
+   # org_type = HiddenField()
+    band_name = StringField("Band Name", #FORMAT The
                             render_kw={"placeholder": "Org Name / Band / Venue"},
                             validators=[DataRequired()])
     description = StringField("Description",
@@ -69,21 +101,48 @@ class CreateUpdateBandForm(FlaskForm):
     strapline = StringField("Band Motto / Strapline",
                             render_kw={"id": "testLower"})
     profile = TextAreaField("Profile",
-                            render_kw={"placeholder": "Brief Bio/History Band Origins and Direction"},
+                            render_kw={"placeholder": "Brief Bio/History, band origins and direction"},
                             validators=[DataRequired()])
     genres = StringField("Musical Genres", 
                             render_kw={"id": "testInput",
-                                       "style":"text-transform: lowercase;"
+                                       "style":"text-transform: lowercase;",
                                        })
-    picture = FileField("Update Band Picture",
-                            validators=[FileAllowed(["jpg", "jpeg", "png"])])
-    band_members = FieldList(FormField(BandMemberFormlet), min_entries=1)
     hometown = FormField(HomeTownForm)
+    band_members = FieldList(FormField(BandMemberFormlet), min_entries=1)
     created_by = HiddenField()
-#    contacts = FieldList(FormField(ContactForm), min_entries=1, max_entries=8)
-#    links = FieldList(FormField())
-#    media_assets = FieldList(FormField())
+    contact_details = FormField(ContactFormlet)
+    enquiries_url = StringField("Online Enquiries Link",
+                            render_kw={"placeholder": "Org Name / Band / Venue"},
+                            validators=[Optional(), URL()])
+    # picture = FileField("Update Band Picture",
+    #                         validators=[FileAllowed(["jpg", "jpeg", "png"])])
+    #    links = FieldList(FormField())
+    #    media_assets = FieldList(FormField())
+    # tours
     submit = SubmitField("Save")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class TourDateFormlet(Form):

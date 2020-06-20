@@ -8,7 +8,6 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">{{ form_legend }}</legend>
             <img class="band-img" src="{{ image_file }}">
-            {{ form.org_type(value="band") }}
             {{ form.band_name.label(class="float-right") }}
                 {% if form.band_name.errors %}
                     {{ form.band_name(class="is-invalid") }}
@@ -42,7 +41,7 @@
                 {% else %}
                     {{ form.strapline }}
                 {% endif %}
-            {{ form.picture.label }}
+   {#          {{ form.picture.label }}
                 {% if form.picture.errors %}
                     {{ form.picture }}
                     <div class="invalid-file">
@@ -52,7 +51,7 @@
                     </div>
                 {% else %}
                     {{ form.picture }}
-                {% endif %}
+                {% endif %} #}
             {{ form.genres.label(class="push-down") }}
                 {% if form.genres.errors %}
                     {{ form.genres(class="is-invalid") }}
@@ -83,7 +82,6 @@
                 {% endif %}
 
             <fieldset data-inx="member">
-            <!-- /subform -->
             <div id="subforms-container-member">
                 {# {% for subform in form.laps %}  #}
                 {% for subform in form.band_members %}
@@ -100,7 +98,93 @@
                  {% endfor %}
             </div>
             <button type="button" class="add btn-subform" href="#">Add Band Member</button>
+            <!-- /subform -->
             </fieldset>
+            {{ form.contact_details.contact_name.label }}
+                {% if form.contact_details.contact_name.errors %}
+                    {{ form.contact_details.contact_name(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.contact_details.contact_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.contact_details.contact_name }}
+                  {% endif %}
+            {{ form.contact_details.contact_title.label }}
+                {% if form.contact_details.contact_title.errors %}
+                    {{ form.contact_details.contact_title(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.contact_details.contact_title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.contact_details.contact_title }}
+                  {% endif %}
+            {{ form.contact_details.contact_generic_title.label }}
+                {% if form.contact_details.contact_generic_title.errors %}
+                    {{ form.contact_details.contact_generic_title(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.contact_details.contact_generic_title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.contact_details.contact_generic_title }}
+                  {% endif %}
+
+            <fieldset data-inx="emails">
+                <div id="subforms-container-email">
+                    {% for subform in form.contact_details.contact_emails %}
+                        <div id="email-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
+                            {{ subform.email_title.label(class="instrument-label") }}
+                            {{ subform.email_title(class="instrument-input") }}
+
+                            {{ subform.email_address.label(class="band-member-label") }}
+                            {{ subform.email_address(class="band-member-input") }}
+
+                            <a class="remove btn-subform" href="#">Remove</a>
+
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="add btn-subform" href="#">Add Contact Email</button>
+                <!-- /subform -->
+            </fieldset>
+
+            <fieldset data-inx="numbers">
+                <div id="subforms-container-number">
+                    {% for subform in form.contact_details.contact_numbers %}
+                        <div id="number-{{ loop.index0 }}-form" class="subform numbers" data-index="{{ loop.index0 }}">
+                            {% for subfield in subform.mobile %}
+                                {{ subfield.label(class="number-label") }} {{ subfield(class="number-radio") }}
+                            {% endfor %}
+                            {# {{ subform.number.label() }} #}
+                            {{ subform.number() }}
+
+                            <a class="remove btn-subform" href="#">Remove</a>
+
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="add btn-subform" href="#">Add Contact Number</button>
+                <!-- /subform -->
+            </fieldset>
+
+            {{ form.enquiries_url.label }}
+                {% if form.enquiries_url.errors %}
+                    {{ form.enquiries_url(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.enquiries_url.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.enquiries_url }}
+                  {% endif %}
+
+        <!-- /form -->
         </fieldset>
         {{ form.submit(class="btn btn-outline-info") }}
     </form>
