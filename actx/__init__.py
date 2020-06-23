@@ -12,8 +12,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "73a2e9f7248e6fc95140bbea471c49d6"
 
 app.config["MONGODB_SETTINGS"] = {
-    "db" : "actx",
-    "host": "mongodb://localhost/actx"
+    "db" : "bandx",
+    "host": "mongodb://localhost/bandx"
 }
 # app.config.from_pyfile('the-config.cfg')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0

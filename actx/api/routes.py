@@ -16,7 +16,7 @@ def list_genres():
     return ",".join(genres)
 
 
-@api.route('/town/<county>')
+@api.route('/towns/<county>')
 def get_towns(county):
     # [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
     towns = Towns.objects(county=county)

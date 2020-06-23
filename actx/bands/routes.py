@@ -6,7 +6,7 @@ from flask import (Blueprint, flash, current_app, jsonify,
     url_for)
 from flask_login import current_user, login_required, login_user, logout_user
 
-from actx.models.entities import Band, Towns, User, Tour, BandMember
+from actx.models.entities import Band, Towns, User, Tour, Phone, Contact, Links, Email, BandMember
 from actx.bands.forms import CreateUpdateBandForm, TourDetailsForm
 from actx import pictures_folder, profile_pics
 from actx.api.routes import list_genres
@@ -37,52 +37,113 @@ def bands_list(band_name=None):
 @bands.route("/bands/manage/new", methods=("GET", "POST"))
 def add_band():
     form = CreateUpdateBandForm()
+    print(request.form)
     if form.validate_on_submit():
-        return request.form
+        # return request.form #form.contact_details.contact_name.data
         # if form.picture.data:
         #     output_size = (400,400)
         #     picture_file = save_picture(form.picture.data, output_size)
 # {
-#   "band_members-0-instruments": "vocals", 
+
+#   "members-0-instruments": "vocals", 
 #   "band_members-0-musician": "Ross", 
-#   "band_name": "Test Band", 
+#   "members-1-band_member": "Ray McClure", 
+#   "members-1-instruments": "guitar", 
+
+
 #   "contact_details-contact_emails-0-email_address": "ross_geoghegan@hotmail.com", 
 #   "contact_details-contact_emails-0-email_title": "Enquiries", 
-#   "contact_details-contact_generic_title": "", 
-#   "contact_details-contact_name": "", 
 #   "contact_details-contact_numbers-0-mobile": "True", 
 #   "contact_details-contact_numbers-0-number": "+44470988363", 
-#   "contact_details-contact_title": "", 
-#   "created_by": "", 
-#   "csrf_token": "ImRiNWNkZmE5YjBiNGQxMjg2MGZmNjJlNWJlZTBhMmIxYjY1NWUzZmUi.Xu4tYQ._GQ1AsCEO1_HDWQ58G6dR-FZ4BY", 
-#   "description": "Test Description", 
+
+
+
 #   "enquiries_url": "https://www.live.ie", 
-#   "genres": "", 
-#   "hometown-origin_county": "Wexford", 
-#   "hometown-origin_town": "Adamstown", 
-#   "members-1-band_member": "Ray McClure", 
-#   "members-1-instrument": "guitar", 
-#   "profile": "History", 
-#   "strapline": "Motto", 
+
+
+
+
+
 #   "submit": "Save"
 # }
         user = User.objects(id=current_user.id).first()
+        
+
+        # new_phone = Phone()
+        # new_phone.mobile = False
+        # new_phone.numbero="+353872243324"
+
+        # attrs = vars(new_phone)
+        # print(', '.join("%s: %s" % item for item in attrs.items()))
+
+        contact = Contact()
+
+        #contact.contact_numbers.append(new_phone)
+        contact.contact_name = form.contact_details.contact_name.data
+        contact.contact_title = form.contact_details.contact_title.data
+        contact.contact_generic_title = form.contact_details.contact_generic_title.data
+        for phone in form.contact_details.contact_numbers.data:
+            new_phone = Phone(**phone)
+            contact.contact_numbers.append(new_phone)
+        #print(', ').join("%s: %s" % item for item in contact.contact_numbers.items)
+        # for email in form.contact_details.contact_emails:
+
+        for email in form.contact_details.contact_emails.data:
+            new_email = Email(**email)
+            contact.contact_emails.append(new_email)
+#                 0-email_address": "rossg@live.ie", 
+#   "contact_details-contact_emails-0-email_title": "Enquiries", 
+ 
+            
+
+        weblinks = Links()
+        weblinks.enquiries = form.enquiries_url.data
         band = Band(
-                band_name=form.band_name.data,
+                band_name= form.band_name.data,
                 description = form.description.data,
+                created_by = user,
                 genres = extract_tags(form.genres.data),
                 hometown={"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data},
                 profile = form.profile.data,
                 strapline = form.strapline.data,
-                band_members = form.band_members.data,
-                media_assets = form.media_assets.data,
-                contact_details = form.contact_details.data,
-                links = form.links.data
+                contact_details = contact,
+                links = weblinks
+                #band_members = form.band_members.data,
+                #media_assets = form.media_assets.data,
+                # potential for loop
+            )
+        
+        print(vars(new_phone))
+        
+        for member in form.members.data:
+            new_member = BandMember(**member)
+            band.band_members.append(new_member)
 
-                )
+        band.save()
+     
+        #band.contact_details.update(set__comment__S__name="John)
+        #contact.contact_emails = []
+        #contact.contact_numbers = []
+        
+        #band.contact_details.append(contact)
+        # band.save()
+        # links = Links(enquiries = form.enquiries_url.data)
+        # band.links.append(links)
+
+
+    #     band.band_members.clear()
+        # return request.form
+        # for member in form.members.data:
+        #     new_member = BandMember(
+        #         musician = member.pop("musician"),
+        #         instruments = extract_tags(member.pop("instruments"))
+        #     )
+        #     band.band_members.append(new_member)
+
+
         # if form.picture.data:
         #     band.image_file = picture_file
-        band.save()
+        # band.save()
         return redirect(url_for('public.show_tourdates'))
     form.hometown.origin_town.choices = [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
     genres = list_genres()

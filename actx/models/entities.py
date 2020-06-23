@@ -14,30 +14,26 @@ class Towns(db.Document):  #Venues ? Diaspora
     def __repr__(self):
         return f"Town('{self.town}', '{self.county}')"
 
-# org, generic contact - with all info (links phones etc)
-# contcat management system
-# role_types = ["org_creator", "org_owner", "org_user" ]
-# org_types = ["organisation", "band", "venue"] 
-
-class Phone(db.EmbeddedDocument):
-    mobile: db.BooleanField(default=True)
-    number: db.StringField(max_length=30)
-
 
 class Email(db.EmbeddedDocument):
-    email_title: db.StringField(max_length=30)
-    email_address: db.EmailField(max_length=120) 
+    email_title = db.StringField(max_length=30) #!!! = not :
+    email_address = db.EmailField(max_length=120) 
+
+
+class Phone(db.EmbeddedDocument):
+    mobile = db.BooleanField(default=True)
+    number = db.StringField(max_length=30)    
 
 
 class Contact(db.EmbeddedDocument):
-    c_id = db.StringField(default=ObjectId)
-#   refname = db.StringField(max_length=50, default="Booking Contact")
+       # c_id = db.StringField(default=ObjectId)
     contact_name = db.StringField(max_length=120)
     contact_title = db.StringField(max_length=50)
     contact_generic_title = db.StringField(max_length=50, default="Enquiries")
     contact_emails = db.EmbeddedDocumentListField(Email)
     contact_numbers = db.EmbeddedDocumentListField(Phone)
-    
+#   refname = db.StringField(max_length=50, default="Booking Contact")
+
 
 class Links(db.EmbeddedDocument):
     refname = db.StringField(max_length=50, default="Weblinks")
@@ -60,15 +56,14 @@ class BandMember(db.EmbeddedDocument):
 class Band(db.DynamicDocument):
     created_by = db.ReferenceField('User') 
     date_created = db.DateTimeField(required=True, default=datetime.utcnow)
-    
     band_name = db.StringField(max_length=120, required=True) #Unique=True
     profile = db.StringField()
     description = db.StringField(max_length=120)
     genres = db.ListField(db.StringField(default='unclassified'))
     strapline = db.StringField(max_length=120)
     hometown = db.MapField(db.StringField())
-    contact_details = db.EmbeddedDocumentListField(Contact) #copy oCreator role
-    links = db.EmbeddedDocumentField(Links) #copy oCreator role
+    contact_details = db.EmbeddedDocumentField(Contact, default=Contact) #copy oCreator role
+    links = db.EmbeddedDocumentField(Links,  default=Links) #copy oCreator role
     media_assets = db.EmbeddedDocumentField(Assets) #copy oCreator role
     tours = db.ListField(db.ReferenceField('Tour'))
     band_members = db.EmbeddedDocumentListField(BandMember)

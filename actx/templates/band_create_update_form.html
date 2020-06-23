@@ -81,24 +81,23 @@
                     {{ form.profile }}
                 {% endif %}
 
-            <fieldset data-inx="member">
-            <div id="subforms-container-member">
-                {# {% for subform in form.laps %}  #}
-                {% for subform in form.band_members %}
-                    <div id="member-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
-                        {{ subform.instruments.label(class="instrument-label") }}
-                        {{ subform.instruments(class="instrument-input") }}
+            <fieldset data-inx="members">
+                <div id="subforms-container-member">
+                    {% for subform in form.members %}
+                        <div id="member-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
+                            {{ subform.instruments.label(class="instrument-label") }}
+                            {{ subform.instruments(class="instrument-input") }}
 
-                        {{ subform.musician.label(class="band-member-label") }}
-                        {{ subform.musician(class="band-member-input") }}
+                            {{ subform.musician.label(class="band-member-label") }}
+                            {{ subform.musician(class="band-member-input") }}
 
-                        <a class="remove btn-subform" href="#">Remove</a>
+                            <a class="remove btn-subform" href="#">Remove</a>
 
-                    </div>
-                 {% endfor %}
-            </div>
-            <button type="button" class="add btn-subform" href="#">Add Band Member</button>
-            <!-- /subform -->
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="add btn-subform" href="#">Add Band Member</button>
+                <!-- /subform -->
             </fieldset>
             {{ form.contact_details.contact_name.label }}
                 {% if form.contact_details.contact_name.errors %}
@@ -207,7 +206,7 @@
     .then(data => document.querySelector("select.origin-town").innerHTML = data)
     .then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"))
     
-    ANTRIM_TOWNS = loadTowns("Antrim")
+    //ANTRIM_TOWNS = loadTowns("Antrim")
     </script>
 
 {% endblock content %}

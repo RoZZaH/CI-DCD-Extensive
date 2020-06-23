@@ -108,7 +108,7 @@ class CreateUpdateBandForm(FlaskForm):
                                        "style":"text-transform: lowercase;",
                                        })
     hometown = FormField(HomeTownForm)
-    band_members = FieldList(FormField(BandMemberFormlet), min_entries=1)
+    members = FieldList(FormField(BandMemberFormlet), min_entries=1)
     created_by = HiddenField()
     contact_details = FormField(ContactFormlet)
     enquiries_url = StringField("Online Enquiries Link",
