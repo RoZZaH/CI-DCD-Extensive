@@ -133,25 +133,31 @@
                     {{ form.contact_details.contact_generic_title }}
                   {% endif %}
 
-            <fieldset data-inx="emails">
+                                           <fieldset data-inx="emails">
                 <div id="subforms-container-email">
-                    {% for subform in form.contact_details.contact_emails %}
+                        {% for subform in band.contact_details.contact_emails or form.contact_details.contact_emails %}
                         <div id="email-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
-                            {{ subform.email_title.label(class="instrument-label") }}
-                            {{ subform.email_title(class="instrument-input") }}
-
-                            {{ subform.email_address.label(class="band-member-label") }}
-                            {{ subform.email_address(class="band-member-input") }}
-
+                            <label class="instrument-label" for="contact_details-contact_emails-{{ loop.index0 }}-email_title">Email Title</label>
+                            <input class="instrument-input" name="contact_details-contact_emails-{{ loop.index0 }}-email_title" value="{{ band.contact_details.contact_emails[loop.index0]['email_title'] if band else '' }}" />
+                            <label class="band-member-label" for="contact_details-contact_emails-{{ loop.index0 }}-email_address">Email Address</label>
+                            {% if form.contact_details.contact_emails[loop.index0].email_address.errors %}
+                            <input class="band-member-input" name="contact_details-contact_emails-{{ loop.index0 }}-email_address" value="{{ band.contact_details.contact_emails[loop.index0]['email_address'] if band else '' }}" /> 
+                                <div class="invalid-feedback">
+                                    {% for error in form.contact_details.contact_emails[loop.index0].email_address.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                            <input class="band-member-input" name="contact_details-contact_emails-{{ loop.index0 }}-email_address" value="{{ band.contact_details.contact_emails[loop.index0]['email_address'] if band else '' }}" /> 
+                            {% endif %}
                             <a class="remove btn-subform" href="#">Remove</a>
-
-                        </div>
-                    {% endfor %}
+                       </div>
+                        {% endfor %}
                 </div>
                 <button type="button" class="add btn-subform" href="#">Add Contact Email</button>
                 <!-- /subform -->
             </fieldset>
-
+            
             <fieldset data-inx="numbers">
                 <div id="subforms-container-number">
                     {% for subform in form.contact_details.contact_numbers %}

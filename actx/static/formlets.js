@@ -1,12 +1,4 @@
-let today = new Date();
-let dd = String(today.getDate()).padStart(2, '0');
-let mm = String(today.getMonth() + 1).padStart(2, '0');
-let yyyy = today.getFullYear();
-// datefield parsed as yyyy-mm-dd
-today = `${yyyy}-${mm}-${dd}`;
-
-
-
+/* based on https://www.rmedgar.com/blog/dynamic-fields-flask-wtf */
 /**
  * Remove a form.
  */
@@ -79,7 +71,6 @@ function addForm() {
 }
 
 /**
- * ref https://www.rmedgar.com/blog/dynamic-fields-flask-wtf
  * adjustIndices - not needed for Mongo 
  *
 function adjustIndices(removedIndex) {
@@ -109,10 +100,21 @@ function adjustIndices(removedIndex) {
 }
 */
 
+/* 
+// for datefield for 'tour-date' formlet on Doc loaded
+let today = new Date();
+let dd = String(today.getDate()).padStart(2, '0');
+let mm = String(today.getMonth() + 1).padStart(2, '0');
+let yyyy = today.getFullYear();
+// datefield parsed as yyyy-mm-dd
+today = `${yyyy}-${mm}-${dd}`;
+*/
+
+
 document.addEventListener("DOMContentLoaded", function(){
     [ ...document.querySelectorAll(".add") ].forEach( el => el.addEventListener("click", addForm));
     [ ...document.querySelectorAll(".remove") ].forEach( el => el.addEventListener("click", removeForm));
     /* find wtforms datefield */
-    $('#subforms-container-date').find('input[type=date]').attr("value", today);
+  //  $('#subforms-container-date').find('input[type=date]').attr("value", today);
 
 });

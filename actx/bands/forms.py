@@ -71,10 +71,10 @@ class PhoneFormlet(Form):
 class EmailFormlet(Form):
     email_title = StringField("Email Title",
                             render_kw={"placeholder": "Enquiries" },
-                            validators=[DataRequired()])
+                            validators=[Optional()])
     email_address = StringField("Email Address",
                             render_kw={"placeholder": "Enquiries" },
-                            validators=[DataRequired(), Email()])
+                            validators=[Optional(), Email()])
 
 
 class ContactFormlet(Form):
@@ -86,7 +86,7 @@ class ContactFormlet(Form):
                             render_kw={"placeholder": "e.g. Enquiries or Bookings" })
     contact_emails = FieldList(FormField(EmailFormlet), min_entries=1)
     contact_numbers = FieldList(FormField(PhoneFormlet), min_entries=1)
-
+    
 
 # class LinksFormelet(Form)
 

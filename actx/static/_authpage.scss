@@ -168,6 +168,11 @@ input.band-member-input {
     grid-column: 2 / -2;
 }
 
+.invalid-feedback {
+    grid-column: 1/-1;
+}
+
+
 
 input[type=checkbox].form-check  {
     grid-column: 2;
