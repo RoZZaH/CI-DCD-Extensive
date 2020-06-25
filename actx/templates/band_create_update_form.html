@@ -81,18 +81,29 @@
                     {{ form.profile }}
                 {% endif %}
 
-            <fieldset data-inx="members">
+             <fieldset data-formlet="member">
                 <div id="subforms-container-member">
-                    {% for subform in form.members %}
+                        {% for subform in band.members or form.members %}
                         <div id="member-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
-                            {{ subform.instruments.label(class="instrument-label") }}
+                            <div class="invalid-feedback">
+                            {{ band.band_members[loop.index0]['musician'] if band else ''  }}
+                            </div>
+
+
+                            <label class="instrument-label" for="members-{{ loop.index0 }}-instruments">Instrument(s)</label>
+                            <input class="instrument-input" id="members-{{ loop.index0 }}-instruments" name="members-{{ loop.index0 }}-instruments" type="text" value="{{ band.band_members[loop.index0]['instruments']|join(', ') if band else ''  }}"> {# placeholder="use commas, between, instruments" #}
+
+                            <label class="band-member-label" for="members-{{ loop.index0 }}-musician">Musician&#39;s Name</label>
+                            <input class="band-member-input" id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="{{ band.band_members[loop.index0]['musician'] if band else ''  }}">
+
+
+                       {#     {{ subform.instruments.label(class="instrument-label") }}
                             {{ subform.instruments(class="instrument-input") }}
 
                             {{ subform.musician.label(class="band-member-label") }}
-                            {{ subform.musician(class="band-member-input") }}
+                            {{ subform.musician(class="band-member-input") }} #}
 
-                            <a class="remove btn-subform" href="#">Remove</a>
-
+                            <a class="remove btn-subform" href="#">Remove</a> 
                         </div>
                     {% endfor %}
                 </div>
@@ -133,16 +144,18 @@
                     {{ form.contact_details.contact_generic_title }}
                   {% endif %}
 
-                                           <fieldset data-inx="emails">
+            <fieldset data-formlet="email">
                 <div id="subforms-container-email">
                         {% for subform in band.contact_details.contact_emails or form.contact_details.contact_emails %}
                         <div id="email-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
                             <label class="instrument-label" for="contact_details-contact_emails-{{ loop.index0 }}-email_title">Email Title</label>
                             <input class="instrument-input" name="contact_details-contact_emails-{{ loop.index0 }}-email_title" value="{{ band.contact_details.contact_emails[loop.index0]['email_title'] if band else '' }}" />
                             <label class="band-member-label" for="contact_details-contact_emails-{{ loop.index0 }}-email_address">Email Address</label>
-                            {% if form.contact_details.contact_emails[loop.index0].email_address.errors %}
-                            <input class="band-member-input" name="contact_details-contact_emails-{{ loop.index0 }}-email_address" value="{{ band.contact_details.contact_emails[loop.index0]['email_address'] if band else '' }}" /> 
-                                <div class="invalid-feedback">
+                            {# {% if form.contact_details.contact_emails[loop.index0].email_address.errors %} #}
+                            {% if form.errors and form.contact_details.contact_emails[loop.index0].email_address.errors %}
+                            {% set idx = loop.index0 %}
+                            <input class="band-member-input" style="color:firebrick" name="contact_details-contact_emails-{{ loop.index0 }}-email_address" value="{{ request.form['contact_details-contact_emails-'+idx|string+'-email_address'] if band else '' }}" /> 
+                                  <div class="invalid-feedback">
                                     {% for error in form.contact_details.contact_emails[loop.index0].email_address.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
@@ -150,7 +163,9 @@
                             {% else %}
                             <input class="band-member-input" name="contact_details-contact_emails-{{ loop.index0 }}-email_address" value="{{ band.contact_details.contact_emails[loop.index0]['email_address'] if band else '' }}" /> 
                             {% endif %}
+                            {% if idx %}
                             <a class="remove btn-subform" href="#">Remove</a>
+                            {% endif %}
                        </div>
                         {% endfor %}
                 </div>
@@ -158,15 +173,16 @@
                 <!-- /subform -->
             </fieldset>
             
-            <fieldset data-inx="numbers">
+            <fieldset data-formlet="number">
                 <div id="subforms-container-number">
-                    {% for subform in form.contact_details.contact_numbers %}
+                    {% for subform in band.contact_details.contact_numbers or form.contact_details.contact_numbers %}
                         <div id="number-{{ loop.index0 }}-form" class="subform numbers" data-index="{{ loop.index0 }}">
-                            {% for subfield in subform.mobile %}
+                        {{ band.contact_details.contact_numbers[loop.index0]['number'] if band else '' }}
+                           {#} {% for subfield in subform.mobile %}
                                 {{ subfield.label(class="number-label") }} {{ subfield(class="number-radio") }}
                             {% endfor %}
-                            {# {{ subform.number.label() }} #}
-                            {{ subform.number() }}
+                            {# {{ subform.number.label() }}
+                            {{ subform.number() }} #}
 
                             <a class="remove btn-subform" href="#">Remove</a>
 
@@ -176,6 +192,9 @@
                 <button type="button" class="add btn-subform" href="#">Add Contact Number</button>
                 <!-- /subform -->
             </fieldset>
+
+
+
 
             {{ form.enquiries_url.label }}
                 {% if form.enquiries_url.errors %}

@@ -79,7 +79,7 @@ def add_band():
 
 @bands.route("/bands/manage/<band_name>/edit", methods=('GET', 'POST'))
 # @login_required
-def update_post(band_name):
+def update_band_profile(band_name):
     # flask-login uses a proxy that doesn't play nice with mongoengine
     # so current_user must be cast as user 
     user = User.objects(id=current_user.id).first()
@@ -104,22 +104,10 @@ def update_post(band_name):
         form.contact_details.contact_name.data = band.contact_details.contact_name
         form.contact_details.contact_title.data = band.contact_details.contact_title
         form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
-        #form.contact_details.contact_emails = band.contact_details.contact_emails
+        #form.contact_details.contact_emails = band.contact_details.contact_emails #sent as band object
+        form.genres.data = ",".join(map(str,band.genres))
+        form.enquiries_url.data = band.links.enquiries
 
-        
-        #    for email in form.contact_details.contact_emails.data:
-        #         new_email = Email(**email) #contact.contact_emails.append(Email(**email)
-        #     contact.contact_emails.append(new_email)
-
-        #created_by = user,
-        #genres = extract_tags(form.genres.data),
-        # form.hometown.origin_county.data = band.hometown["county"]
-        # form.hometown.origin_town.data = band.hometown["town"]
-        #contact_details = contact,
-        #links = weblinks
-
-    #return jsonify(band)
-   # form.hometown.origin_town.choices = [(otown.town, otown.town) for otown in Towns.objects(county=band.hometown["county"])]
     selected_county = band.hometown["county"] if band.hometown["county"] is not None else "Antrim"
     selected_town = band.hometown["town"] if band.hometown["town"] is not None else "none"
     # image_file = url_for('static_media', filename="band_profile_pics/" + band.image_file)

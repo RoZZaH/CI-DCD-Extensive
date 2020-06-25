@@ -14,6 +14,7 @@
        {{ tourdate.profile }}</p>
     <p class="card-show-time"><span>15</span> April<br>2020</p>
     <a href="#" class="card-btn"> {{ tourdate.hometown.county }}  Buy Tickets</a>
+    <a href="{{url_for('bands.update_band_profile', band_name=tourdate.band_name)}}">Manage Band</a>
 </div>
 {% endfor %}
 {% endblock content %}

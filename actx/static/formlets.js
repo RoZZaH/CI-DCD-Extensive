@@ -5,7 +5,8 @@
 function removeForm() {
     let $removedForm = $(this).closest('.subform');
     let removedIndex = parseInt($removedForm.data('index'));
-    $removedForm.remove();
+    removedIndex == 0 ?  true: $removedForm.remove()
+    // error message can't remove first field
     /**  Update indices - Not needed for Mongo
      * adjustIndices(removedIndex); */
 }
@@ -15,14 +16,15 @@ function removeForm() {
  */
 function addForm() {
     let parent = this.parentNode
+    console.log(parent.dataset.formlet)
     let $lastForm = parent.querySelector('.subform:last-child')
     let $lastIndex = parseInt($lastForm.dataset.index)
     let newIndex =  $lastIndex+1
     let $newForm = ''
     
-    switch(parent.dataset.inx) {
+    switch(parent.dataset.formlet) {
 
-    case "numbers" :
+    case "number" :
     $newForm = ` 
     <div id="number-${newIndex}-form" class="subform numbers" data-index="${newIndex}">
         <label class="number-label" for="contact_details-contact_numbers-${newIndex}-mobile-0">mobile</label> 
@@ -37,7 +39,7 @@ function addForm() {
     $('#subforms-container-number').append($newForm);
     break
 
-    case "members" :
+    case "member" :
     $newForm = ` 
     <div id="member-${newIndex}-form" class="subform" data-index="${newIndex}">
         <label for="members-${newIndex}-instruments" class="instrument-label">Instrument(s)</label>
@@ -51,7 +53,7 @@ function addForm() {
     $('#subforms-container-member').append($newForm);
     break
 
-    case "emails" :
+    case "email" :
     $newForm = `
     <div id="email-${newIndex}-form" class="subform" data-index="${newIndex}">
         <label class="instrument-label" for="contact_details-contact_emails-${newIndex}-email_title">Email Title</label>
