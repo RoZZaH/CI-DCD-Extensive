@@ -31,7 +31,8 @@ function addForm() {
             <input checked class="number-radio" id="contact_details-contact_numbers-${newIndex}-mobile-0" name="contact_details-contact_numbers-${newIndex}-mobile" type="radio" value="True">
         <label class="number-label" for="contact_details-contact_numbers-${newIndex}-mobile-1">landline</label> 
             <input class="number-radio" id="contact_details-contact_numbers-${newIndex}-mobile-1" name="contact_details-contact_numbers-${newIndex}-mobile" type="radio" value="False">
-        <input class="number-field" id="contact_details-contact_numbers-${newIndex}-number" name="contact_details-contact_numbers-${newIndex}-number" placeholder="+353" type="text" value="">
+        <label class="number-field" for="contact_details-contact_numbers-1-number">Number</label>
+            <input class="number-field" id="contact_details-contact_numbers-${newIndex}-number" name="contact_details-contact_numbers-${newIndex}-number" placeholder="+353" type="text" value="">
         
         <a class="remove btn-subform" href="#">Remove</a>
     </div>
@@ -69,7 +70,7 @@ function addForm() {
     }
 
     /* refresh 'remove' listeners */
-    [ ...document.querySelectorAll(".remove") ].forEach( el => el.addEventListener("click", removeForm))
+    [ ...document.querySelectorAll(".remove") ].forEach( el => el.addEventListener("click", removeForm, false))
 }
 
 /**

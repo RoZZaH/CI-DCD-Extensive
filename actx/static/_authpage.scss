@@ -137,30 +137,28 @@ input.band-member-input {
 }
 
 .add{
-    grid-column: 2;
-    font-size: 0.95rem;
-    width: 100%;
-    text-decoration: none;
-    background: $alert-success-bg;
-    border: none;
-    border-radius: 3px;
+    background: mediumseagreen;
 }
 
-.remove.btn-subform{
+.btn-subform{
     padding: .25em .5em;
     font-size: 0.95rem;
     display: block;
     grid-column: 2;
-    justify-self: end;
     width: auto;
-    text-decoration: none;
     color: white;
-    background: $alert-warning-txt;
+    text-decoration: none;
+    text-decoration: none;
     border-radius: 3px;
     margin-bottom: .5em;
+    border: none;
 }
 
-
+.remove {
+    justify-self: end; 
+    grid-column: 2;
+    background: tomato;
+}
 
 
 
@@ -211,9 +209,15 @@ input[type=radio] {
     justify-self: flex-start;
 }
 
-input.number-field {
-    margin-left: auto;
-    justify-self: flex-end;
+
+.numbers:first-of-type > label.number-field {
+    // color: orange;
+    margin-left: 6.25rem;
+}
+
+
+label.number-field {
+   margin-left: auto;
 }
 
 

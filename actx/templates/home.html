@@ -3,12 +3,11 @@
 {% for tourdate in tourdates %}
 <div class="card">
     {% if tourdate.image_file %}
-        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/'+tourdate.image_file ) }}" > {# filename=tourdate.media.tour_media.pictures.square #}
+        <img class="card-img" src="{{ url_for('static_media', filename='band_profile_pics/'+tourdate.image_file ) }}" > {# filename=tourdate.media.tour_media.pictures.square #}
     {% else %}
-        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/defaultband.jpg') }}" >
+        <img class="card-img" src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}" >
     {% endif %}
-    {{ tourdate.cls }}
-    {{ tourdate._cls }}
+    {# {{ tourdate._cls }} org class #}
     <h2 class="card-title">{{ tourdate.band_name }}</h2>
     <p class="card-body">{{ tourdate.description }} | {{ tourdate.strapline }}<br>
        {{ tourdate.profile }}</p>
