@@ -18,6 +18,11 @@ flask-login = "*"
 flask-bcrypt = "*"
 pillow = "*"
 python-resize-image = "*"
+python-dotenv = "*"
+phonenumbers = "*"
+flask-breadcrumbs = "*"
+flask-menu = "*"
+flask-nav = "*"
 
 [requires]
 python_version = "3.8"
