@@ -1,0 +1,30 @@
+{# templates/show.html #}
+<html>
+    <head>
+        <title>Race details</title>
+    </head>
+    <body>
+        <a href="{{ url_for('bands.index') }}">Back to index</a>
+
+        {% if not race %}
+            <p>Could not find race details</p>
+        {% else %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Runner name</th>
+                        <th>Lap time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lap in race.laps %}
+                        <tr>
+                            <td>{{ lap.runner }}</td>
+                            <td>{{ lap.lap_time }}</td>
+                        </tr>
+                    {% endfor%}
+                </tbody>
+            </table>
+        {% endif %}
+    </body>
+</html>

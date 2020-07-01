@@ -23,6 +23,7 @@ phonenumbers = "*"
 flask-breadcrumbs = "*"
 flask-menu = "*"
 flask-nav = "*"
+dominate = "*"
 
 [requires]
 python_version = "3.8"

@@ -1,0 +1,69 @@
+<head>
+<link rel="stylesheet" href="{{ url_for('static_css', filename='libs/intlTelInput.css') }}">
+<style>
+.iti__flag {
+    background-image: url("{{ url_for('static_img', 
+                              filename='flags.png') }}");
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .iti__flag {background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/img/flags@2x.png");}
+}
+</style>
+</head>
+<body>
+
+<h1>Flask Phone Number Input Demo</h1>
+
+ <form method="POST" enctype="multipart/form-data" ><!-- allow file upload -->
+        {{ form.hidden_tag() }}
+
+    {{ form.phone.label }}
+    {{ form.phone(id="phone") }}
+
+
+
+     {{ form.submit(class="btn btn-outline-info") }}
+    </form>
+     {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+    {% if data is defined %}
+            <p>Received data: {{ data }}</p>
+        {% endif %}
+
+
+{# <input type="tel" id="phone"> #}
+
+<script src="{{ url_for('static_js', filename='libs/intlTelInput.min.js') }}"></script>
+{# <script>
+  var input = document.querySelector("#phone");
+  window.intlTelInput(input, {
+    // any initialisation options go here
+      // any initialisation options go here
+    initialCountry:"ie",
+    preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
+  });
+</script> #}
+<script>
+// individual ids 
+    var wtf_phone_field = document.getElementById('phone');
+    wtf_phone_field.style.position = 'absolute';
+    wtf_phone_field.style.top = '-9999px';
+    wtf_phone_field.style.left = '-9999px';
+    wtf_phone_field.parentElement.insertAdjacentHTML('beforeend', '<div><input type="tel" id="_phone"></div>');
+    var fancy_phone_field = document.getElementById('_phone');
+    var fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
+      initialCountry:"ie",
+      preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
+      separateDialCode: true,
+      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
+    });
+    fancy_phone_iti.setNumber(wtf_phone_field.value);
+    fancy_phone_field.addEventListener('blur', function() {
+        wtf_phone_field.value = fancy_phone_iti.getNumber();
+    });
+</script>
+
+
+</body>

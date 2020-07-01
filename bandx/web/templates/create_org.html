@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<div class="container">
+<div class="content-block" id="datab" data-genrelist="{{ genrelist | safe }}" >
+
+    <form method="POST"><!-- allow file upload -->
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Add New Organisation/Band</legend>
+            {{ form.org_type.label }}
+                {% if form.org_type.errors %}
+                    {{ form.org_type(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.org_type.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.org_type }}
+                {% endif %}
+            {{ form.org_name.label }}
+                {% if form.org_name.errors %}
+                    {{ form.org_name(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.org_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                {% else %}
+                    {{ form.org_name }}
+                {% endif %}
+
+        </fieldset>
+            {{ form.submit(class="btn btn-outline-info") }}
+    </form>
+</div>
+</div>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    {% assets "home_js" %}
+      <script src="{{ ASSET_URL }}" ></script>
+    {% endassets %}
+
+
+{% endblock content %}

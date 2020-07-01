@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="card-title">BAND NAME/Org Name</h2>
+<ul>
+{% for tour in tours %}
+    <li><a href="{{ url_for('bands.edit_tour', tour_id = tour.id) }}">{{ tour.tour_title }}</a></li>
+
+{% endfor %}
+</div>
+{% endblock content %}

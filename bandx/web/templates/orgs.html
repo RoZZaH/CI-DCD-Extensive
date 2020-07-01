@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+{% for org in orgs %}
+<div class="card">
+
+    <h2 class="card-title"><a href="{{ url_for('user.edit_org', org_name=org.org_title)}}">{{ org.org_title }}</a></h2>
+    <p class="card-body">{{ org.description }} | {{ org.profile }}<br>
+    {{org.id}}</p>
+</div>
+{% endfor %}
+{% endblock content %}
