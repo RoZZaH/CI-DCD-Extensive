@@ -65,8 +65,8 @@ class Band(db.DynamicDocument):
     contact_details = db.EmbeddedDocumentField(Contact, default=Contact) #copy oCreator role
     links = db.EmbeddedDocumentField(Links,  default=Links) #copy oCreator role
     media_assets = db.EmbeddedDocumentField(Assets) #copy oCreator role
-    tours = db.ListField(db.ReferenceField('Tour'))
     band_members = db.EmbeddedDocumentListField(BandMember)
+#    tours = db.ListField(db.ReferenceField('Tour'))
     # publish
     # meta = {
     #     "allow_inheritance": True

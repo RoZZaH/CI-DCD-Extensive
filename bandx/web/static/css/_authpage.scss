@@ -1,203 +1,145 @@
-
-h1 {
-    font-size: 1rem;
-}
-
-form {
-    grid-column: 1 / span 2;
-    display: grid;
-    grid-template-columns: 1em 16ch 1em 1fr 1em;
-    grid-gap: 0.55em 0;
+#datab {
+    display: contents;
     border: 1px solid grey;
     border-radius: 6px;
     font-size: 1.25rem;
     padding-bottom:  1.5em;
 }
 
-.band-img {
-    grid-column: 2 / span 1;
-    grid-row: span 6;
-    align-self: start;
-    width: 16ch;
-    height: 16ch;
-    border-radius: 5px;
-}
-
-.push-down {
-    margin-top: 1.25em;
-}
-
-.is-invalid {
-    border: 1px solid red;
-    font-size: 1.1rem;
-    padding: 0.2em;
-}
-
-.invalid-feedback {
-    margin: 0;
-    padding: 0;
-    grid-column: 4;
-    color: firebrick;
-    font-size: 1rem;
-    line-height: 1em;
-    position: relative;
-    top: -0.5em;
-}
-
-.is-hidden {
-    display: none;
-}
-
-fieldset {
-    display: contents;
-}
-
-legend {
-    position: relative;
-    top: -0.8em;
-    left: 0;
-    padding: 0.2rem 1ch 0.3rem;
-    background: $body-bg;
-    white-space: nowrap;
-    width: fit-content;
-    grid-column: 2;
-}
-
-
-label {
-    grid-column: 2;
-    width: 16ch;
-    text-align: left;
-}
-
-.float-right {
-    grid-column: 4;
-    width: 100%;
-}
-
-.loginform > label {
-    text-align: right;
-}
-
-textarea, select, input {
-    grid-column: 4;
-    height: 1.5em;
-}
-
-textarea {
-    font-size: 0.9rem;
-    line-height: 1.5em;
-    height: 9em;
-}
-
-textarea.td_phones {
-    font-size: 0.9rem;
-    line-height: 1.1em;
-    height: 5em;
-}
-
-fieldset > div {
-    grid-column: 2 / -2;
-}
-.subform {
-    font-size: 1rem;
-    padding-top: .25em;
-    border-bottom: 1px solid $footer-bg;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 0 1em;
-    grid-auto-flow: dense;
-}
-
-.subform:first-of-type {
-    border-top: 1px solid $footer-bg;
-}
-
-// .subform label{
-//     grid-column: auto;
+// img.band-img {
+//     max-width: 320px;
+//     max-width: 100%;
 // }
 
-label.instrument-label,
-input.instrument-input {
-    grid-column: 1;
+
+
+fieldset {
+    grid-column: 2 / span 1;
+    // border: none;
 }
 
-input::placeholder {
-    font-size: .8rem;
-}
-
-label.band-member-label,
-input.band-member-input {
-    grid-column: 2;
-}
-
-.subform input{
-    width: 100%;
-    margin: .25em 0 .5em;
-}
-
-.add{
-    background: mediumseagreen;
-}
-
-.btn-subform{
-    padding: .25em .5em;
-    font-size: 0.95rem;
-    display: block;
-    grid-column: 2;
+fieldset > legend {
     width: auto;
-    color: white;
-    text-decoration: none;
-    text-decoration: none;
+    padding: .25em;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+fieldset > *,
+.subform > * {
+   display: block;
+   width: 100%;
+//    border: 1px pink dotted;
+}
+
+fieldset input :not([type="radio"]):not([type="checkbox"]),
+fieldset textarea {
+    height: 1.75em;
+    width: 100%;
     border-radius: 3px;
-    margin-bottom: .5em;
-    border: none;
-}
-
-.remove {
-    justify-self: end; 
-    grid-column: 2;
-    background: tomato;
-}
-
-
-
-.invalid-file {
-    grid-column: 2 / -2;
-}
-
-.invalid-feedback {
-    grid-column: 1/-1;
-}
-
-
-
-input[type=checkbox].form-check  {
-    grid-column: 2;
-    justify-self: end;
-    transform: scale(1.25);
     border: 1px solid transparent;
+    border-top: none;
+    border-bottom: 1px solid #DDD;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
+    padding: .25em .5em;
+}
+
+.fieldset > label,
+.subform > label {
     box-shadow: none;
 }
 
-label.form-check  {
-    grid-column: 4;
-    font-size: 0.9em;
-    text-align: left;
-    align-self: center;
+input[type="hidden"]{
+}
+
+input[type="submit"]{
+    grid-column: 2;
 }
 
 
-.numbers {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+#del-modal {
+    display: none;
+    position:fixed; 
+    top: calc(50% - 100px); // half of heiidth
+    left: calc(50% - 150px); // half of width
+    width: 320px;
+    height: 250px;
+    z-index: 1000;
+    background: white;
+    border: 6px double red;
+    padding: 10px;
+    line-height: 1.5em;
+    // position: absolute
 }
-.numbers label,
-.numbers input {
-   font-size: 1em;
-   width: auto;
-   margin-right: 0.25rem;
+
+#del-modal h4 {
+    color: $alert-danger-txt;
+    text-align: center;
+}
+
+
+// .half {
+//     grid-column: 2 / span 3;
+//     display: grid;
+//     // grid-template-columns: repeat(2, 1fr);
+//     // grid-gap: 1em;
+// }
+
+// .half > * {
+//     grid-column: 2 / -1;
+// }
+
+// .half > label {
+//     grid-column: 1 / span 1;
+// }
+
+// @media (min-width: 600px){
+// .content-area.has-sidebar {
+//         grid-column: 2 / span 2;
+//     }
+
+//     .sidebar {
+//         grid-row: 1;
+//         grid-column: -3;
+//         border-left: 1px solid $text-main;
+//     }
+
+//     .l-one-third {
+//         grid-column: 2 / span 1;
+//         // max-width: 320px;
+//     }
+
+
+//     .r-two-thirds {
+//         grid-column: span 2;
+//     }
+
+//     .half {
+//         grid-column: 2 / span 3;
+//     }
+// }
+
+label, input :not([type="radio"]):not([type="checkbox"]), textarea, select {
+    margin: .25em 0 .5em;
+}
+
+// .numbers {
+//     display: grid;
+//     align-items: center;
+//     justify-content: flex-start;
+// }
+.numbers-radio-wrapper {
+    align-items: baseline;
+}
+
+.numbers-radio-wrapper label {
+    font-size: 1.25rem;
+    line-height: 2em;
+    padding: .25em 0;
+}
+
+.numbers-radio-wrapper input[type="radio"] {
+    margin-right: 1em;
 }
 
 input[type=checkbox],
@@ -205,70 +147,3 @@ input[type=radio] {
     width: auto;
 }
 
-.numbers label {
-    justify-self: flex-start;
-}
-
-
-.numbers:first-of-type > label.number-field {
-    // color: orange;
-    margin-left: 6.25rem;
-}
-
-
-label.number-field {
-   margin-left: auto;
-}
-
-
-
-
-span.forgot-password {
-    grid-column: 4;
-}
-
-.btn-form-submit {
-    color: #fff;
-    font-weight: 500;
-    grid-column: 4;
-    font-size: 1.25rem;
-    background: $mustard;
-    border-radius: 4px;
-    border: 1px solid transparent;
-    padding: 0.35rem 0.65rem;
-    width: 18ch;
-    height: 100%;
-}
-
-.media {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-}
-
-.rounded-circle {
-    border-radius: 50%;
-    grid-column: 1;
-}
-.media-body {
-    grid-column: 2;
-}
-
-.account-img {
-    height: 125px;
-    width: 125px;
-    margin-right: 20px;
-    margin-bottom: 16px;
-  }
-  
-  .account-heading {
-    font-size: 2.5rem;
-  }
-
-  .text-danger {
-      color: $alert-danger-txt;
-      background-color: $alert-danger-bg;
-      padding: 0.25em;
-      border-radius: 2px;
-      grid-column: 2;
-      line-height: 1.5em;
-  }

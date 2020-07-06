@@ -5,10 +5,10 @@
 	http://youtube.com/optikalefxx
 */
 .tags-wrapper {
-	grid-column: 4; //rg
+	// grid-column: 4; //rg
 	background:white;
 	overflow:hidden;
-	width: 100%; //rg
+	width: auto; //rg
 	background-image: -webkit-linear-gradient(top, rgb(238, 238, 238) 1%, white 15%);
 	border: 1px solid black; //rg
 	/* box-shadow: 0 0 5px rgba(0, 0, 0, .3); */

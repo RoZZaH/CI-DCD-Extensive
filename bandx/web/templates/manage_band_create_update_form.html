@@ -1,18 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
+<header class="main__header">
+{% include "include_breadcrumbs.html" %}
+<hr class="hr--breadcrumbs hr--left">
+<div class="header--mgt">
 <h1>{{ title }}</h1>
-<div class="container">
-<div class="content-block" id="datab" data-genrelist="{{ genrelist | safe }}" >
-    <form method="POST" enctype="multipart/form-data" ><!-- allow file upload -->
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">{{ form_legend }}</legend>
-            {% if band %}
-                <img class="card-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image ) }}" > {# filename=band.media.tour_media.pictures.square #}
+<btn class="btn btn-subform remove del-band">Delete Band</a>
+</div>
+</header>
+    <form method="POST" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist | safe }}" >
+            {{ form.hidden_tag() }}
+            <fieldset class="l-one-third" style="">
+            <legend>Band Promo Image</legend>
+            {% if image_file %}
+                <img class="band-img" src="{{ image_file }}" > {# filename=band.media.tour_media.pictures.square #}
             {% else %}
-                <img class="card-img" src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}" >
+                <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}" >
             {% endif %}
-            {{ form.band_name.label(class="float-right") }}
+            {{ form.media_assets.featured_image.label }}
+                {{ form.media_assets.featured_image(class="form-control-file") }}
+                {% if form.media_assets.featured_image.errors %}
+                    {% for error in form.media_assets.featured_image.errors %}
+                        <span class="alert-danger">{{ error }}</span><br/>
+                    {% endfor %}
+                {% endif %}
+            </fieldset>
+            <fieldset class="r-two-thirds">
+            <legend>Band Details</legend>
+            {{ form.band_name.label }}
                 {% if form.band_name.errors %}
                     {{ form.band_name(class="is-invalid") }}
                     <div class="invalid-feedback">
@@ -23,7 +38,7 @@
                 {% else %}
                     {{ form.band_name }}
                 {% endif %}
-            {{ form.description.label(class="float-right")  }}
+            {{ form.description.label }}
                 {% if form.description.errors %}
                     {{ form.description(class="is-invalid") }}
                     <div class="invalid-feedback">
@@ -34,7 +49,7 @@
                 {% else %}
                     {{ form.description }}
                 {% endif %}
-            {{ form.strapline.label(class="float-right") }}
+            {{ form.strapline.label }}
                 {% if form.strapline.errors %}
                     {{ form.strapline(class="is-invalid") }}
                     <div class="invalid-feedback">
@@ -45,17 +60,6 @@
                 {% else %}
                     {{ form.strapline }}
                 {% endif %}
-   {#          {{ form.picture.label }}
-                {% if form.picture.errors %}
-                    {{ form.picture }}
-                    <div class="invalid-file">
-                    {% for error in form.picture.errors %}
-                        <span class="text-danger">{{ error }}</span><br>
-                    {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.picture }}
-                {% endif %} #}
             {{ form.genres.label(class="push-down") }}
                 {% if form.genres.errors %}
                     {{ form.genres(class="is-invalid") }}
@@ -84,34 +88,30 @@
                 {% else %}
                     {{ form.profile }}
                 {% endif %}
-
-             <fieldset data-formlet="member">
-                <div id="subforms-container-member">
+            </fieldset>
+            {# </div> #}
+            <fieldset class="half" data-formlet="member">
+            <legend>Band Members</legend>
+                <div id="subforms-container-member" class="subform">
                         {% for subform in band.band_members or form.members %} {#   #}
                         <div id="member-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
-                            <label class="instrument-label" for="members-{{ loop.index0 }}-instruments">Instrument(s)</label>
+                            <label for="members-{{ loop.index0 }}-instruments">Instrument(s)</label>
                             {# error checking for instruments ? - at least one? #}
-                                <input class="instrument-input" id="members-{{ loop.index0 }}-instruments" name="members-{{ loop.index0 }}-instruments" type="text" value="{{ band.band_members[loop.index0]['instruments']|join(', ') if band else ''  }}"> {# placeholder="use commas, between, instruments" #}
-
-                            <label class="band-member-label" for="members-{{ loop.index0 }}-musician">Musician&#39;s Name</label>
+                                <input id="members-{{ loop.index0 }}-instruments" name="members-{{ loop.index0 }}-instruments" type="text" value="{{ band.band_members[loop.index0]['instruments'] if band else ''  }}"> {# |join(', ') - placeholder="use commas, between, instruments" #}
+                            <label for="members-{{ loop.index0 }}-musician">Musician&#39;s Name</label>
                             {% if form.errors and form.members[loop.index0].musician.errors %}
                                 {% set idx = loop.index0 %}
-                                <input class="band-member-input" id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="{{ request.form['members-'+idx|string+'-musician'] }}">       
+                                <input id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="{{ request.form['members-'+idx|string+'-musician'] }}">       
                                 <div class="invalid-feedback">
-                                {% for error in form.members[loop.index0].musician.errors %}
-                                            <span>{{ error }}</span>
+                                {% for error in form.members[idx].musician.errors %}
+                                    <span>{{ error }}</span>
                                 {% endfor %}
                                 </div>
                             {% else %}
-                                <input class="band-member-input" id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="{{ band.band_members[loop.index0]['musician'] if band else ''  }}">       
+                                <input id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="{{ band.band_members[loop.index0]['musician'] if band else ''  }}">       
                             {% endif %}
-                       {#     {{ subform.instruments.label(class="instrument-label") }}
-                            {{ subform.instruments(class="instrument-input") }}
-
-                            {{ subform.musician.label(class="band-member-label") }}
-                            {{ subform.musician(class="band-member-input") }} #}
                             {% if loop.index0 > 0 %}
-                            <button type="button" class="remove btn-subform">Remove</a>
+                            <button type="button" class="remove btn-subform">Remove</button>
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -119,6 +119,10 @@
                 <button type="button" class="add btn-subform">Add Band Member</button>
                 <!-- /subform -->
             </fieldset>
+            <fieldset class="half">
+            <legend>Promotion</legend>
+            {{ form.media_assets.featured_video.label }}
+                {{ form.media_assets.featured_video }}
             {{ form.contact_details.contact_name.label }}
                 {% if form.contact_details.contact_name.errors %}
                     {{ form.contact_details.contact_name(class="is-invalid") }}
@@ -152,10 +156,11 @@
                 {% else %}
                     {{ form.contact_details.contact_generic_title }}
                   {% endif %}
-
-            <fieldset data-formlet="email">
+            
+            <fieldset class="half" data-formlet="email">
+            <legend>Promoter Emails</legend>
                 <div id="subforms-container-email">
-                        {% for subform in (band.contact_details.contact_emails if band)or form.contact_details.contact_emails %}
+                        {% for subform in (band.contact_details.contact_emails if band) or form.contact_details.contact_emails %}
                         <div id="email-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
                             <label class="instrument-label" for="contact_details-contact_emails-{{ loop.index0 }}-email_title">Email Title</label>
                             <input class="instrument-input" name="contact_details-contact_emails-{{ loop.index0 }}-email_title" value="{{ band.contact_details.contact_emails[loop.index0]['email_title'] if band else '' }}" />
@@ -165,7 +170,7 @@
                             {% set idx = loop.index0 %}
                             <input class="band-member-input" style="color:firebrick" name="contact_details-contact_emails-{{ loop.index0 }}-email_address" value="{{ request.form['contact_details-contact_emails-'+idx|string+'-email_address'] }}" /> {# if band else '' #}
                                   <div class="invalid-feedback">
-                                    {% for error in form.contact_details.contact_emails[loop.index0].email_address.errors %}
+                                    {% for error in form.contact_details.contact_emails[idx].email_address.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
@@ -173,7 +178,7 @@
                             <input class="band-member-input" name="contact_details-contact_emails-{{ loop.index0 }}-email_address" value="{{ band.contact_details.contact_emails[loop.index0]['email_address'] if band else '' }}" /> 
                             {% endif %}
                             {% if loop.index0 > 0 %}
-                            <button type="button" class="remove btn-subform">Remove</a>
+                            <button type="button" class="remove btn-subform">Remove</btn>
                             {% endif %}
                        </div>
                         {% endfor %}
@@ -182,42 +187,40 @@
                 <!-- /subform -->
             </fieldset>
             
-            <fieldset data-formlet="number">
+            <fieldset class="half" data-formlet="number">
+            <legend>Promoter Numbers</legend>
                 <div id="subforms-container-number">
                     {% for subform in (band.contact_details.contact_numbers if band) or form.contact_details.contact_numbers %} {# band.contact_details.contact_numbers or #}
                         <div id="number-{{ loop.index0 }}-form" class="subform numbers" data-index="{{ loop.index0 }}">
                         {% set mob = band.contact_details.contact_numbers[loop.index0]['mobile'] if band %}
                         {% if band %}
-                            <label class="number-label" for="contact_details-contact_numbers-{{ loop.index0 }}-mobile-0">mobile</label> 
-                                <input {{ "checked" if mob }} class="number-radio" id="contact_details-contact_numbers-{{ loop.index0 }}-mobile-0" name="contact_details-contact_numbers-{{ loop.index0 }}-mobile" type="radio" value="{{ mob }}">
-                            <label class="number-label" for="contact_details-contact_numbers-{{ loop.index0 }}-mobile-1">landline</label> 
-                                <input {{ "checked" if not mob }} class="number-radio" id="contact_details-contact_numbers-{{ loop.index0 }}-mobile-1" name="contact_details-contact_numbers-{{ loop.index0 }}-mobile" type="radio" value="{{ mob }}">
+                            <div class="numbers-radio-wrapper">
+                                <label class="number-label" for="contact_details-contact_numbers-{{ loop.index0 }}-mobile-0">mobile</label> 
+                                    <input {{ "checked" if mob }} class="number-radio" id="contact_details-contact_numbers-{{ loop.index0 }}-mobile-0" name="contact_details-contact_numbers-{{ loop.index0 }}-mobile" type="radio" value="{{ mob }}">
+                                <label class="number-label" for="contact_details-contact_numbers-{{ loop.index0 }}-mobile-1">landline</label> 
+                                    <input {{ "checked" if not mob }} class="number-radio" id="contact_details-contact_numbers-{{ loop.index0 }}-mobile-1" name="contact_details-contact_numbers-{{ loop.index0 }}-mobile" type="radio" value="{{ mob }}">
+                            </div>
                         {% else %}
-                            <label class="number-label" for="contact_details-contact_numbers-{{ loop.index0 }}-mobile-0">mobile</label> 
-                                <input checked class="number-radio" id="contact_details-contact_numbers-{{ loop.index0 }}-mobile-0" name="contact_details-contact_numbers-{{ loop.index0 }}-mobile" type="radio" value="True">
-                            <label class="number-label" for="contact_details-contact_numbers-{{ loop.index0 }}-mobile-1">landline</label> 
-                                <input class="number-radio" id="contact_details-contact_numbers-{{ loop.index0 }}-mobile-1" name="contact_details-contact_numbers-{{ loop.index0 }}-mobile" type="radio" value="False">
+                            <div class="numbers-radio-wrapper">
+                                <label class="number-label" for="contact_details-contact_numbers-{{ loop.index0 }}-mobile-0">mobile</label> 
+                                    <input checked class="number-radio" id="contact_details-contact_numbers-{{ loop.index0 }}-mobile-0" name="contact_details-contact_numbers-{{ loop.index0 }}-mobile" type="radio" value="True">
+                                <label class="number-label" for="contact_details-contact_numbers-{{ loop.index0 }}-mobile-1">landline</label> 
+                                    <input class="number-radio" id="contact_details-contact_numbers-{{ loop.index0 }}-mobile-1" name="contact_details-contact_numbers-{{ loop.index0 }}-mobile" type="radio" value="False">
+                            </div>
                         {% endif %}
-                                {#  {{ band.contact_details.contact_numbers[loop.index0]['number'] if band else '' }} #}
-                           {# {% for subfield in subform.mobile %}
-                                {{ subfield.label(class="number-label") }} {{ subfield(class="number-radio") }}
-                            {% endfor %} #}
-
-                            <label class="number-field" for="contact_details-contact_numbers-{{ loop.index0 }}-number">Number</label>
                             {% if form.errors and form.contact_details.contact_emails[loop.index0].email_address.errors %}
                                 {% set idx = loop.index0 %}
                                 <input id="contact_details-contact_numbers-{{ loop.index0 }}-number" name="contact_details-contact_numbers-{{ loop.index0 }}-number" placeholder="+353" type="text" value="{{ request.form['contact_details-contact_numbers-'+idx|string+'-number'] }}">
                                 <div class="invalid-feedback">
-                                    {% for error in form.contact_details.contact_emails[loop.index0].email_address.errors %}
+                                    {% for error in form.contact_details.contact_emails[idx].email_address.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
                                  <input class="number-field" id="contact_details-contact_numbers-{{ loop.index0 }}-number" name="contact_details-contact_numbers-{{ loop.index0 }}-number" placeholder="+353" type="text" value="{{ band.contact_details.contact_numbers[loop.index0]['number'] if band else '' }}">
                             {% endif %}
-                            {# {{ subform.number() }} #} {# string object not callable #}
                             {% if loop.index0 > 0 %}
-                            <button type="button" class="remove btn-subform">Remove</a>
+                            <button type="button" class="remove btn-subform">Remove</button>
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -228,7 +231,8 @@
 
 
 
-
+        <fieldset class="half">
+        <legend>Enquiries Web Link</legend>
             {{ form.enquiries_url.label }}
                 {% if form.enquiries_url.errors %}
                     {{ form.enquiries_url(class="is-invalid") }}
@@ -243,6 +247,7 @@
 
         <!-- /form -->
         </fieldset>
+        </fieldset>
         {{ form.submit(class="btn btn-outline-info") }}
     </form>
      {% if form.errors %}
@@ -251,21 +256,47 @@
     {% if data is defined %}
             <p>Received data: {{ data }}</p>
         {% endif %}
-</div>
+
+<div id="del-modal">
+    <form action="{{ url_for('manage.delete_band', bname=band.band_name) }}" method="POST"> {#  #}
+    <h4>Warning: DELETE BAND</h4>
+    <p>Are you sure you want to delete:</p>
+    <p class="centered--bold">{{band.band_name}} ???</p>
+    <p>This action cannot be undone!</p>
+    <div class="modal-controls">
+        <button class="btn btn-subform cancel">Cancel</button>
+        <input class="btn remove btn-subform" type="submit" value="DELETE">
+    </div>
+    </form>
 </div>
 
+{% endblock content %}
+
+
+{% block javascript %}
     {% assets "org_band_js" %}
     <script src="{{ ASSET_URL }}" ></script>
     {% endassets %}
-
+    
     <script>
     choiceSelect("select.origin-county", "{{ selected_county }}")
 
     loadTowns( "{{ selected_county }}" )
     .then(data => document.querySelector("select.origin-town").innerHTML = data)
     .then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"))
-    
-    //ANTRIM_TOWNS = loadTowns("Antrim")
-    </script>
 
-{% endblock content %}
+    const toggleClass = (el, className) => el.classList.toggle(className)
+    const modal = document.getElementById("del-modal")
+
+    document.querySelector(".del-band").addEventListener("click", () => {  
+        toggleClass(modal, "show")
+    })
+
+    document.querySelector("#del-modal .cancel").addEventListener("click", (e) => {
+        e.preventDefault()
+        toggleClass(modal, "show")
+    })
+
+
+    </script>
+{% endblock javascript %}

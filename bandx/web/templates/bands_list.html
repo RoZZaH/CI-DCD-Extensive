@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
  <h1>HOME Listing </h1>
-{% for band in bands %}
-<hr>
+{% include 'include_pages_navbar.html'  %}
+{% for band in bands.items %}
+
 <div class="card">
     {# {% if band.image_file %}
         <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/'+band.image_file ) }}" > {# filename=band.media.tour_media.pictures.square #}
@@ -12,17 +13,20 @@
    
     <h2 class="card-title">
         {% if current_user.is_authenticated  %}
-        <a href="{{ url_for('bands.manage_band_profile', band_name=band.band_name) }}">{{ band.band_name }}</a> {#  {{ band._cls }} #}
+        <a href="{{ url_for('manage.update_band_profile', band_name=band.band_name) }}">{{ band.band_name }}</a> {#  {{ band._cls }} #}
         {% else %}
-        <a href="{{ url_for('bands.update_band_profile', band_name=band.band_name) }}">{{ band.band_name }}</a>
+        <a href="{{ url_for('manage.update_band_profile', band_name=band.band_name) }}">{{ band.band_name }}</a>
         {% endif %}
     </h2>
     <p class="card-body">{{ band.description }}</p>
-    {% if current_user.is_authenticated  %}
-    <p class="card-body"><a href="{{ url_for('bands.manage_band_profile',  band_name=band.org_title) }}">Edit Band Profile</a> | <a href="{{ url_for('bands.manage_tours', band_name=band.org_title) }}">Manage Tours </a></p>
+    {% if current_user.is_authenticated %} {# and OWNS bands = session ? #}
+    <p class="card-body"><a href="{{ url_for('manage.update_band_profile',  band_name=band.band_name) }}">Edit Band Profile</a> | <a href="#">Manage Tours </a></p>
     {% else %}
-    {# <p class="card-body"><a href="#">Edit Band Profile</a> | <a href="{{ url_for('bands.manage_tours', band_name=band.org_title) }}">Tours </a></p> #}
+    {# <p class="card-body"><a href="#">Edit Band Profile</a> | <a href="{{ url_for('manage.manage_tours', band_name=band.org_title) }}">Tours </a></p> #}
     {% endif %}
 </div>
 {% endfor %}
+<footer class="pages">
+{% include 'include_pages_navbar.html'  %}
+</footer>
 {% endblock content %}

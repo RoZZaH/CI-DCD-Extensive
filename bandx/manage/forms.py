@@ -67,7 +67,13 @@ class PhoneFormlet(Form):
                         render_kw={"placeholder":"+353", "class":"number-field", "id":"phone"},
                         validators=[Length(max=15)])
     
-    
+class MediaAssetsFormlet(Form):
+    featured_image = FileField("Band Profile Image",
+                                validators=[FileAllowed(['jpg', 'png', 'jpeg'])]
+                                )
+    featured_video = StringField("Featured Video Link",
+                            render_kw={"placeholder": "link to youtube or vimeo"},
+                            validators=[Optional(), URL()])
 
 
 class EmailFormlet(Form):
@@ -116,12 +122,12 @@ class CreateUpdateBandForm(FlaskForm):
     enquiries_url = StringField("Online Enquiries Link",
                             render_kw={"placeholder": "Org Name / Band / Venue"},
                             validators=[Optional(), URL()])
+    media_assets = FormField(MediaAssetsFormlet)
+    submit = SubmitField("Save")
+    # tours
     # picture = FileField("Update Band Picture",
     #                         validators=[FileAllowed(["jpg", "jpeg", "png"])])
     #    links = FieldList(FormField())
-    #    media_assets = FieldList(FormField())
-    # tours
-    submit = SubmitField("Save")
 
 
 

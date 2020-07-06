@@ -8,6 +8,7 @@ from flask_wtf import FlaskForm
 import phonenumbers
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, ValidationError
+from mongoengine.queryset import QuerySet
 from bandx.utils.gns import nav
 from flask_nav.elements import Navbar, Subgroup, View
 from bandx.models.entities import Band, Towns
@@ -27,7 +28,6 @@ default_breadcrumb_root(public, '.')
 
 
 @public.route("/json")
-
 def hello():
    # return "<h1>Hello</h1>"
    bands = Band.objects.order_by('-date_created')
@@ -44,7 +44,8 @@ def show_tours():
 @public.route('/')
 @register_breadcrumb(public, '.', 'Bands')
 def home():
-    bands = Band.objects.order_by('-date_created')
+    page = request.args.get("page", 1, type=int)
+    bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
     return render_template("bands_list.html", bands=bands)
 
 @public.route('/tours/<int:index>', methods=['PUT'])

@@ -18,19 +18,31 @@
       border: solid 1px $border-color !important;
     }
     
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
     h1, h2, h3 {
     margin-top: 0;
     }
     
-    header h1 {
+    .header--branding h1 {
     margin: 0;
     }
     
     main p {
     margin-bottom: 0;
     }
+
+    img {
+      width: 100%;
+    }
     
-    header {
+    .header--branding {
       background-color: $mustard;
     }
     /* TYPOGRAPHY */
@@ -68,6 +80,9 @@
         grid-area: footer;
       }
     
+  .debug {
+    border: 1px solid pink;
+  }
     /* GRID (Mobile First?) */
 
 .logo {
@@ -189,11 +204,46 @@ a.current {
   background: $alert-info-bg;
 }
 
+hr {
+  height: 2px;
+  color: $border-color;
+  background: $border-color;
+  border: 0;
+  width: 60%;
+}
 
-li > li {
+.hr--left {
+  margin: 0;
+}
+
+.hr--breadcrumbs {
+  height: 1px;
+  color: rgb(181, 181, 181);
+  background: $footer-bg;
+  margin: 0.5em 0;
+}
+
+li > ul > li {
   list-style-type: square;
 }
 
 
+.show {
+  display: block !important;
+}
+
+.hide {
+  display: none !important;
+}
+
     /* MEDIA QUERIES */
-    
+
+
+    .centered {
+      text-align: center;
+    }
+
+    .centered--bold {
+      text-align: center;
+      font-weight: bold;
+    }

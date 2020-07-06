@@ -1,0 +1,12 @@
+<nav class="pages__pagelinks"><ul>
+    {# {% if page_num > 1 %}
+    <li><a class="btn btn--pagelink" href="{{ url_for('public.home', page=prev_num)}}">prev</a><li>
+    {% endif %} #}
+{% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+    <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if bands.page == page_num }}" href="{{ url_for('public.home', page=page_num)}}">{{ page_num }}</a></li>
+    {% else %}
+    ...
+    {% endif %}
+{% endfor %}
+</ul></nav>

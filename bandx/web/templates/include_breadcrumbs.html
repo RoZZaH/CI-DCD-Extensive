@@ -1,7 +1,7 @@
  <div>
-Breadcrumbs: <br>
+<small>You are here</small>:&nbsp; 
 {% for breadcrumb in breadcrumbs %}
     <a href="{{ breadcrumb.url }}">{{ breadcrumb.text }}</a>
-    {{ '/' if not loop.last }}
+    {{ '>' if not loop.last }}
 {% endfor %}
 </div>

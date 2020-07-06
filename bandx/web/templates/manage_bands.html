@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="main--header">
+{% include "include_breadcrumbs.html" %}
+<hr class="hr--breadcrumbs hr--left">
+<nav class="pages__pagelinks"><ul>
+{% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+    <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if bands.page == page_num }}" href="{{ url_for('manage.manage_bands_home', page=page_num)}}">{{ page_num }}</a></li>
+    {% else %}
+    ...
+    {% endif %}
+{% endfor %}
+</ul></nav>
+<div class="header--mgt">
+<h1>Manage Bands</h1>
+<a class="btn btn-subform add" href="{{ url_for('manage.add_band') }}">Add New Band</a>
+</div>
+</header>
+{% for band in bands.items %}
+{# {{ nav.mysite_navigation.render() }} #}
+<div class="card">
+    {# {% if band.image_file %}
+        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/'+band.image_file ) }}" > {# filename=band.media.tour_media.pictures.square #}
+  {#}  {% else %}
+        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/defaultband.jpg') }}" >
+    {% endif %} #}
+    <h2 class="card-title">{{ band.band_name }}</h2>
+    {% if band.media_assets.featured_image %}
+    <img src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}">
+    {% else %}
+    <img src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}">
+    {% endif %}
+  {#   <p>{{ band.cls }} | {{ band._cls }}</p> #}
+    <p class="card-body">{{ band.description }}</p>
+<p class="card-body">{{ band.strapline }}</p>
+    <p class="card-body"><a href="{{ url_for('manage.update_band_profile', band_name=band.band_name ) }}">Edit Band Profile</a></p>
+    {# | <a href="{{ url_for('bands.manage_tours', band_name=band.org_title) }}">Manage Tours</a> #}
+
+</div>
+{% endfor %}
+<footer class="pages">
+<nav class="pages__pagelinks"><ul>
+{% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+    <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if bands.page == page_num }}" href="{{ url_for('manage.manage_bands_home', page=page_num)}}">{{ page_num }}</a></li>
+    {% else %}
+    ...
+    {% endif %}
+{% endfor %}
+</ul></nav>
+</footer>
+{% endblock content %}
+{% block sidebar %}
+<div class="sidebar">
+    <p> hello sidebar !</p>
+    {{ nav.gns.render(renderer='just_li') }}
+</div>
+{% endblock sidebar %} 

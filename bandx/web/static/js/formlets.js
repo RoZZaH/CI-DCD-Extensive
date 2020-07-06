@@ -27,14 +27,15 @@ function addForm() {
     case "number" :
     $newForm = ` 
     <div id="number-${newIndex}-form" class="subform numbers" data-index="${newIndex}">
+        <div class="numbers-radio-wrapper">
         <label class="number-label" for="contact_details-contact_numbers-${newIndex}-mobile-0">mobile</label> 
             <input checked class="number-radio" id="contact_details-contact_numbers-${newIndex}-mobile-0" name="contact_details-contact_numbers-${newIndex}-mobile" type="radio" value="True">
         <label class="number-label" for="contact_details-contact_numbers-${newIndex}-mobile-1">landline</label> 
             <input class="number-radio" id="contact_details-contact_numbers-${newIndex}-mobile-1" name="contact_details-contact_numbers-${newIndex}-mobile" type="radio" value="False">
-        <label class="number-field" for="contact_details-contact_numbers-1-number">Number</label>
-            <input class="number-field" id="contact_details-contact_numbers-${newIndex}-number" name="contact_details-contact_numbers-${newIndex}-number" placeholder="+353" type="text" value="">
+        </div>
+        <input class="number-field" id="contact_details-contact_numbers-${newIndex}-number" name="contact_details-contact_numbers-${newIndex}-number" placeholder="+353" type="text" value="">
         
-        <a class="remove btn-subform" href="#">Remove</a>
+        <button type="button" class="remove btn-subform">Remove</button>
     </div>
     `
     $('#subforms-container-number').append($newForm);
@@ -43,12 +44,12 @@ function addForm() {
     case "member" :
     $newForm = ` 
     <div id="member-${newIndex}-form" class="subform" data-index="${newIndex}">
-        <label for="members-${newIndex}-instruments" class="instrument-label">Instrument(s)</label>
-            <input id="members-${newIndex}-instruments" name="members-${newIndex}-instruments" class="instrument-input" type="text" value="" placeholder="use commas, between, instruments" >
-        <label for="members-${newIndex}-musician" class="band-member-label">Musician's Name</label>
-            <input id="members-${newIndex}-musician" name="members-${newIndex}-musician" class="band-member-input" type="text">
+        <label for="members-${newIndex}-instruments">Instrument(s)</label>
+            <input id="members-${newIndex}-instruments" name="members-${newIndex}-instruments" type="text" value="" placeholder="use commas, between, instruments" >
+        <label for="members-${newIndex}-musician" >Musician's Name</label>
+            <input id="members-${newIndex}-musician" name="members-${newIndex}-musician" type="text">
         
-        <a class="remove btn-subform" href="#">Remove</a>
+        <button type="button" class="remove btn-subform">Remove</button>
     </div>
     `
     $('#subforms-container-member').append($newForm);
@@ -62,7 +63,7 @@ function addForm() {
         <label class="band-member-label" for="contact_details-contact_emails-${newIndex}-email_address">Email Address</label>
             <input class="band-member-input" id="contact_details-contact_emails-${newIndex}-email_address" name="contact_details-contact_emails-${newIndex}-email_address" placeholder="Enquiries" required type="text" value="">
 
-        <a class="remove btn-subform" href="#">Remove</a>
+        <button type="button" class="remove btn-subform">Remove</button>
     </div>
     `
     $('#subforms-container-email').append($newForm);

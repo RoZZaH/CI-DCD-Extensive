@@ -30,36 +30,27 @@ class SuperGroup(NavigationItem):
 
 topbar = Navbar('title',
     View('Home', 'public.home'),
-    View('Tours', 'bands.manage_bands'),
+    View('Tours', 'manage.manage_bands_home'),
     View('Register', 'user.register'),
     UserGreeting('Sam', 'user.login'),
     # Separator(),
-    RawTag(content='<li>'),
+    # RawTag(content='<li>'),
     SuperGroup(title=View('Tours', 'public.home'), 
     items=(
         Text('Some desc text'),
         Link('a yahoo link', 'https://mail.yahoo.com/'),
-        View('Manage', 'bands.manage_bands')
+        View('Manage', 'manage.manage_bands_home')
     )
     ),
-    Subgroup('',
-        Text('Some desc text'),
-        Link('a yahoo link', 'https://mail.yahoo.com/'),
-        View('Manage', 'bands.manage_bands')
-    ),
-    RawTag(content='</li>'),
+    # Subgroup('',
+    #     Text('Some desc text'),
+    #     Link('a yahoo link', 'https://mail.yahoo.com/'),
+    #     View('Manage', 'bands.manage_bands')
+    # ),
+    # RawTag(content='</li>'),
 )
 
-secondary_out = Navbar('',
-    View('Login', 'user.login'),
-    View('Register', 'user.register'),
-)
 
-secondary_in = Navbar('',
-    View('Manage Bands', 'bands.manage_bands'),
-    View('Settings', 'user.account'),
-    View('Log Out', 'user.logout'),
-)
 
 
 
@@ -114,7 +105,15 @@ class JustLiRenderer(Renderer):
 
 
     def visit_SuperGroup(self, node):
-        return tags.a(node.title.text, href=node.title.get_url())
+        li = tags.li(_class="subNav")
+        a = li.add(tags.a(node.title.text, href=node.title.get_url()))
+        ul = tags.ul(*[self.visit(item) for item in node.items])
+        # ul = a.append(ul)
+        ul2 = li.add(ul)
+        return li
+        
+        return 
+
 
     def visit_Separator(self, node):
         return tags.li('---')
@@ -130,10 +129,20 @@ class JustLiRenderer(Renderer):
         return raw(node.content)
 
 
+secondary_in = Navbar('',
+    View('Manage Bands', 'manage.manage_bands_home'),
+    View('Settings', 'user.account'),
+    View('Log Out', 'user.logout'),
+)
+
+secondary_out = Navbar('',
+    View('Register', 'user.register'),
+    View('Login', 'user.login'),
+)
 
 nav.register_element('gns', topbar)
-nav.register_element('sns_in', secondary_out)
-nav.register_element('sns_out', secondary_in)
+nav.register_element('sns_in', secondary_in)
+nav.register_element('sns_out', secondary_out)
 
 def initialise_nav(app):
     register_renderer(app, 'just_div', JustDivRenderer)

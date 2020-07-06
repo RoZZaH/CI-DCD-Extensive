@@ -9,6 +9,7 @@ from bandx.utils.assets import bundles
 from bandx.utils.gns import nav, topbar, initialise_nav
 from bandx.models.db import initialise_db
 
+
 # from bandx.public.routes import topbar
 
 
@@ -65,10 +66,7 @@ img_folder = os.path.join(app.static_folder, 'img')
 def static_img(filename):
     return send_from_directory(img_folder, filename)
 
-
-pictures_folder = os.path.join(app.root_path, 'media')
-profile_pics = os.path.join(pictures_folder, "user_profile_pics")
-band_pics = os.path.join(pictures_folder, "band_profile_pics")
+pictures_folder = os.path.join(app.root_path, "media")
 
 @app.route('/media/<path:filename>')
 def static_media(filename):
@@ -90,9 +88,9 @@ login_manager.login_message_category = "info" #boostrap category for flash messa
 from bandx.api.routes import api
 from bandx.public.routes import public
 from bandx.users.routes import user
-from bandx.bands.routes import bands
+from bandx.manage.routes import manage
 app.register_blueprint(api)
 app.register_blueprint(public)
-app.register_blueprint(bands)
+app.register_blueprint(manage)
 app.register_blueprint(user)
 # nav.register_element('secondary', sns)
