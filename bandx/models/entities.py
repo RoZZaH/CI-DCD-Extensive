@@ -27,7 +27,7 @@ class Phone(db.EmbeddedDocument):
 
 class Contact(db.EmbeddedDocument):
        # c_id = db.StringField(default=ObjectId)
-    contact_name = db.StringField(max_length=120)
+    contact_name = db.StringField(max_length=120) #option public
     contact_title = db.StringField(max_length=50)
     contact_generic_title = db.StringField(max_length=50, default="Enquiries")
     contact_emails = db.EmbeddedDocumentListField(Email)

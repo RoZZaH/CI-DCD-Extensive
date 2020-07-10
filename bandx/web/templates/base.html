@@ -47,7 +47,7 @@
     </nav>
     <!-- /HEADER -->
     </header>
-    <main>
+    <main {{ 'class="auth"' if current_user.is_authenticated else '' }}>
     <section class="main-grid content-area {%if sidebar %}{{ 'has-sidebar' }}{% endif %}">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="main__header">
+{% include "include_breadcrumbs.html" %}
+<hr class="hr--breadcrumbs hr--left">
+<div class="header--mgt">
+<div class="headlines">
+<h6 class="headline--eyebrow">{{ band.description }}</h6><!-- newpaper terms leadin -->
+<h1 class="headline">{{ band.band_name }}</h1>
+<h4 class="headline--strapline">{{ band.strapline }}</h4>
+</div>
+{% if current_user.is_authenticated %} 
+<div class="controls">
+<a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add" >Edit Band</a>
+{% endif %}
+</div>
+</header>
+
+
+<div id="video-wrapper">
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/lB_VTqaPC08" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<h2 class="headline--profile">Profile</h2>
+<p>{{ band.profile }}</p>
+
+<!-- band details -->
+<dl>
+    <dt class="colon-after">Hometown</dt>
+        <dd>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</dd>
+    <dt class="colon-after" id="tags">Genres</dt>
+    <!-- tags -->
+    <dd>
+        <ul class="genre-tags">
+        {% for genre in band.genres %}
+            <li>{{ genre }}</li> 
+        {% endfor %}
+        </ul>
+    </dd>
+    <dt class="featured-img">Images</dt>
+        <dd class="featured-img">
+            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" >
+        </dd>
+        <dd class="featured-img featured-img-caption">Image description</dd><!-- more images -->
+    <dt class="colon-after">Members</dt>
+        {% for member in band.band_members %}
+        <dd>{{ member.musician }} &mdash; {{ member.instruments }}</dd>
+        {% endfor %}
+</dl>
+<dl>
+    <dt>Bookings</dt>
+        <dd>{{ band.contact_details.contact_generic_title }}</dd>
+        {% for email in band.contact_details.contact_emails %}
+        <dd><a href="mailto:{{ email.email_address }}">Email</a> : {{ email.email_address }}</dd>
+        {% endfor %}
+        {% for phone in band.contact_details.contact_numbers %}
+        <dd><a href="tel:{{ phone.number}}">{{ 'Mobile' if phone.mobile else 'Phone' }}</a> : {{ phone.number }}</dd>{# icon for mob/landline #}
+        {% endfor %}
+        <dd><a href="{{ band.links.enquiries }}">Online Enquiries</a></dd><!-- servcice -->
+</dl>
+{# <dl>Websites:</dl> #}
+
+
+
+
+
+
+{% endblock content %}
+
+{% block javascript %}
+    {% assets "org_band_js" %}
+    <script src="{{ ASSET_URL }}" ></script>
+    {% endassets %}
+    
+    <script>
+ 
+    /* Modal */
+    const toggleClass = (el, className) => el.classList.toggle(className)
+    const modal = document.getElementById("del-modal")
+
+    document.querySelector(".del-band").addEventListener("click", () => {  
+        toggleClass(modal, "show")
+    })
+
+    document.querySelector("#del-modal .cancel").addEventListener("click", (e) => {
+        e.preventDefault()
+        toggleClass(modal, "show")
+    })
+
+
+    </script>
+{% endblock javascript %}

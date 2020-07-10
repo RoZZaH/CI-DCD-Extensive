@@ -6,16 +6,9 @@
     padding-bottom:  1.5em;
 }
 
-// img.band-img {
-//     max-width: 320px;
-//     max-width: 100%;
-// }
-
-
 
 fieldset {
     grid-column: 2 / span 1;
-    // border: none;
 }
 
 fieldset > legend {
@@ -29,7 +22,6 @@ fieldset > *,
 .subform > * {
    display: block;
    width: 100%;
-//    border: 1px pink dotted;
 }
 
 fieldset input :not([type="radio"]):not([type="checkbox"]),
@@ -56,78 +48,17 @@ input[type="submit"]{
     grid-column: 2;
 }
 
-
-#del-modal {
-    display: none;
-    position:fixed; 
-    top: calc(50% - 100px); // half of heiidth
-    left: calc(50% - 150px); // half of width
-    width: 320px;
-    height: 250px;
-    z-index: 1000;
-    background: white;
-    border: 6px double red;
-    padding: 10px;
-    line-height: 1.5em;
-    // position: absolute
+fieldset textarea {
+    height: 16em; // less on desktop - wider
+    resize: none;
+    // font-size: 0.9rem;
 }
-
-#del-modal h4 {
-    color: $alert-danger-txt;
-    text-align: center;
-}
-
-
-// .half {
-//     grid-column: 2 / span 3;
-//     display: grid;
-//     // grid-template-columns: repeat(2, 1fr);
-//     // grid-gap: 1em;
-// }
-
-// .half > * {
-//     grid-column: 2 / -1;
-// }
-
-// .half > label {
-//     grid-column: 1 / span 1;
-// }
-
-// @media (min-width: 600px){
-// .content-area.has-sidebar {
-//         grid-column: 2 / span 2;
-//     }
-
-//     .sidebar {
-//         grid-row: 1;
-//         grid-column: -3;
-//         border-left: 1px solid $text-main;
-//     }
-
-//     .l-one-third {
-//         grid-column: 2 / span 1;
-//         // max-width: 320px;
-//     }
-
-
-//     .r-two-thirds {
-//         grid-column: span 2;
-//     }
-
-//     .half {
-//         grid-column: 2 / span 3;
-//     }
-// }
 
 label, input :not([type="radio"]):not([type="checkbox"]), textarea, select {
     margin: .25em 0 .5em;
 }
 
-// .numbers {
-//     display: grid;
-//     align-items: center;
-//     justify-content: flex-start;
-// }
+
 .numbers-radio-wrapper {
     align-items: baseline;
 }

@@ -26,16 +26,48 @@
       font-size: 1.25rem;
     }
 
-    h1, h2, h3 {
-    margin-top: 0;
-    }
-    
-    .header--branding h1 {
+    h1, h2, h3, h4, h5, h6 {
+    color: $text-main;
     margin: 0;
+    margin-bottom: 0.25em;
     }
     
+
+
+    
+h1.headline{
+  margin-bottom: initial;
+  font-size: 1.65rem;
+}
+
+.headline--eyebrow {
+  margin: .25em 0;
+  font-size: .75rem;
+  font-weight: normal;
+  color: $text-muted;
+}
+
+.headline--strapline {
+  font-size: .8rem;
+  color: $text-secondary;
+  margin-bottom: 1em;
+}
+
+.headline--profile {
+  font-size: 1.25rem;
+  margin-top: .5em;
+}
+
+.header--branding h1 {
+margin: 0;
+}
+    
+
+
     main p {
-    margin-bottom: 0;
+    line-height: 1.5em;
+    margin-top: 0;
+    margin-bottom: 0.25em;
     }
 
     img {
@@ -51,6 +83,10 @@
       padding: 0 0.1em;
     }
     
+
+
+
+
     /* LAYOUT */
     /* GRID AREAS */
 
@@ -227,6 +263,7 @@ li > ul > li {
   list-style-type: square;
 }
 
+/* Utility Classess */
 
 .show {
   display: block !important;
@@ -236,14 +273,13 @@ li > ul > li {
   display: none !important;
 }
 
-    /* MEDIA QUERIES */
+.centered {
+  text-align: center;
+}
 
+.centered--bold {
+  text-align: center;
+  font-weight: bold;
+}
 
-    .centered {
-      text-align: center;
-    }
-
-    .centered--bold {
-      text-align: center;
-      font-weight: bold;
-    }
+/* MEDIA QUERIES */

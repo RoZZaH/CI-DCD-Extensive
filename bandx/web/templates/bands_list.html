@@ -3,27 +3,30 @@
  <h1>HOME Listing </h1>
 {% include 'include_pages_navbar.html'  %}
 {% for band in bands.items %}
+<div class="card">    
+    <img src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" class="card-img">
+    <div class="card-content">
+        <p class="headline-eyebrow">{{ band.description }}</p>    
+        <h2 class="headline"><a href="{{ url_for('public.band_detail', bname=band.band_name)}}">{{ band.band_name }}</a></h2>
+        <p class="headline--strapline">{{ band.strapline }}</p>
+        <p>{{ band.profile|truncate(80, False) }}</p>
+        <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
+        <ul class="genre-tags">
+            {% for genre in band.genres %}
+            <li>{{ genre }}</li>
+            {% endfor %}
+        </ul>
+        <div class="card-footer debug">
+            <ul class="debug">
+                <li><a href="{{ url_for('public.band_detail', bname=band.band_name)}}" class="btn btn-subform add">More Info</a></li>
+            {% if current_user.is_authenticated %} {# and OWNS bands = session ? #}
+                <li class="edit"><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add">Edit</a></li>
+            {% else %}
 
-<div class="card">
-    {# {% if band.image_file %}
-        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/'+band.image_file ) }}" > {# filename=band.media.tour_media.pictures.square #}
-  {#}  {% else %}
-        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/defaultband.jpg') }}" >
-    {% endif %} #}
-   
-    <h2 class="card-title">
-        {% if current_user.is_authenticated  %}
-        <a href="{{ url_for('manage.update_band_profile', band_name=band.band_name) }}">{{ band.band_name }}</a> {#  {{ band._cls }} #}
-        {% else %}
-        <a href="{{ url_for('manage.update_band_profile', band_name=band.band_name) }}">{{ band.band_name }}</a>
-        {% endif %}
-    </h2>
-    <p class="card-body">{{ band.description }}</p>
-    {% if current_user.is_authenticated %} {# and OWNS bands = session ? #}
-    <p class="card-body"><a href="{{ url_for('manage.update_band_profile',  band_name=band.band_name) }}">Edit Band Profile</a> | <a href="#">Manage Tours </a></p>
-    {% else %}
-    {# <p class="card-body"><a href="#">Edit Band Profile</a> | <a href="{{ url_for('manage.manage_tours', band_name=band.org_title) }}">Tours </a></p> #}
-    {% endif %}
+            {% endif %}
+            </ul>
+        </div>
+    </div>
 </div>
 {% endfor %}
 <footer class="pages">

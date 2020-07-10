@@ -13,30 +13,31 @@
 {% endfor %}
 </ul></nav>
 <div class="header--mgt">
+<div class="headlines">
 <h1>Manage Bands</h1>
+</div>
 <a class="btn btn-subform add" href="{{ url_for('manage.add_band') }}">Add New Band</a>
 </div>
 </header>
 {% for band in bands.items %}
 {# {{ nav.mysite_navigation.render() }} #}
 <div class="card">
-    {# {% if band.image_file %}
-        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/'+band.image_file ) }}" > {# filename=band.media.tour_media.pictures.square #}
-  {#}  {% else %}
-        <img class="card-img" src="{{ url_for('static_media', filename='user_profile_pics/defaultband.jpg') }}" >
-    {% endif %} #}
-    <h2 class="card-title">{{ band.band_name }}</h2>
-    {% if band.media_assets.featured_image %}
-    <img src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}">
-    {% else %}
-    <img src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}">
-    {% endif %}
-  {#   <p>{{ band.cls }} | {{ band._cls }}</p> #}
-    <p class="card-body">{{ band.description }}</p>
-<p class="card-body">{{ band.strapline }}</p>
-    <p class="card-body"><a href="{{ url_for('manage.update_band_profile', band_name=band.band_name ) }}">Edit Band Profile</a></p>
-    {# | <a href="{{ url_for('bands.manage_tours', band_name=band.org_title) }}">Manage Tours</a> #}
-
+    <img src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" class="card-img">
+    <div class="card-content">
+        <h2 class="card-title"><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}">{{ band.band_name }}</a></h2> {#  {{ band._cls }} #}
+        <p class="card-body">{{ band.description }}</p>    
+        <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
+        <ul>
+            {% for member in band.band_members %}
+            <li>{{ member.musician }}</li>
+            {% endfor %}
+        </ul>
+        <div class="card-footer">
+            <ul>
+                <li><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add edit">Edit</a></li>
+            </ul>
+        </div>
+    </div>
 </div>
 {% endfor %}
 <footer class="pages">

@@ -48,6 +48,14 @@ def home():
     bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
     return render_template("bands_list.html", bands=bands)
 
+
+@public.route("/<string:bname>/", methods=('GET', 'POST'))
+def band_detail(bname):
+    band = Band.objects(band_name=bname).first()
+    return render_template("band_detail.html", band=band)
+
+
+
 @public.route('/tours/<int:index>', methods=['PUT'])
 def update_tour(index):
     tour = request.get_json()

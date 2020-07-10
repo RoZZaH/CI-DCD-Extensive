@@ -12,11 +12,7 @@
             {{ form.hidden_tag() }}
             <fieldset class="l-one-third" style="">
             <legend>Band Promo Image</legend>
-            {% if image_file %}
-                <img class="band-img" src="{{ image_file }}" > {# filename=band.media.tour_media.pictures.square #}
-            {% else %}
-                <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}" >
-            {% endif %}
+            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" > {# filename=band.media.tour_media.pictures.square #}
             {{ form.media_assets.featured_image.label }}
                 {{ form.media_assets.featured_image(class="form-control-file") }}
                 {% if form.media_assets.featured_image.errors %}
@@ -279,12 +275,14 @@
     {% endassets %}
     
     <script>
+    /* generate and select Towns dropdown menu */
     choiceSelect("select.origin-county", "{{ selected_county }}")
 
     loadTowns( "{{ selected_county }}" )
     .then(data => document.querySelector("select.origin-town").innerHTML = data)
     .then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"))
 
+    /* Modal */
     const toggleClass = (el, className) => el.classList.toggle(className)
     const modal = document.getElementById("del-modal")
 

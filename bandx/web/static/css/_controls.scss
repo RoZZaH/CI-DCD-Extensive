@@ -2,13 +2,13 @@
 .header--mgt {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
-.header--mgt {
-    
+.controls {
+  
 }
 
-    
 nav.pages__pagelinks {
   
 }
@@ -16,7 +16,7 @@ nav.pages__pagelinks {
 nav.pages__pagelinks ul {
   display: flex;
   list-style: none;
-  margin-left: 0;
+  margin: 0 0 .25em 0;
   padding: 0;
 }
 
@@ -28,7 +28,7 @@ nav.pages_pagelinks ul li {
   display: inline-block;
   background-color: rgb(196, 196, 196);
   padding: .25rem .5rem;
-  margin: .25rem;
+  // margin: .25rem;
 }
 
 .btn--pagelink {
@@ -44,7 +44,7 @@ nav.pages_pagelinks ul li {
 }
 
 .btn-subform{
-  padding: .25em .5em;
+  // padding: .25em .5em;
   font-size: 0.95rem;
   // display: block;
   // grid-column: 2;
@@ -53,7 +53,7 @@ nav.pages_pagelinks ul li {
   text-decoration: none;
   text-decoration: none;
   border-radius: 3px;
-  margin-bottom: .5em;
+  // margin-bottom: .5em;
   border: none;
 }
 
@@ -69,9 +69,4 @@ nav.pages_pagelinks ul li {
   background: tomato;
 }
 
-.modal-controls {
-  margin-top: .5em;
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-}
+

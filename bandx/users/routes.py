@@ -36,7 +36,7 @@ def login():
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get("next") # paam for page trying to access
-            return redirect(next_page) if next_page else redirect(url_for("public.home"))
+            return redirect(next_page) if next_page else redirect(url_for("manage.manage_bands_home"))
         else:
             flash(f"Login Unsuccessful. Please check email and password", "danger")
     return render_template("login.html", form=form)
