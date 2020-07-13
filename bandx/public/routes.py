@@ -6,7 +6,7 @@ from flask import (jsonify, Blueprint, \
 from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb, Breadcrumbs
 from flask_wtf import FlaskForm
 import phonenumbers
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, RadioField
 from wtforms.validators import DataRequired, ValidationError
 from mongoengine.queryset import QuerySet
 from bandx.utils.gns import nav
@@ -73,12 +73,37 @@ def show_grid():
 
 
 class PhoneForm(FlaskForm):
+    mobile = RadioField("Mobile Y/N", 
+                        choices=[("True","mobile"),("False","landline")],
+                        render_kw={},
+                        default="True")
+    region = RadioField('', choices= [
+                                    ('IE', 'Ireland'),
+                                    ('GB', 'N.I./UK'),
+                                    ('None','Other')
+
+                        ], default='IE')
     phone = StringField('Phone', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+    # def validate(self):
+    #     if not Form.validate(self):
+    #         return False
+    #     result = True
+    #     for field in [self.region, self.phone]:
+    #         if :
+    #             field.errors.append("Please do soemthing")
+    #             result = False
+    #         else:
+    #             .add(field.data)
+    #     return result
+
     def validate_phone(self, phone):
         try:
-            p = phonenumbers.parse(phone.data)
+            # if self.region.data == "None":
+                # p = phonenumbers.parse(phone.data)
+            # else:
+            p = phonenumbers.parse(phone.data, self.region.data)
             if not phonenumbers.is_valid_number(p):
                 raise ValueError()
         except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
@@ -89,9 +114,10 @@ class PhoneForm(FlaskForm):
 def form_phone():
     form = PhoneForm()
     # if request.method == 'POST':
-    #     return request.form
     if form.validate_on_submit():
-        session['phone'] = form.phone.data
+        # return request.form
+        p = phonenumbers.parse(form.phone.data, form.region.data)
+        session['phone'] = phonenumbers.format_number(p, phonenumbers.PhoneNumberFormat.E164)
         return redirect(url_for('public.show_phone'))
     return render_template("public_phonenumber.html", form=form)
 

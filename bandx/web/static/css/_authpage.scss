@@ -24,7 +24,7 @@ fieldset > *,
    width: 100%;
 }
 
-fieldset input :not([type="radio"]):not([type="checkbox"]),
+fieldset input:not([type="radio"]):not([type="checkbox"]),
 fieldset textarea {
     height: 1.75em;
     width: 100%;
@@ -78,3 +78,54 @@ input[type=radio] {
     width: auto;
 }
 
+.genres ul,
+.phone-wrapper ul#mobile,
+.phone-wrapper ul#region,
+ {
+    list-style: none;
+    display: flex;
+    padding-left: 0;
+  
+}
+
+.phone-wrapper ul#mobile li {
+    margin-right: 1em;
+}
+
+fieldset.genres {
+}
+
+// .genres ul {
+//     display: flex;
+//     flex-direction: row;
+//     flex-wrap: wrap;
+//     height: 10ch;
+// }
+
+// .genres li {
+//     border: 1px dotted pink;
+//     flex: 1 1 8ch;
+// }
+
+.genres ul {
+    font-size: .85rem;
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(6, minmax(1em, 1fr));
+    grid-gap: 0 .35em;
+    grid-auto-flow: column;
+    grid-auto-columns: repeat(auto-fill, 1fr);
+    // grid-template-rows: ;
+}
+
+.genres li {
+    display: inline;
+    // max-width: 12ch;
+}
+
+.genres li label {
+    display: block;
+    margin-top: -1.2em;
+    margin-left: 1em;
+    // border: 1px dashed red;
+}

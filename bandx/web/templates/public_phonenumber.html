@@ -1,4 +1,7 @@
 <head>
+    {% assets "home_css" %}
+      <link rel="stylesheet" href="{{ ASSET_URL }}" >
+    {% endassets %}
 <link rel="stylesheet" href="{{ url_for('static_css', filename='libs/intlTelInput.css') }}">
 <style>
 .iti__flag {
@@ -15,14 +18,18 @@
 
 <h1>Flask Phone Number Input Demo</h1>
 
- <form method="POST" enctype="multipart/form-data" ><!-- allow file upload -->
-        {{ form.hidden_tag() }}
-
+  <form method="POST" enctype="multipart/form-data" name="bigForm" ><!-- allow file upload -->
+<div class="phone-wrapper" style="display:flex">
+<fieldset name="phoneForm" id="phoneForm-0">
+    {{ form.hidden_tag() }}
+    {{ form.mobile }}
+    {{ form.region(class="region") }}
     {{ form.phone.label }}
     {{ form.phone(id="phone") }}
+</fieldset>
 
 
-
+  </div>
      {{ form.submit(class="btn btn-outline-info") }}
     </form>
      {% if form.errors %}
@@ -36,16 +43,99 @@
 {# <input type="tel" id="phone"> #}
 
 <script src="{{ url_for('static_js', filename='libs/intlTelInput.min.js') }}"></script>
-{# <script>
-  var input = document.querySelector("#phone");
-  window.intlTelInput(input, {
-    // any initialisation options go here
-      // any initialisation options go here
-    initialCountry:"ie",
-    preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
-  });
-</script> #}
-<script>
+{% block javascript %}
+
+
+  <script>
+
+ 
+
+// individual ids 
+    var wtf_phone_field = document.getElementById('phone');
+    wtf_phone_field.style.position = 'absolute';
+    wtf_phone_field.style.top = '-9999px';
+    wtf_phone_field.style.left = '-9999px';
+    wtf_phone_field.parentElement.insertAdjacentHTML('beforeend', '<div><input type="tel" id="_phone"></div>');
+    var fancy_phone_field = document.getElementById('_phone');
+    var fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
+      initialCountry:"gb",
+      preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
+      //separateDialCode: true,
+      nationalMode: true,
+      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
+    });    
+    fancy_phone_iti.setNumber(wtf_phone_field.value);
+    fancy_phone_field.addEventListener('blur', function() {
+        if(checkRegionState()){
+          wtf_phone_field.value = fancy_phone_iti.getNumber();
+        }else{
+          wtf_phone_field.value = fancy_phone_field.value
+        }
+    }); 
+
+  function checkRegionState(){
+    console.log("checinn")
+    let radios = document.querySelectorAll("#region input[type=radio]")
+    let i = radios.length - 1
+    if (radios[i].checked && radios[i].value == "None") {
+        document.querySelector(".iti__flag-container").classList.remove("hide")
+        return true
+    }else{
+      document.querySelector(".iti__flag-container").classList.add("hide")
+      return false
+    }
+  }
+
+document.querySelectorAll("#region input[type=radio]").forEach( el => el.addEventListener("click", checkRegionState))
+  
+document.addEventListener("DOMContentLoaded", function(){
+  checkRegionState()
+})
+
+
+
+  </script>
+{% endblock javascript %}
+
+<!--
+<div>
+  <div class="iti iti--allow-dropdown iti--separate-dial-code">
+    <div class="iti__flag-container">
+      <div class="iti__selected-flag" role="combobox" aria-owns="iti-0__country-listbox" aria-expanded="false" tabindex="0" title="Ireland: +353" aria-activedescendant="iti-0__item-ie-preferred">
+        <div class="iti__flag iti__ie"></div>
+        <div class="iti__selected-dial-code">+353</div>
+        <div class="iti__arrow"></div>
+      </div>
+      <ul class="iti__country-list iti__hide" id="iti-0__country-listbox" role="listbox">
+        <li class="iti__country iti__preferred iti__active" tabindex="-1" id="iti-0__item-ie-preferred" role="option" data-dial-code="353" data-country-code="ie" aria-selected="true">
+          <div class="iti__flag-box"><div class="iti__flag iti__ie"></div></div>
+          <span class="iti__country-name">Ireland</span><span class="iti__dial-code">+353</span>
+        </li>
+        <li class="iti__country iti__preferred" .. >
+      </ul>
+      </div>
+    <input type="tel" id="_phone" autocomplete="off" style="padding-left: 90px;" data-intl-tel-input-id="0" placeholder="85 012 3456">
+  </div>
+</div>
+
+
+
+{# let radios = document.querySelectorAll("#phoneForm-0 #region input[type=radio]")
+for(radio in radios) {
+   radios[radio].onclick = function() {
+      if(this.value != "None"){
+        document.querySelector(".iti__flag-container").classList.add("hide")
+    }else{
+        document.querySelector(".iti__flag-container").classList.remove("hide")
+    }
+   }
+} #}
+
+function toggleIntFlags(){
+document.querySelector(".iti__flag-container").classList.toggle("hide")
+}
+
+
 // individual ids 
     var wtf_phone_field = document.getElementById('phone');
     wtf_phone_field.style.position = 'absolute';
@@ -56,14 +146,17 @@
     var fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
       initialCountry:"ie",
       preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
-      separateDialCode: true,
+      //separateDialCode: true,
+      nationalMode: true,
       utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
     });
+    document.querySelector(".iti__flag-container").classList.toggle("hide")
     fancy_phone_iti.setNumber(wtf_phone_field.value);
     fancy_phone_field.addEventListener('blur', function() {
         wtf_phone_field.value = fancy_phone_iti.getNumber();
-    });
-</script>
+    }); 
 
+
+-->
 
 </body>

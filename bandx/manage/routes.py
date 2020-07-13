@@ -129,7 +129,7 @@ def update_band_profile(bname):
         abort(403)
     form = CreateUpdateBandForm()
     if form.validate_on_submit():
-        # return request.form
+        #return request.form
         # doesn't change created by or date_created
         if form.media_assets.featured_image.data:
             picture_file = save_picture(form.media_assets.featured_image.data, band=True)
@@ -152,7 +152,8 @@ def update_band_profile(bname):
         band.band_name= form.band_name.data
         band.description = form.description.data
         band.genres.clear()
-        band.genres = extract_tags(form.genres.data)
+        genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]
+        band.genres = list(filter(None, set(genrelist)))
         band.hometown={"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data}
         band.profile = form.profile.data
         band.strapline = form.strapline.data
@@ -177,7 +178,7 @@ def update_band_profile(bname):
         form.contact_details.contact_name.data = band.contact_details.contact_name
         form.contact_details.contact_title.data = band.contact_details.contact_title
         form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
-        #form.contact_details.contact_emails = band.contact_details.contact_emails #sent as band object
+        # form.contact_details.contact_emails = band.contact_details.contact_emails #sent as band object
         # form.media_assets.featured_image.data = band.media_assets.featured_image
         form.media_assets.featured_video.data = band.media_assets.featured_video
         form.genres.data = ",".join(map(str,band.genres))
@@ -201,93 +202,3 @@ def delete_band(bname):
     band.delete()
     flash("Band has been deleted!", "success")
     return redirect(url_for("manage.manage_bands_home"))
-
-# // ammend@manage.route("/band/<string:band_name>/edit", methods=('GET', 'POST'))
-# # @login_required
-# def update_band_profile(band_name):
-#     # flask-login uses a proxy that doesn't play nice with mongoengine
-#     # so current_user must be cast as user 
-#     user = User.objects(id=current_user.id).first()
-#     band = Band.objects(band_name=band_name).first()
-#     if band.created_by.id != current_user.id:
-#         abort(403)
-#     form = CreateUpdateBandForm()
-#     image_file = url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image)
-#     if form.validate_on_submit():
-#         picture_file = None
-#         if form.media_assets.featured_image.data:
-#             picture_file = save_picture(form.media_assets.featured_image.data, band=True)
-#             assets = Assets(
-#                 featured_image = picture_file,
-#                 featured_video = form.media_assets.featured_video.data or None
-#             )
-#         elif form.media_assets.featured_video.data:
-#             assets = Assets(
-#                 featured_image = picture_file,
-#                 featured_video = form.media_assets.featured_video.data
-#             )
-#         else:
-#             assets = Assets()
-#     #     flash('Your post has been updated!', 'success')
-#        # return request.form
-#         contact = Contact()
-#         contact.contact_name = form.contact_details.contact_name.data
-#         contact.contact_title = form.contact_details.contact_title.data
-#         contact.contact_generic_title = form.contact_details.contact_generic_title.data
-#         for phone in form.contact_details.contact_numbers.data:
-#             new_phone = Phone(**phone)
-#             contact.contact_numbers.append(new_phone)
-#         for email in form.contact_details.contact_emails.data:
-#             new_email = Email(**email) #contact.contact_emails.append(Email(**email)
-#             contact.contact_emails.append(new_email)
-        
-#         weblinks = Links()
-#         weblinks.enquiries = form.enquiries_url.data
-#         band = Band(
-#                 band_name= form.band_name.data,
-#                 description = form.description.data,
-#                 created_by = user,
-#                 genres = extract_tags(form.genres.data),
-#                 hometown={"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data},
-#                 profile = form.profile.data,
-#                 strapline = form.strapline.data,
-#                 contact_details = contact,
-#                 links = weblinks,
-#                 media_assets = assets,
-#             )
-#         # band.save()
-#         band.band_members.clear()
-#         for member in form.members.data:
-#             new_member = BandMember()
-#             new_member.musician = member["musician"]
-#             new_member.instruments = member["instruments"]
-#             band.band_members.append(new_member)
-#         band.save()
-#         flash("band info updated!", "success")
-#         # redirect
-#         return redirect(url_for('manage.manage_bands_home'))
-#     elif request.method == "GET":
-    
-#         form.band_name.data = band.band_name
-#         form.description.data = band.description
-#         form.strapline.data = band.strapline
-#         form.profile.data = band.profile
-#         form.contact_details.contact_name.data = band.contact_details.contact_name
-#         form.contact_details.contact_title.data = band.contact_details.contact_title
-#         form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
-#         #form.contact_details.contact_emails = band.contact_details.contact_emails #sent as band object
-#         form.media_assets.featured_image.data = band.media_assets.featured_image
-#         form.media_assets.featured_video.data = band.media_assets.featured_video
-#         form.genres.data = ",".join(map(str,band.genres))
-#         form.enquiries_url.data = band.links.enquiries
-
-#     selected_county = band.hometown["county"] if band.hometown["county"] is not None else "Antrim"
-#     selected_town = band.hometown["town"] if band.hometown["town"] is not None else "none"
-#     # image_file = url_for('static_media', filename="band_profile_pics/" + band.image_file)
-#     genres = list_genres()
-#     form_legend="Edit Band Profile"
-#     return render_template("manage_band_create_update_form.html", form=form, genrelist=genres, form_legend="Edit Band Profile",
-#                             selected_county=selected_county, selected_town=selected_town, band=band, image_file=image_file) # image_file=image_file)
-
-
-

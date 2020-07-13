@@ -94,7 +94,16 @@ class ContactFormlet(Form):
                             render_kw={"placeholder": "e.g. Enquiries or Bookings" })
     contact_emails = FieldList(FormField(EmailFormlet), min_entries=1)
     contact_numbers = FieldList(FormField(PhoneFormlet), min_entries=1)
-    
+
+
+
+# class Genre(Form):
+#     checked = BoeleanField()
+
+
+# class GenresForm(Form):
+#     genres_list = FieldList(BooleanField("Genre", render_kw={"name": "genre"}))
+#     genres_other = StringField("", render_kw={"name": "genre"}, validators=[Length(max=15)])
 
 # class LinksFormelet(Form)
 
@@ -111,6 +120,7 @@ class CreateUpdateBandForm(FlaskForm):
     profile = TextAreaField("Profile",
                             render_kw={"placeholder": "Brief Bio/History, band origins and direction"},
                             validators=[DataRequired()])
+    # genres = FormField(GenresForm)
     genres = StringField("Musical Genres", 
                             render_kw={"id": "testInput",
                                        "style":"text-transform: lowercase;",

@@ -7,13 +7,14 @@ api = Blueprint('api', __name__)
 def list_genres():
     aggregation = list(Band.objects.aggregate([
         {"$unwind": "$genres"},
-        {"$group": { "_id": "$genres"} }
+        {"$group": { "_id": "$genres"} },
+        {"$sort": {"_id": 1 }}
     ]))
     genres = []
     for genre in aggregation:
         for k,v in genre.items():
             genres.append(v)
-    return ",".join(genres)
+    return genres #",".join(genres)
 
 
 @api.route('/towns/<county>')

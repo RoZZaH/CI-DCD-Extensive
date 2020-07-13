@@ -133,11 +133,13 @@ secondary_in = Navbar('',
     View('Manage Bands', 'manage.manage_bands_home'),
     View('Settings', 'user.account'),
     View('Log Out', 'user.logout'),
+    View('PhoneTest', 'public.form_phone')
 )
 
 secondary_out = Navbar('',
     View('Register', 'user.register'),
     View('Login', 'user.login'),
+    View('PhoneTest', 'public.form_phone')
 )
 
 nav.register_element('gns', topbar)

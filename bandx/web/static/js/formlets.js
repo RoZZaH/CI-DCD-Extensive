@@ -5,8 +5,7 @@
 function removeForm() {
     let $removedForm = $(this).closest('.subform');
     let removedIndex = parseInt($removedForm.data('index'));
-    removedIndex == 0 ?  true: $removedForm.remove()
-    // error message can't remove first field
+    removedIndex == 0 ? true: $removedForm.remove()
     /**  Update indices - Not needed for Mongo
      * adjustIndices(removedIndex); */
 }
@@ -117,8 +116,9 @@ today = `${yyyy}-${mm}-${dd}`;
 
 document.addEventListener("DOMContentLoaded", function(){
     [ ...document.querySelectorAll(".add") ].forEach( el => el.addEventListener("click", addForm));
-    [ ...document.querySelectorAll(".remove") ].forEach( el => el.addEventListener("click", removeForm));
-    /* find wtforms datefield */
-  //  $('#subforms-container-date').find('input[type=date]').attr("value", today);
-
+    [ ...document.querySelectorAll(".remove") ].forEach( el => el.addEventListener("click", removeForm));    
 });
+    /* 
+    // on load set default tourdate to today
+    $('#subforms-container-date').find('input[type=date]').attr("value", today);
+    */

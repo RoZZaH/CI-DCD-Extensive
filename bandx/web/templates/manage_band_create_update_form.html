@@ -56,7 +56,20 @@
                 {% else %}
                     {{ form.strapline }}
                 {% endif %}
-            {{ form.genres.label(class="push-down") }}
+            {# {{ form.genres }} #}
+            <fieldset class="genres">
+            <legend>Genres</legend>
+            
+                <ul class="genre-checkbox-wrapper">
+            {% for genre in genrelist %}<li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre in band.genres else ''}}><label>{{genre}}</label></li>
+            {% endfor %}
+            </ul>
+            <label>Other:</label>
+                <input type="text" name="genre">
+            </fieldset>
+                {# {% for subform in band.band_members or form.members %} #}
+
+            {# {{ form.genres.label(class="push-down") }}
                 {% if form.genres.errors %}
                     {{ form.genres(class="is-invalid") }}
                     <div class="invalid-feedback">
@@ -66,7 +79,7 @@
                     </div>
                 {% else %}
                     {{ form.genres(class="push-down") }}
-                {% endif %}
+                {% endif %} #}
 
             {{ form.hometown.origin_county.label }}
                 {{ form.hometown.origin_county }}
