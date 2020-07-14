@@ -46,7 +46,7 @@ class HomeTownForm(Form):
                             ("Wicklow",	"Wicklow")
                             ],
                             render_kw={"class": "origin-county"})
-    origin_town = SelectField("From Town/Locale",
+    origin_town = SelectField("From Town/Locality",
                                 choices=[],
                                 render_kw={"class": "origin-town"},
                                 validate_choice=False) #depends on above
@@ -97,16 +97,6 @@ class ContactFormlet(Form):
 
 
 
-# class Genre(Form):
-#     checked = BoeleanField()
-
-
-# class GenresForm(Form):
-#     genres_list = FieldList(BooleanField("Genre", render_kw={"name": "genre"}))
-#     genres_other = StringField("", render_kw={"name": "genre"}, validators=[Length(max=15)])
-
-# class LinksFormelet(Form)
-
 class CreateUpdateBandForm(FlaskForm):
    # org_type = HiddenField()
     band_name = StringField("Band Name", #FORMAT The
@@ -141,6 +131,16 @@ class CreateUpdateBandForm(FlaskForm):
 
 
 
+
+# class Genre(Form):
+#     checked = BoeleanField()
+
+
+# class GenresForm(Form):
+#     genres_list = FieldList(BooleanField("Genre", render_kw={"name": "genre"}))
+#     genres_other = StringField("", render_kw={"name": "genre"}, validators=[Length(max=15)])
+
+# class LinksFormelet(Form)
 
 
 

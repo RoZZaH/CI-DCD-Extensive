@@ -17,8 +17,6 @@ from bandx.utils.helpers import *
 manage = Blueprint('manage', __name__, url_prefix='/manage') # import_name , usually the current module
 default_breadcrumb_root(manage, '.public')
 
-
-
 @manage.route("/")
 @manage.route("/bands")
 @register_breadcrumb(manage, '.bands', 'Manage My Bands')
@@ -33,15 +31,18 @@ def redirector():
     return redirect(url_for("manage.manage_bands_home"))
 
 
-def get_video_id(url):
-    vid = {}
-    if url.contains("youtu"):
-        vid["service"] = "youtube"
-    elif url.contains("vimeo"):
-        vid["service"] = "youtube"
+def get_video_service_and_id(url):
+    video = {}
+    if "youtu" in url:
+        video["service"] = "youtube"
+    elif "vimeo" in url:
+        video["service"] = "vimeo"
     else:
         return None
-    return print(vid.service)
+    v = re.search("(?:https?:\/\/)?(?:www\.)?(?:vimeo.com\/|youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[^&\s\?]+(?!\S))\/)|(?:\S*v=|v\/))))([^&\s\?]+)", url)
+    video["vid"] = v.group(1).split("=")[1] if v.group(1).startswith("v=") else v.group(1)
+    print(video)
+    return video
 # regex for vimeo (?:https?:\/\/)?(?:www\.)?(?:vimeo.com\/|youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[^&\s\?]+(?!\S))\/)|(?:\S*v=|v\/))))([^&\s\?]+)
 
 
@@ -51,7 +52,7 @@ def add_band():
     form = CreateUpdateBandForm()
     print(request.form)
     if form.validate_on_submit():
-        # return request.form
+        return request.form
         user = User.objects(id=current_user.id).first()
         if form.media_assets.featured_image.data:
             picture_file = save_picture(form.media_assets.featured_image.data, band=True)
@@ -63,8 +64,7 @@ def add_band():
                 featured_image = 'defaultband.jpg'
              )
         if form.media_assets.featured_video.data:
-            video_id = get_video_id(form.media_assets.featured_video.data)
-            print(video_id)
+            get_video_service_and_id(form.media_assets.featured_video.data)
         contact = Contact()
         contact.contact_name = form.contact_details.contact_name.data
         contact.contact_title = form.contact_details.contact_title.data
@@ -135,7 +135,8 @@ def update_band_profile(bname):
             picture_file = save_picture(form.media_assets.featured_image.data, band=True)
             band.media_assets.featured_image = picture_file
         if form.media_assets.featured_video.data:
-            band.media_assets.featured_video = form.media_assets.featured_video.data
+           # get_video_service_and_id(form.media_assets.featured_video.data)
+           band.media_assets.featured_video = get_video_service_and_id(form.media_assets.featured_video.data)
         contact = Contact()
         contact.contact_name = form.contact_details.contact_name.data
         contact.contact_title = form.contact_details.contact_title.data
@@ -154,7 +155,7 @@ def update_band_profile(bname):
         band.genres.clear()
         genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]
         band.genres = list(filter(None, set(genrelist)))
-        band.hometown={"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data}
+        band.hometown= {"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data}
         band.profile = form.profile.data
         band.strapline = form.strapline.data
         band.contact_details = contact
@@ -180,7 +181,7 @@ def update_band_profile(bname):
         form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
         # form.contact_details.contact_emails = band.contact_details.contact_emails #sent as band object
         # form.media_assets.featured_image.data = band.media_assets.featured_image
-        form.media_assets.featured_video.data = band.media_assets.featured_video
+        form.media_assets.featured_video.data = (("https://www.youtube.com/watch?v=" if band.media_assets.featured_video["service"] == "youtube" else "https://www.vimeo.com/"  )   +band.media_assets.featured_video["vid"]) if band.media_assets.featured_video else None
         form.genres.data = ",".join(map(str,band.genres))
         form.enquiries_url.data = band.links.enquiries
 

@@ -48,6 +48,10 @@ def home():
     bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
     return render_template("bands_list.html", bands=bands)
 
+@public.route("/bands/")
+def redirector():
+    return redirect(url_for("public.home"))
+
 
 @public.route("/<string:bname>/", methods=('GET', 'POST'))
 def band_detail(bname):

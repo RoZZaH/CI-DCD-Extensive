@@ -4,22 +4,29 @@
 {% include "include_breadcrumbs.html" %}
 <hr class="hr--breadcrumbs hr--left">
 <div class="header--mgt">
-<div class="headlines">
-<h6 class="headline--eyebrow">{{ band.description }}</h6><!-- newpaper terms leadin -->
-<h1 class="headline">{{ band.band_name }}</h1>
-<h4 class="headline--strapline">{{ band.strapline }}</h4>
-</div>
+    <div class="headlines">
+        <h6 class="headline--eyebrow">{{ band.description }}</h6><!-- newpaper terms leadin -->
+        <h1 class="headline">{{ band.band_name }}</h1>
+        <h4 class="headline--strapline">{{ band.strapline }}</h4>
+    </div>
 {% if current_user.is_authenticated %} 
-<div class="controls">
-<a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add" >Edit Band</a>
+    <div class="controls">
+        <a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add" >Edit Band</a>
+    </div>
 {% endif %}
+<!-- /header--mgt -->
 </div>
 </header>
-
-
+{# {{ band.media_assets.featured_video.service  }} #}
+{% if band.media_assets.featured_video.vid %}
 <div id="video-wrapper">
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/lB_VTqaPC08" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   {% if band.media_assets.featured_video.service == "youtube"  %}
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ band.media_assets.featured_video.vid }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   {% else %}
+   <iframe width="560" height="315" src="https://player.vimeo.com/video/{{ band.media_assets.featured_video.vid }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+   {% endif %}
 </div>
+{% endif %}
 
 <h2 class="headline--profile">Profile</h2>
 <p>{{ band.profile }}</p>

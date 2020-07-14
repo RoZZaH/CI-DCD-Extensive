@@ -12,39 +12,99 @@
 </header>
     <form method="POST" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist | safe }}" >
             {{ form.hidden_tag() }}
-        <fieldset class="l-one-third" style="">
-            <legend>Band Promo Image</legend>                               {# filename=band.media.tour_media.pictures.square #}
-            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" >
+            <fieldset class="l-one-third" style="">
+            <legend>Band Promo Image</legend>
+            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" > {# filename=band.media.tour_media.pictures.square #}
             {{ form.media_assets.featured_image.label }}
-                {# fix recesss styling #}
                 {{ form.media_assets.featured_image(class="form-control-file") }}
                 {% if form.media_assets.featured_image.errors %}
                     {% for error in form.media_assets.featured_image.errors %}
                         <span class="alert-danger">{{ error }}</span><br/>
                     {% endfor %}
                 {% endif %}
-        </fieldset>
-        <fieldset class="r-two-thirds">
-            <legend>Band Details</legend>
-            {{ render_field(form.band_name) }}
-            {{ render_field(form.description) }}
-            {{ render_field(form.strapline) }}
-            <fieldset class="genres">
-                <legend>Genres</legend>
-                <ul class="genre-checkbox-wrapper">
-                {% for genre in genrelist %}<li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre in band.genres else ''}}><label>{{genre}}</label></li>
-                {% endfor %}
-                </ul>
-                <label>Other:</label>
-                    <input type="text" name="genre">
             </fieldset>
+            <fieldset class="r-two-thirds">
+            <legend>Band Details</legend>
+            {{ form.band_name.label }}
+                {% if form.band_name.errors %}
+                    {{ form.band_name(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.band_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.band_name }}
+                {% endif %}
+            {{ form.description.label }}
+                {% if form.description.errors %}
+                    {{ form.description(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.description.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.description }}
+                {% endif %}
+            {{ form.strapline.label }}
+                {% if form.strapline.errors %}
+                    {{ form.strapline(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.strapline.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.strapline }}
+                {% endif %}
+            {# {{ form.genres }} #}
+            <fieldset class="genres">
+            <legend>Genres</legend>
+            
+                <ul class="genre-checkbox-wrapper">
+            {% for genre in genrelist %}<li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre in band.genres else ''}}><label>{{genre}}</label></li>
+            {% endfor %}
+            </ul>
+            <label>Other:</label>
+                <input type="text" name="genre">
+            </fieldset>
+                {# {% for subform in band.band_members or form.members %} #}
+
+            {# {{ form.genres.label(class="push-down") }}
+                {% if form.genres.errors %}
+                    {{ form.genres(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.genres.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.genres(class="push-down") }}
+                {% endif %} #}
+
             {{ form.hometown.origin_county.label }}
                 {{ form.hometown.origin_county }}
             {{ form.hometown.origin_town.label }}
                 {{ form.hometown.origin_town }}
-            {{ render_field(form.profile) }}
+
+        {#    {{ form.profile.label }}
+                {% if form.profile.errors %}
+                    {{ form.profile(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.profile.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.profile }}
+                {% endif %} #}
+                {{ render_field(form.profile) }}
+
+
             </fieldset>
-        <fieldset class="half" data-formlet="member">
+            {# </div> #}
+            <fieldset class="half" data-formlet="member">
             <legend>Band Members</legend>
                 <div id="subforms-container-member" class="subform">
                         {% for subform in band.band_members or form.members %} {#   #}
@@ -72,15 +132,46 @@
                 </div>
                 <button type="button" class="add btn-subform">Add Band Member</button>
                 <!-- /subform -->
-        </fieldset>
-        <fieldset class="half">
+            </fieldset>
+            <fieldset class="half">
             <legend>Promotion</legend>
-            {{ render_field(form.media_assets.featured_video) }}
-            {{ render_field(form.contact_details.contact_name) }}
-            {{ render_field(form.contact_details.contact_title) }}
-            {{ render_field(form.contact_details.contact_generic_title) }}
-               
-        <fieldset class="half" data-formlet="email">
+            {{ form.media_assets.featured_video.label }}
+                {{ form.media_assets.featured_video }}
+            {{ form.contact_details.contact_name.label }}
+                {% if form.contact_details.contact_name.errors %}
+                    {{ form.contact_details.contact_name(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.contact_details.contact_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.contact_details.contact_name }}
+                  {% endif %}
+            {{ form.contact_details.contact_title.label }}
+                {% if form.contact_details.contact_title.errors %}
+                    {{ form.contact_details.contact_title(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.contact_details.contact_title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.contact_details.contact_title }}
+                  {% endif %}
+            {{ form.contact_details.contact_generic_title.label }}
+                {% if form.contact_details.contact_generic_title.errors %}
+                    {{ form.contact_details.contact_generic_title(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.contact_details.contact_generic_title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.contact_details.contact_generic_title }}
+                  {% endif %}
+            
+            <fieldset class="half" data-formlet="email">
             <legend>Promoter Emails</legend>
                 <div id="subforms-container-email">
                         {% for subform in (band.contact_details.contact_emails if band) or form.contact_details.contact_emails %}
@@ -151,11 +242,25 @@
                 <button type="button" class="add btn-subform" href="#/">Add Contact Number</button>
                 <!-- /subform -->
             </fieldset>
-            <fieldset class="half">
-            <legend>Enquiries Web Link</legend>
-                {{ render_field(form.enquiries_url)}}
-            <!-- /form -->
-            </fieldset>
+
+
+
+        <fieldset class="half">
+        <legend>Enquiries Web Link</legend>
+            {{ form.enquiries_url.label }}
+                {% if form.enquiries_url.errors %}
+                    {{ form.enquiries_url(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.enquiries_url.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.enquiries_url }}
+                  {% endif %}
+
+        <!-- /form -->
+        </fieldset>
         </fieldset>
         {{ form.submit(class="btn btn-outline-info") }}
     </form>

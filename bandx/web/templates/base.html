@@ -25,22 +25,13 @@
         <a href="{{ url_for('public.home') }}">Band<span>&times;</span></a>
         </div>
         <div class="navigation">
-        <ul class="primary-nav">
-        <li class="main-menu__item"><a href="{{ url_for('public.home') }}">Bands <small>(A-Z)</small></a></li>
-        <li class="main-menu__item"><a href="#" class="current">Tour Dates <small>(by location)</small></a></li>
-        <li class="main-menu__item"><a href="#">Contact</a></li>
-        </ul>
+            {# {{ nav.gns.render(renderer='just_gns') }} #}
         <!-- <a mobile menu toggle -->
-        <ul class="secondary-nav">
+        <ul class="mobile-nav">
             {% if current_user.is_authenticated %}
-                {{ nav.sns_in.render(renderer='just_li') }}
-            {# <li class=""><a href="{{ url_for('user.logout')}}">Log Out</a></li>
-            <li class=""><a href="{{ url_for('user.account')}}">Settings</a></li>
-            <li class=""><a href="{{ url_for('bands.manage_bands')}}">Manage Bands</a></li> #}
+                {{ nav.mob_in.render(renderer='just_li') }}
             {% else %}
-                {{ nav.sns_out.render() }}
-            {# <li class=""><a href="{{ url_for('user.login')}}">Login</a></li>
-            <li class=""><a href="{{ url_for('user.register')}}">Register</a></li> #}
+                {{ nav.mob_out.render(renderer='just_li') }}
             {% endif %}
         </ul>
         </div>

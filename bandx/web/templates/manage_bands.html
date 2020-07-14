@@ -22,9 +22,11 @@
 {% for band in bands.items %}
 {# {{ nav.mysite_navigation.render() }} #}
 <div class="card">
-    <img src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" class="card-img">
+    <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }})">
+        <a href="{{ url_for('public.band_detail', bname=band.band_name)}}"></a>
+    </div>
     <div class="card-content">
-        <h2 class="card-title"><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}">{{ band.band_name }}</a></h2> {#  {{ band._cls }} #}
+        <h2 class="card-title"><a href="{{ url_for('public.band_detail', bname=band.band_name ) }}">{{ band.band_name }}</a></h2> {#  {{ band._cls }} #}
         <p class="card-body">{{ band.description }}</p>    
         <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
         <ul>
@@ -56,5 +58,6 @@
 <div class="sidebar">
     <p> hello sidebar !</p>
     {{ nav.gns.render(renderer='just_li') }}
+
 </div>
 {% endblock sidebar %} 

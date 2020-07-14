@@ -45,7 +45,7 @@ class Links(db.EmbeddedDocument):
 
 class Assets(db.EmbeddedDocument):
     featured_image = db.StringField(max_length=20, required=True, default='defaultband.jpg')
-    featured_video = db.StringField()
+    featured_video = db.MapField(db.StringField())
 
 
 class BandMember(db.EmbeddedDocument):
