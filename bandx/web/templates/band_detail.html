@@ -18,7 +18,8 @@
 </div>
 </header>
 {# {{ band.media_assets.featured_video.service  }} #}
-{% if band.media_assets.featured_video.vid %}
+{% if band %}
+{% if band.media_assets.featured_video %}
 <div id="video-wrapper">
    {% if band.media_assets.featured_video.service == "youtube"  %}
    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ band.media_assets.featured_video.vid }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -26,6 +27,7 @@
    <iframe width="560" height="315" src="https://player.vimeo.com/video/{{ band.media_assets.featured_video.vid }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
    {% endif %}
 </div>
+{% endif %}
 {% endif %}
 
 <h2 class="headline--profile">Profile</h2>
@@ -46,7 +48,7 @@
     </dd>
     <dt class="featured-img">Images</dt>
         <dd class="featured-img">
-            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" >
+            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image if band.media_assets.featured_image else 'band_profile_pics/defaultband.jpg') }}" >
         </dd>
         <dd class="featured-img featured-img-caption">Image description</dd><!-- more images -->
     <dt class="colon-after">Members</dt>

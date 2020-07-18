@@ -5,29 +5,28 @@ api = Blueprint('api', __name__)
 
 @api.route("/genres")
 def list_genres():
-    aggregation = list(Band.objects.aggregate([
+    return list(Band.objects.aggregate([
         {"$unwind": "$genres"},
-        {"$group": { "_id": "$genres"} },
-        {"$sort": {"_id": 1 }}
-    ]))
-    genres = []
-    for genre in aggregation:
-        for k,v in genre.items():
-            genres.append(v)
-    return genres #",".join(genres)
-
+        {"$group": { "_id": "null", "genres": {"$addToSet": "$genres"} }},
+        {"$sort": {"genres": 1 }}
+    ]))[0]["genres"]
 
 @api.route('/towns/<county>')
 def get_towns(county):
     # [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
-    towns = Towns.objects(county=county)
+    # towns = Towns.objects(county=county)
+    return list(Towns.objects.aggregate([
+        {"$match": {"county" : county }},
+        {"$group": {"_id": "$county", "towns": { "$push": {"name": "$town", "val" : "$town"} } } }
+    ]))[0]
 
-    townsArray = []
+    # townsArray = []
 
-    for town in towns:
-        townObj = {}
-        townObj["val"] = town.town
-        townObj["name"] = town.town
-        townsArray.append(townObj)
+    # for town in towns:
+    #     townObj = {}
+    #     townObj["val"] = town.town
+    #     townObj["name"] = town.town
+    #     townsArray.append(townObj)
 
-    return jsonify({"towns": townsArray})
+    # return jsonify({"towns": townsArray})
+    # return jsonify(towns)

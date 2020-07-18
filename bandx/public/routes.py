@@ -1,3 +1,4 @@
+import json
 from flask import (jsonify, Blueprint, \
     session, \
     redirect, request, render_template, \
@@ -12,18 +13,10 @@ from mongoengine.queryset import QuerySet
 from bandx.utils.gns import nav
 from flask_nav.elements import Navbar, Subgroup, View
 from bandx.models.entities import Band, Towns
+from bandx.api.routes import list_genres
 
 public = Blueprint('public', __name__) # import_name , usually the current module
 default_breadcrumb_root(public, '.')
-
-
-# @nav.navigation('mysite_navigation')
-# def create_navbar():
-#     home_view = (View('Home', 'public.home'))
-#     register_view = (View('Register', 'user.register'))
-#     manage_view = (View('Manage Bands', 'bands.manage_bands'))
-#     return Navbar('MySite', home_view, register_view, manage_view)
-
 
 
 
@@ -53,10 +46,195 @@ def redirector():
     return redirect(url_for("public.home"))
 
 
-@public.route("/<string:bname>/", methods=('GET', 'POST'))
+@public.route("/band/<string:bname>/", methods=('GET', 'POST'))
 def band_detail(bname):
     band = Band.objects(band_name=bname).first()
     return render_template("band_detail.html", band=band)
+
+
+@public.route('/a2z')
+@register_breadcrumb(public, '.', 'Bands')
+def a2z():
+    page = request.args.get("page", 1, type=int)
+    bands = Band.objects.order_by('band_name').paginate(per_page=10, page=page)
+    return render_template("bands_list.html", bands=bands)
+
+
+@public.route('/genre')
+def by_genre():
+    genres = list_genres()
+    return render_template("genre_list.html", genres=genres)
+
+@public.route('/search', methods=('GET', 'POST'))
+def search():
+    if request.method == "POST":
+        genres = request.form.getlist("genres")
+        print(genres)
+        andor = request.form.get("andor")
+        # print(andor
+        #genre = request.args.get("genre") #getlist
+        page = request.args.get("page", 1, type=int)    
+        if len(genres) == 1:
+            genres = genres.pop()
+            bands = Band.objects(genres=genres).paginate(per_page=1, page=page)
+        else:
+            if andor == "true":
+                bands = Band.objects(genres__all=genres).paginate(per_page=1, page=page)
+            else:
+                bands = Band.objects(genres__in=genres).paginate(per_page=1, page=page)
+        return render_template("bands_list.html", bands=bands)
+
+
+@public.route('/location')
+def by_location():
+
+    #db.towns.aggregate([{"$group": {"_id": "$county", townz: {$push: {town: "$town"}}  }}])
+    #aggregation = list(Towns.objects.aggregate([{"$group": { "_id": "$county", 
+     #               "townz": {"$push": {"town": "$town"}}, "count": {"$sum": 1}}}, {"$sort": {"_id": 1}}])) #towns per county
+    
+    aggregation = list(Towns.objects.aggregate([
+                    {"$group": {"_id": { "county": "$county", "town": "$town" }}},
+                    {"$group": {"_id" : "$_id.county", "towns": {"$push" :  "$_id.town"}}},
+                    {"$sort": {"_id": 1}}]))
+
+    aggregation2 = list(Band.objects.aggregate([
+                    {"$group": {"_id": { "county": "$hometown.county", "town": "$hometown.town" }, "num_bands_in_town": {"$sum": 1} }},
+                    {"$group": {"_id" : "$_id.county", "towns": {"$push" : {"name":"$_id.town", "num": "$num_bands_in_town"}}, "ctotal": {"$sum": "$num_bands_in_town"} }},
+                    {"$sort": {"_id": 1}}]))
+
+        
+    pipeline = [
+        # {
+        #     u"$match": {
+        #         u"county": u"Wexford"
+        #     }
+        # }, 
+        {
+            u"$lookup": {
+                u"from": u"band",
+                u"let": {
+                    u"townt": u"$town",
+                    u"townc": u"$county"
+                },
+                u"pipeline": [
+                    {
+                        u"$project": {
+                            u"_id": 0.0,
+                            u"band_name": 1.0,
+                            u"hometown": 1.0
+                        }
+                    },
+                    {
+                        u"$replaceRoot": {
+                            u"newRoot": {
+                                u"$mergeObjects": [
+                                    {
+                                        u"bandname": u"$band_name",
+                                        u"town": u"",
+                                        u"county": u""
+                                    },
+                                    u"$hometown"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        u"$match": {
+                            u"$expr": {
+                                u"$and": [
+                                    {
+                                        u"$eq": [
+                                            u"$town",
+                                            u"$$townt"
+                                        ]
+                                    },
+                                    {
+                                        u"$eq": [
+                                            u"$county",
+                                            u"$$townc"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        u"$project": {
+                            u"_id": 0.0,
+                            u"bandname": 1.0
+                        }
+                    }
+                ],
+                u"as": u"bands"
+            }
+        }, 
+        {
+            u"$replaceRoot": {
+                u"newRoot": {
+                    u"$mergeObjects": [
+                        {
+                            u"bandlisting": {
+                                u"$size": u"$bands.bandname"
+                            },
+                            u"town": u"$town",
+                            u"county": u"$county"
+                        }
+                    ]
+                }
+            }
+        }, 
+        {
+            u"$group": {
+                u"_id": {
+                    u"county": u"$county",
+                    u"town": u"$town",
+                    u"number_of_bands_per_town": u"$bandlisting"
+                },
+                u"number_of_towns_per_county": {
+                    u"$sum": 1
+                }
+            }
+        }, 
+        {
+            u"$group": {
+                u"_id": u"$_id.county",
+                u"towns": {
+                    u"$push": {
+                        u"name": u"$_id.town",
+                        u"num": u"$_id.number_of_bands_per_town"
+                    }
+                },
+                u"bands_total": {
+                    u"$sum": u"$_id.number_of_bands_per_town"
+                },
+                u"ctotal": {
+                    u"$sum": u"$number_of_towns_per_county"
+                }
+            }
+        },
+        {
+            "$sort": {"_id": 1}
+        }
+    ]
+
+
+    counties = Towns.objects.aggregate(pipeline)
+
+    #return jsonify(counties)
+    return render_template("counties_list.html", counties=counties)  #",".join(genres)
+
+    # unclean counties
+        # ["Antrim", "Armagh", 
+        # "Carlow", "Cavan", "Clare" ,"Cork",
+        # "Derry" , "Donega", "Donegal", "Down", "Dublin",
+        # "Fermanagh", "Galway", 
+        # "Kerry", "Kildare", "Kilkenny", 
+        # "Laois", "Leitrim", "Limerick","Longford", "Louth",
+        # "Mayo", "Meath", "Monaghan", "Offaly", 
+        # "Roscommmon", "Roscommon", "Sligo", 
+        # "Tipperary", "Tipperay",  "Tryone", "Tyrone", 
+        # "Waterford", "Westmeath", "Wexford", "Wicklow"]
+
 
 
 
@@ -128,3 +306,40 @@ def form_phone():
 @public.route('/showphone')
 def show_phone():
     return render_template('public_show_phone.html', phone=session['phone'])
+
+
+
+
+
+# @nav.navigation('mysite_navigation')
+# def create_navbar():
+#     home_view = (View('Home', 'public.home'))
+#     register_view = (View('Register', 'user.register'))
+#     manage_view = (View('Manage Bands', 'bands.manage_bands'))
+#     return Navbar('MySite', home_view, register_view, manage_view)
+
+
+
+
+'''
+db.towns.aggregate([
+{
+    $lookup: {
+         from: "band",
+         let: { "fft" : "$hometown.town", "ffc": "$hometown.county", "bname" : "$band_name" },
+         pipeline: [
+             {$match:
+                 { $expr: 
+                     {$and: 
+                        [ {$eq: ["$$fft", "$town" ]},
+                          {$eq: ["$$ffc", "$county"]} ]
+                      }
+                   }
+              },
+               {$group: {"_id" : "$county",
+               "townz": {$push: {"town": "$town"}}   }},
+               {$sort: {"_id": 1}}],
+         as : "common_bands"
+    }
+}])
+'''

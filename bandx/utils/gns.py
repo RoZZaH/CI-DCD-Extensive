@@ -16,9 +16,9 @@ topbar = Navbar('title',
     SuperGroup(
     View('Bands', 'public.home'),
     items=(
-        View('Bands A-Z', 'manage.manage_bands_home'),
-        View('Bands by Genre', 'manage.manage_bands_home'),
-        View('Bands by Location', 'manage.manage_bands_home') )
+        View('Bands A-Z', 'public.a2z'),
+        View('Bands by Genre', 'public.by_genre'),
+        View('Bands by Location', 'public.by_location') )
     ),
 )
 
@@ -26,9 +26,9 @@ mobile_first_in = Navbar('title',
     SuperGroup(
     View('Bands', 'public.home'),
     items=(
-        View('Bands A-Z', 'manage.manage_bands_home'),
-        View('Bands by Genre', 'manage.manage_bands_home'),
-        View('Bands by Location', 'manage.manage_bands_home') )
+        View('Bands A-Z', 'public.a2z'),
+        View('Bands by Genre', 'public.by_genre'),
+        View('Bands by Location', 'public.by_location') )
     ),
     Subgroup('Manage',
         View('Bands', 'manage.manage_bands_home')),
@@ -41,9 +41,9 @@ mobile_first_out = Navbar('title',
     SuperGroup(
     View('Bands', 'public.home'),
     items=(
-        View('Bands A-Z', 'manage.manage_bands_home'),
-        View('Bands by Genre', 'manage.manage_bands_home'),
-        View('Bands by Location', 'manage.manage_bands_home') )
+        View('Bands A-Z', 'public.a2z'),
+        View('Bands by Genre', 'public.by_genre'),
+        View('Bands by Location', 'public.by_location') )
     ),
     View('Register', 'user.register'),
     View('Sign In', 'user.login')
@@ -138,7 +138,7 @@ class JustLiRenderer(Renderer):
 
     def visit_SuperGroup(self, node):
         li = tags.li(_class="subNav")
-        if node.active:
+        if node.title.active:
             li['class'] = 'active'
         a = li.add(tags.a(node.title.text, href=node.title.get_url()))
         ul = tags.ul(*[self.visit(item) for item in node.items])

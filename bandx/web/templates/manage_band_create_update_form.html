@@ -10,11 +10,15 @@
 <btn class="btn btn-subform remove del-band">Delete Band</a>
 </div>
 </header>
-    <form method="POST" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist | safe }}" >
+    <form method="POST" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist.genres|safe }}" >
             {{ form.hidden_tag() }}
         <fieldset class="l-one-third" style="">
             <legend>Band Promo Image</legend>                               {# filename=band.media.tour_media.pictures.square #}
+            {% if band %}
             <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" >
+            {% else %}
+            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}" >
+            {% endif %}
             {{ form.media_assets.featured_image.label }}
                 {# fix recesss styling #}
                 {{ form.media_assets.featured_image(class="form-control-file") }}
@@ -32,7 +36,8 @@
             <fieldset class="genres">
                 <legend>Genres</legend>
                 <ul class="genre-checkbox-wrapper">
-                {% for genre in genrelist %}<li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre in band.genres else ''}}><label>{{genre}}</label></li>
+                {% for genre in genrelist.genres %}
+                    <li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre in band.genres else ''}}><label>{{genre}}</label></li>
                 {% endfor %}
                 </ul>
                 <label>Other:</label>
@@ -189,9 +194,9 @@
     
     <script>
     /* generate and select Towns dropdown menu */
-    choiceSelect("select.origin-county", "{{ selected_county }}")
-
-    loadTowns( "{{ selected_county }}" )
+    const selected_county = "{{ selected_county }}" || "Antrim"
+    choiceSelect("select.origin-county", selected_county)
+    loadTowns(selected_county)
     .then(data => document.querySelector("select.origin-town").innerHTML = data)
     .then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"))
 

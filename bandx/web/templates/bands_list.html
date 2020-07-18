@@ -4,7 +4,7 @@
 {% include 'include_pages_navbar.html'  %}
 {% for band in bands.items %}
 <div class="card">
-    <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }})">
+    <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image if band.media_assets.featured_image else 'band_profile_pics/defaultband.jpg' ) }})">
     <a href="{{ url_for('public.band_detail', bname=band.band_name)}}"></a>
     </div>
     <div class="card-content">
@@ -32,6 +32,14 @@
 </div>
 {% endfor %}
 <footer class="pages">
-{% include 'include_pages_navbar.html'  %}
+<nav class="pages__pagelinks"><ul>
+{% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+    <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if bands.page == page_num }}" href="{{ url_for('public.search', page=page_num)}}">{{ page_num }}</a></li>
+    {% else %}
+    ...
+    {% endif %}
+{% endfor %}
+</ul></nav>
 </footer>
 {% endblock content %}

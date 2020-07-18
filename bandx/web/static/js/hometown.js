@@ -8,12 +8,12 @@
 
 
 async function loadTowns(county="Antrim"){
-    let response = await fetch(`/towns/${county}`)
+    let response = await fetch("/towns/"+county)
     let data = await response.json()
     let optionHTML = ""
-            for(let town of data.towns){
-                optionHTML += `<option values="${town.val}">${town.name}</option>`
-            }
+        for(let town of data.towns){
+            optionHTML += `<option values="${town.val}">${town.name}</option>`
+        }
     return optionHTML
 }
 
