@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form method="POST" action="{{ url_for('public.search')}}" >
+<form method="GET" action="{{ url_for('public.search')}}" >
+    <input name="q" type="text" value="">
+    <br>
     <input name="andor" type="radio" value="false" checked>any (or search)
     <input name="andor" type="radio" value="true">specifically (and search)
 <ul>
@@ -12,6 +14,7 @@
     <input name="genres" type="checkbox" value="{{genre}}">{{genre}}
 
     {% endfor %}
+    <input name="page" type="hidden" value="1">
 </ul>
 <button type="submit">Submit</button>
 </form>

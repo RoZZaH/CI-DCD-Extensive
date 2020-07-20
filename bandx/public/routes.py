@@ -1,9 +1,10 @@
-import json
+import re, json
 from flask import (jsonify, Blueprint, \
     session, \
     redirect, request, render_template, \
         url_for)
 
+#from flask_paginate import Pagination
 from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb, Breadcrumbs
 from flask_wtf import FlaskForm
 import phonenumbers
@@ -14,6 +15,7 @@ from bandx.utils.gns import nav
 from flask_nav.elements import Navbar, Subgroup, View
 from bandx.models.entities import Band, Towns
 from bandx.api.routes import list_genres
+# import pymongo
 
 public = Blueprint('public', __name__) # import_name , usually the current module
 default_breadcrumb_root(public, '.')
@@ -39,6 +41,7 @@ def show_tours():
 def home():
     page = request.args.get("page", 1, type=int)
     bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
+    #pagination = Pagination(page=page, total=bands.count(), record_name="bands", per_page=5 )
     return render_template("bands_list.html", bands=bands)
 
 @public.route("/bands/")
@@ -52,12 +55,19 @@ def band_detail(bname):
     return render_template("band_detail.html", band=band)
 
 
-@public.route('/a2z')
+# @public.route('/a2z', defaults={'initial': 'a'})
+@public.route("/a2z")
 @register_breadcrumb(public, '.', 'Bands')
 def a2z():
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+ 
     page = request.args.get("page", 1, type=int)
-    bands = Band.objects.order_by('band_name').paginate(per_page=10, page=page)
-    return render_template("bands_list.html", bands=bands)
+    letter = request.args.get("letter", "a")
+    bands = Band.objects(band_name__istartswith=letter).paginate(per_page=5, page=page, search=search)
+    if bands.total > 0:
+        return render_template("bands_list.html", bands=bands, alphabet=alphabet)
+    else:
+        return "no query sting received", 200
 
 
 @public.route('/genre')
@@ -65,24 +75,27 @@ def by_genre():
     genres = list_genres()
     return render_template("genre_list.html", genres=genres)
 
+
 @public.route('/search', methods=('GET', 'POST'))
 def search():
-    if request.method == "POST":
-        genres = request.form.getlist("genres")
-        print(genres)
-        andor = request.form.get("andor")
-        # print(andor
-        #genre = request.args.get("genre") #getlist
-        page = request.args.get("page", 1, type=int)    
-        if len(genres) == 1:
+    page = request.args.get("page", 1, type=int)
+    genres = request.args.getlist("genres")
+    andor = request.args.get("andor")
+    search = request.query_string.decode('UTF-8')
+    search = re.sub('\=[0-9]*', '=', search)
+    
+    if len(genres) == 1:
             genres = genres.pop()
             bands = Band.objects(genres=genres).paginate(per_page=1, page=page)
+    else:
+        if andor == "true":
+            bands = Band.objects(genres__all=genres).paginate(per_page=1, page=page)
         else:
-            if andor == "true":
-                bands = Band.objects(genres__all=genres).paginate(per_page=1, page=page)
-            else:
-                bands = Band.objects(genres__in=genres).paginate(per_page=1, page=page)
-        return render_template("bands_list.html", bands=bands)
+            bands = Band.objects(genres__in=genres).paginate(per_page=1, page=page)
+    if bands.total > 0:
+        return render_template("bands_list.html", bands=bands, search=search)
+    else:
+        return "no query sting received", 200
 
 
 @public.route('/location')

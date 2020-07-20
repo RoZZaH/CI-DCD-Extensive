@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2b4c15c14f2efb87e1e595378bb8bf06ef4e8ce20ea6510ed6c805d7212b8bc5"
+            "sha256": "2e891a8931068ef5903b24f68e320258552126d8cbe494ba7cf50b5c7befdb76"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -102,10 +102,10 @@
         },
         "dnspython": {
             "hashes": [
-                "sha256:36c5e8e38d4369a08b6780b7f27d790a292b2b08eea01607865bf0936c558e01",
-                "sha256:f69c21288a962f4da86e56c4905b49d11aba7938d3d740e80d9e366ee4f1632d"
+                "sha256:044af09374469c3a39eeea1a146e8cac27daec951f1f1f157b1962fc7cb9d1b7",
+                "sha256:40bb3c24b9d4ec12500f0124288a65df232a3aa749bb0c39734b782873a2544d"
             ],
-            "version": "==1.16.0"
+            "version": "==2.0.0"
         },
         "dominate": {
             "hashes": [
@@ -184,6 +184,13 @@
             ],
             "index": "pypi",
             "version": "==0.6"
+        },
+        "flask-paginate": {
+            "hashes": [
+                "sha256:4d5c746e4f7b639a9bb72fac0c2452d58e5297b88d6ecda3340153a59453d581"
+            ],
+            "index": "pypi",
+            "version": "==0.7.0"
         },
         "flask-wtf": {
             "hashes": [
@@ -392,11 +399,11 @@
         },
         "python-dotenv": {
             "hashes": [
-                "sha256:25c0ff1a3e12f4bde8d592cc254ab075cfe734fc5dd989036716fd17ee7e5ec7",
-                "sha256:3b9909bc96b0edc6b01586e1eed05e71174ef4e04c71da5786370cebea53ad74"
+                "sha256:8c10c99a1b25d9a68058a1ad6f90381a62ba68230ca93966882a4dbc3bc9c33d",
+                "sha256:c10863aee750ad720f4f43436565e4c1698798d763b63234fb5021b6c616e423"
             ],
             "index": "pypi",
-            "version": "==0.13.0"
+            "version": "==0.14.0"
         },
         "python-resize-image": {
             "hashes": [

@@ -24,6 +24,7 @@ flask-breadcrumbs = "*"
 flask-menu = "*"
 flask-nav = "*"
 dominate = "*"
+flask-paginate = "*"
 
 [requires]
 python_version = "3.8"

@@ -1,22 +1,41 @@
+from flask import request
 from dominate import tags
 from dominate.util import raw
 from flask_nav import Nav, register_renderer
-from flask_nav.elements import Navbar, Subgroup, Text, Link, View, RawTag, Separator, NavigationItem
+from flask_nav.elements import Navbar, Subgroup, Text, Link, RawTag, Separator, NavigationItem
+from flask_nav.elements import View as _View
 from flask_nav.renderers import Renderer
 
 nav = Nav()
+
+
+class View(_View):
+    pass
+
+
 
 class SuperGroup(NavigationItem):
     def __init__(self, title, items):
         self.title = title
         self.items = items
 
+class VText(_View):
+    def __init__(self, text, endpoint, **kwargs):
+        self.text = text
+        self.endpoint = endpoint
+        self.url_for_kwargs = kwargs
+
+    @property
+    def active(self):
+        print( request.path)
+        return request.path == self.get_url()
+
 
 topbar = Navbar('title',
     SuperGroup(
     View('Bands', 'public.home'),
     items=(
-        View('Bands A-Z', 'public.a2z'),
+        View('Bands A-Z', 'public.a2z', initial='a'),
         View('Bands by Genre', 'public.by_genre'),
         View('Bands by Location', 'public.by_location') )
     ),
@@ -46,7 +65,8 @@ mobile_first_out = Navbar('title',
         View('Bands by Location', 'public.by_location') )
     ),
     View('Register', 'user.register'),
-    View('Sign In', 'user.login')
+    View('Sign In', 'user.login'),
+    VText('Bands A-Z', 'public.a2z')
 )
 
 
@@ -126,8 +146,12 @@ class JustLiRenderer(Renderer):
         return li
 
 
-    def visit_Text(self, node):
-        return tags.li(node.text, _class='teXtclass')
+    def visit_VText(self, node):
+        li = tags.li()
+        if node.active:      
+            li['class'] = 'active'
+        a = li.add(tags.a(node.get_url(), href=node.get_url() ))
+        return li
     
     
     def visit_Link(self, node):
