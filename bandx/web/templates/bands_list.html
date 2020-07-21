@@ -36,6 +36,8 @@
 </div>
 {% endfor %}
 {# {% for dict_item in request.args %} #}
+<hr>
+{{ count }}
    {% for key, value in request.args.items() %}
       <h1>Key: {{key}}</h1>
       <h2>Value: {{value}}</h2>
@@ -57,7 +59,8 @@
         {% if page_num %}
             {% if 'letter' in request.args %}
             <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if bands.page == page_num }}" href="{{ url_for('public.a2z', letter=request.args.get('letter'),  page=page_num) if request.args.get('letter') else url_for('public.home', page=page_num)  }}">{{ page_num }}</a></li>
-            {% elif 'genres' in request.args  %}
+            <!-- !FLAKY! -->
+            {% elif 'genres' in request.args  %} {# !flaky #}
             <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if bands.page == page_num }}" href="/search?{{ search+page_num|string }}">{{ page_num }}</a></li>
             {% endif %}
         {% else %}

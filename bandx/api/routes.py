@@ -11,14 +11,26 @@ def list_genres():
         {"$sort": {"genres": 1 }}
     ]))[0]["genres"]
 
+
 @api.route('/towns/<county>')
 def get_towns(county):
-    # [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
-    # towns = Towns.objects(county=county)
     return list(Towns.objects.aggregate([
         {"$match": {"county" : county }},
-        {"$group": {"_id": "$county", "towns": { "$push": {"name": "$town", "val" : "$town"} } } }
-    ]))[0]
+        {"$unwind": { "path": "$towns" }},
+        {"$group": { "_id": "$county", 
+                            "towns": {"$push" : {
+                                "name": "$towns",
+                                "val": "$towns"
+                            }}}} ]))[0]
+
+
+
+@api.route('/townz/')
+def getz_townz():
+    return jsonify(Towns.objects(county="Antrim"))
+
+    # [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
+    # towns = Towns.objects(county=county)
 
     # townsArray = []
 

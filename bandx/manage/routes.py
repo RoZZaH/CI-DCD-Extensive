@@ -52,7 +52,7 @@ def add_band():
     form = CreateUpdateBandForm()
     print(request.form)
     if form.validate_on_submit():
-        return request.form
+        # return request.form
         user = User.objects(id=current_user.id).first()
         if form.media_assets.featured_image.data:
             picture_file = save_picture(form.media_assets.featured_image.data, band=True)
@@ -81,7 +81,6 @@ def add_band():
                 band_name= form.band_name.data,
                 description = form.description.data,
                 created_by = user,
-                genres = extract_tags(form.genres.data),
                 hometown={"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data},
                 profile = form.profile.data,
                 strapline = form.strapline.data,
@@ -92,13 +91,17 @@ def add_band():
         for member in form.members.data:
             new_member = BandMember(**member)
             band.band_members.append(new_member)
+        genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]
+        band.genres = list(filter(None, set(genrelist)))
         band.save()
         # user.update(push__posts=post) remember to add band to user
         return redirect(url_for('public.home'))
-    form.hometown.origin_town.choices = [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
+    towns = Towns.objects(county="Antrim").first()["towns"]
+    form.hometown.origin_town.choices = [(otown, otown) for otown in towns]
     genres = list_genres()
     form_legend = "Add Band"
     return render_template("manage_band_create_update_form.html", form=form, genrelist=genres, form_legend = form_legend, band=False)
+
 
 def view_band_dlc(*args, **kwargs):
     if request.view_args:

@@ -36,7 +36,7 @@
             <fieldset class="genres">
                 <legend>Genres</legend>
                 <ul class="genre-checkbox-wrapper">
-                {% for genre in genrelist.genres %}
+                {% for genre in genrelist %}
                     <li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre in band.genres else ''}}><label>{{genre}}</label></li>
                 {% endfor %}
                 </ul>

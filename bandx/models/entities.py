@@ -9,10 +9,11 @@ def load_user(user_id):
     return User.objects(id=user_id).first() or None
 
 class Towns(db.Document):  #Venues ? Diaspora
-    town = db.StringField(max_length=50, required=True)
+    towns = db.ListField(db.StringField(max_length=50, required=True))
+    province = db.StringField(max_length=30, required=True, choices=["Connacht","Leinster","Munster","Ulster"])
     county = db.StringField(max_legth=50, required=True)
     def __repr__(self):
-        return f"Town('{self.town}', '{self.county}')"
+        return f"Town('{self.towns}', '{self.county}', '{self.province})"
 
 
 class Email(db.EmbeddedDocument):

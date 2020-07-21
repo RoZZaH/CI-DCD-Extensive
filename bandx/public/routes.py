@@ -11,9 +11,11 @@ import phonenumbers
 from wtforms import StringField, SubmitField, RadioField
 from wtforms.validators import DataRequired, ValidationError
 from mongoengine.queryset import QuerySet
+from mongoengine.queryset.visitor import Q
 from bandx.utils.gns import nav
 from flask_nav.elements import Navbar, Subgroup, View
 from bandx.models.entities import Band, Towns
+from bandx.public.forms import SearchForm
 from bandx.api.routes import list_genres
 # import pymongo
 
@@ -72,8 +74,10 @@ def a2z():
 
 @public.route('/genre')
 def by_genre():
+    form = SearchForm()
     genres = list_genres()
-    return render_template("genre_list.html", genres=genres)
+    
+    return render_template("genre_list.html", form=form, genrelist=genres)
 
 
 @public.route('/search', methods=('GET', 'POST'))
@@ -81,19 +85,40 @@ def search():
     page = request.args.get("page", 1, type=int)
     genres = request.args.getlist("genres")
     andor = request.args.get("andor")
+    letter = request.args.get("letter")
+    origin_counties = request.args.getlist("origin_county")
     search = request.query_string.decode('UTF-8')
     search = re.sub('\=[0-9]*', '=', search)
     
-    if len(genres) == 1:
-            genres = genres.pop()
-            bands = Band.objects(genres=genres).paginate(per_page=1, page=page)
-    else:
-        if andor == "true":
-            bands = Band.objects(genres__all=genres).paginate(per_page=1, page=page)
+    Qs = [] #Q prefix complex mongoengine queries
+
+    if len(genres) > 0:
+        if len(genres) == 1:
+                genres = genres.pop()
+                # bands = Band.objects(Q(genres=genres)).paginate(per_page=1, page=page)
+                Qs.append(f"Q(genres='{genres}')")
         else:
-            bands = Band.objects(genres__in=genres).paginate(per_page=1, page=page)
+            if andor == "true":
+                Qs.append(f"Q(genres__all={genres})")
+            else:
+                Qs.append(f"Q(genres__in={genres})")
+    
+    if len(origin_counties) > 0:
+        if len(origin_counties) == 1:
+                origin_county = origin_counties.pop()
+                Qs.append(f"Q(hometown__county__iexact='{origin_county}')")
+        else:
+           Qs.append(f"Q(hometown__county__in={origin_counties})")
+
+    if letter:
+        Qs.append(f"Q(band_name__istartswith='{letter}')")
+
+    pipeline = Qs[0] if len(Qs) == 1 else (' & ').join(Qs)
+    print(pipeline)
+    bands = Band.objects(eval(pipeline)).paginate(per_page=3, page=page)
+    count = bands.pages
     if bands.total > 0:
-        return render_template("bands_list.html", bands=bands, search=search)
+        return render_template("bands_list.html", bands=bands, search=search, count=count)
     else:
         return "no query sting received", 200
 

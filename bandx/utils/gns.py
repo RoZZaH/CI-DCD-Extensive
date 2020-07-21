@@ -239,3 +239,14 @@ def initialise_nav(app):
 #         # almost the same as visit_Navbar, but written a bit more concise
 #         return tags.div(node.title,
 #                         *[self.visit(item) for item in node.items])
+
+
+# https://www.solodev.com/blog/web-design/converting-horizontal-navigation-into-mobile-dropdown-menus.stml
+	# <select name="sectional_nav" id="sectional_nav" class="form-control hidden-md-up" onchange="window.location.href=this.value">
+	#   <option value="0">Navigate to...</option>
+	#   <option value="https://www.solodev.com/pricing/">Pricing</option>
+	#   <option value="https://www.solodev.com/product/create.stml">Product</option>
+	#   <option value="https://www.solodev.com/resources/">Resources</option>
+	#   <option value="https://www.solodev.com/customers/">Customers</option>
+	#   <option value="https://www.solodev.com/blog/">Blog</option>
+	# </select>

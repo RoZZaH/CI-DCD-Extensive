@@ -2,21 +2,42 @@
 
 {% block content %}
 <form method="GET" action="{{ url_for('public.search')}}" >
+{# render_field #}
+    {{ form.q.label }}
+        {{ form.q }}
+    <hr>
+    {{ form.andor.label }}
+        {{ form.andor }}
+        {{ genrelist }}
+    <fieldset class="genres">
+        <legend>Genres</legend>
+        <ul class="genre-checkbox-wrapper">
+        {% for genre in genrelist %}
+            <li><input class="debug" type="checkbox" name="genres" value="{{genre}}" ><label>{{genre}}</label></li>
+        {% endfor %}
+        </ul>
+    </fieldset>
+    {{ form.origin_county.label }}
+        {{ form.origin_county }}
+
+<input name="page" type="hidden" value="1">
+<button type="submit">Submit</button>
+</form>
+
+{% endblock content %}
+
+{#} {{ 'checked' if genre in band.genres else ''}}
     <input name="q" type="text" value="">
     <br>
     <input name="andor" type="radio" value="false" checked>any (or search)
     <input name="andor" type="radio" value="true">specifically (and search)
 <ul>
     {% for genre in genres %}
-    {# <li><a href="{{ url_for('public.search', genre=genre) }}" >{{ genre }}</a></li> #}
+    {# <li><a href="{{ url_for('public.search', genre=genre) }}" >{{ genre }}</a></li> 
 
 
     <input name="genres" type="checkbox" value="{{genre}}">{{genre}}
 
     {% endfor %}
     <input name="page" type="hidden" value="1">
-</ul>
-<button type="submit">Submit</button>
-</form>
-
-{% endblock content %}
+</ul> #}
