@@ -33,20 +33,20 @@ class VText(_View):
 
 topbar = Navbar('title',
     SuperGroup(
-    View('Bands', 'public.home'),
+    View('Bands', 'public.results'),
     items=(
         View('Bands A-Z', 'public.a2z', initial='a'),
-        View('Bands by Genre', 'public.by_genre'),
+        View('Bands by Genre', 'public.search'),
         View('Bands by Location', 'public.by_location') )
     ),
 )
 
 mobile_first_in = Navbar('title',
     SuperGroup(
-    View('Bands', 'public.home'),
+    View('Bands', 'public.results'),
     items=(
         View('Bands A-Z', 'public.a2z'),
-        View('Bands by Genre', 'public.by_genre'),
+        View('Bands by Genre', 'public.search'),
         View('Bands by Location', 'public.by_location') )
     ),
     Subgroup('Manage',
@@ -58,7 +58,7 @@ mobile_first_in = Navbar('title',
 
 mobile_first_out = Navbar('title',
     SuperGroup(
-    View('Bands', 'public.home'),
+    View('Bands', 'public.results'),
     items=(
         View('Bands A-Z', 'public.a2z'),
         View('Bands by Genre', 'public.by_genre'),

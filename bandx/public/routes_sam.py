@@ -83,8 +83,8 @@ def by_genre():
 @public.route('/search', methods=('GET', 'POST'))
 def search():
     text_query = request.args.get("q")
-
-    print(len(text_query))
+    if len(text_query) > 0:
+        print(len(text_query))
     page = request.args.get("page", 1, type=int)
     genres = request.args.getlist("genres")
     andor = request.args.get("andor")

@@ -11,7 +11,7 @@ import phonenumbers
 from wtforms import StringField, SubmitField, RadioField
 from wtforms.validators import DataRequired, ValidationError
 from mongoengine.queryset import QuerySet
-from mongoengine.queryset.visitor import Q
+from mongoengine.queryset.visitor import Q, QNode
 from bandx.utils.gns import nav
 from flask_nav.elements import Navbar, Subgroup, View
 from bandx.models.entities import Band, Towns
@@ -22,7 +22,8 @@ from bandx.api.routes import list_genres, list_provinces
 public = Blueprint('public', __name__) # import_name , usually the current module
 default_breadcrumb_root(public, '.')
 
-
+_AND = QNode.AND
+_OR = QNode.OR
 
 @public.route("/json")
 def hello():
@@ -38,17 +39,7 @@ def show_tours():
         return {'id': len(tours)}, 200
     return jsonify(tours)
 
-@public.route('/')
-@register_breadcrumb(public, '.', 'Bands')
-def home():
-    page = request.args.get("page", 1, type=int)
-    bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
-    #pagination = Pagination(page=page, total=bands.count(), record_name="bands", per_page=5 )
-    return render_template("bands_list.html", bands=bands)
 
-@public.route("/bands/")
-def redirector():
-    return redirect(url_for("public.home"))
 
 
 @public.route("/band/<string:bname>/", methods=('GET', 'POST'))
@@ -72,63 +63,75 @@ def a2z():
         return "no query sting received", 200
 
 
-@public.route('/genre')
+# @public.route('/')
+# @register_breadcrumb(public, '.', 'Bands')
+# def home():
+#     page = request.args.get("page", 1, type=int)
+#     bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
+#     return render_template("bands_list.html", bands=bands)
+
+@public.route("/bands/")
+def redirector():
+    return redirect(url_for("public.home"))
+
+
+@public.route('/search') #/genre
 def by_genre():
     form = SearchForm()
     genres = list_genres()
     province_counties = list_provinces()
-    return render_template("genre_list.html", form=form, genrelist=genres, province_counties=province_counties)
+    return render_template("search.html", form=form, genrelist=genres, province_counties=province_counties)
 
 
-@public.route('/search', methods=('GET', 'POST'))
-def search():
-    text_query = request.args.get("q")
-    print(len(text_query))
+@public.route('/', methods=('GET', 'POST'))
+@register_breadcrumb(public, '.', 'Bands')
+def results():
+    filters = {}
+    text_query = None
+    search = None
     page = request.args.get("page", 1, type=int)
-    genres = request.args.getlist("genres")
-    andor = request.args.get("andor")
-    letter = request.args.get("letter")
-    counties = request.args.getlist("counties")
-    search = request.query_string.decode('UTF-8')
-    search = re.sub('\=[0-9]*', '=', search)
-    
-    Qs = [] #Q prefix complex mongoengine queries
-    #filters = {}
-    
-    if len(genres) == 0:
-        #filters['genres__exists'] = 1
-        Qs.append("Q(genres__exists=1)")
-    else:
-        if len(genres) == 1:
-                genres = genres.pop()
-                # bands = Band.objects(Q(genres=genres)).paginate(per_page=1, page=page)
-                #filters['genres'] = genres
-                Qs.append(f"Q(genres='{genres}')")
+    if request.args:
+        text_query = request.args.get("q")
+        if text_query != None:
+            print(len(text_query))
+        genres = request.args.getlist("genres")
+        andor = request.args.get("andor")
+        letter = request.args.get("letter")
+        counties = request.args.getlist("counties")
+        search = request.query_string.decode('UTF-8')
+        search = re.sub('\=[0-9]*', '=', search)
+       
+        if len(genres) == 0:
+            pass
         else:
-            if andor == "true":
-                Qs.append(f"Q(genres__all={genres})")
+            if len(genres) == 1:
+                    genres = genres.pop()
+                    filters['genres'] = genres
             else:
-                Qs.append(f"Q(genres__in={genres})")
-    
-    if len(counties) > 0:
-        if len(counties) == 1:
-                county = counties.pop()
-                Qs.append(f"Q(hometown__county__iexact='{county}')")
-        else:
-           Qs.append(f"Q(hometown__county__in={counties})")
+                if andor == "t":
+                    filters['genres__all']=genres
+                else:
+                    filters['genres__in']=genres
+        
+        if len(counties) > 0:
+            if len(counties) == 1:
+                    county = counties.pop()
+                    filters['hometown__county__iexact'] = county
+            else:
+                filters['hometown__county__in'] = counties
 
-    if letter:
-        Qs.append(Q(band_name__istartswith=letter))
+        if letter:
+            filters['band_name__istartswith'] = letter
 
-    pipeline = Qs[0] if len(Qs) == 1 else (' & ').join(Qs)   
-    #pipeline = Q(**filters) #Combination Mode Const
-    print(pipeline)
-    if len(text_query) > 0:
-        bands = Band.objects.filter(eval(pipeline))
+
+    pipeline = Q(**filters) #Combination Mode Const
+    #print(pipeline)
+    if text_query != None:
+        bands = Band.objects.filter(pipeline)
         bands = bands.search_text(text_query).order_by("$text_score").paginate(per_page=3, page=page)
         count = bands.pages
     else: 
-        bands = Band.objects(eval(pipeline)).paginate(per_page=3, page=page) #??
+        bands = Band.objects(pipeline).paginate(per_page=5, page=page) #??
         count = bands.pages
     if bands.total > 0:
         return render_template("bands_list.html", bands=bands, search=search, count=count)
@@ -138,153 +141,46 @@ def search():
 
 @public.route('/location')
 def by_location():
-
-    #db.towns.aggregate([{"$group": {"_id": "$county", townz: {$push: {town: "$town"}}  }}])
-    #aggregation = list(Towns.objects.aggregate([{"$group": { "_id": "$county", 
-     #               "townz": {"$push": {"town": "$town"}}, "count": {"$sum": 1}}}, {"$sort": {"_id": 1}}])) #towns per county
-    
-    aggregation = list(Towns.objects.aggregate([
-                    {"$group": {"_id": { "county": "$county", "town": "$town" }}},
-                    {"$group": {"_id" : "$_id.county", "towns": {"$push" :  "$_id.town"}}},
-                    {"$sort": {"_id": 1}}]))
-
-    aggregation2 = list(Band.objects.aggregate([
-                    {"$group": {"_id": { "county": "$hometown.county", "town": "$hometown.town" }, "num_bands_in_town": {"$sum": 1} }},
-                    {"$group": {"_id" : "$_id.county", "towns": {"$push" : {"name":"$_id.town", "num": "$num_bands_in_town"}}, "ctotal": {"$sum": "$num_bands_in_town"} }},
-                    {"$sort": {"_id": 1}}]))
-
-        
+ 
     pipeline = [
-        # {
-        #     u"$match": {
-        #         u"county": u"Wexford"
-        #     }
-        # }, 
-        {
-            u"$lookup": {
-                u"from": u"band",
-                u"let": {
-                    u"townt": u"$town",
-                    u"townc": u"$county"
-                },
-                u"pipeline": [
-                    {
-                        u"$project": {
-                            u"_id": 0.0,
-                            u"band_name": 1.0,
-                            u"hometown": 1.0
-                        }
-                    },
-                    {
-                        u"$replaceRoot": {
-                            u"newRoot": {
-                                u"$mergeObjects": [
-                                    {
-                                        u"bandname": u"$band_name",
-                                        u"town": u"",
-                                        u"county": u""
-                                    },
-                                    u"$hometown"
-                                ]
-                            }
-                        }
-                    },
-                    {
-                        u"$match": {
-                            u"$expr": {
-                                u"$and": [
-                                    {
-                                        u"$eq": [
-                                            u"$town",
-                                            u"$$townt"
-                                        ]
-                                    },
-                                    {
-                                        u"$eq": [
-                                            u"$county",
-                                            u"$$townc"
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    {
-                        u"$project": {
-                            u"_id": 0.0,
-                            u"bandname": 1.0
-                        }
-                    }
-                ],
-                u"as": u"bands"
-            }
-        }, 
-        {
-            u"$replaceRoot": {
-                u"newRoot": {
-                    u"$mergeObjects": [
-                        {
-                            u"bandlisting": {
-                                u"$size": u"$bands.bandname"
+        { "$unwind": { "path": "$towns" } }, 
+        { "$lookup": { "from": "band",
+                        "let": { "townt": "$towns", "townc": "$county" },
+                "pipeline": [
+                    { "$project": { "_id": 0, "band_name": 1, "hometown": 1 } },
+                    { "$replaceRoot": { "newRoot": 
+                                        { "$mergeObjects": [
+                                            {
+                                                "bandname": "$band_name",
+                                                "town": "",
+                                                "county": ""
+                                            },
+                                            "$hometown"
+                                            ]
+                                        }
+                                    }},
+                    { "$match": { "$expr": { "$and": [ { "$eq": [ "$town", "$$townt" ] }, { "$eq": [ "$county", "$$townc" ] } ]}}},
+                    { "$project": { "_id": 1, "bandname": 1 } } 
+                    ], "as": "bands" }}, 
+        { "$replaceRoot": { "newRoot": { "$mergeObjects": [ { "bandlisting": { "$size": "$bands.bandname" }, "town": "$towns", "county": "$county" } ] }}}, 
+        { "$group": { "_id": {
+                            "county": "$county",
+                            "town": "$town",
+                            "number_of_bands_per_town": "$bandlisting"
                             },
-                            u"town": u"$town",
-                            u"county": u"$county"
-                        }
-                    ]
-                }
-            }
-        }, 
-        {
-            u"$group": {
-                u"_id": {
-                    u"county": u"$county",
-                    u"town": u"$town",
-                    u"number_of_bands_per_town": u"$bandlisting"
-                },
-                u"number_of_towns_per_county": {
-                    u"$sum": 1
-                }
-            }
-        }, 
-        {
-            u"$group": {
-                u"_id": u"$_id.county",
-                u"towns": {
-                    u"$push": {
-                        u"name": u"$_id.town",
-                        u"num": u"$_id.number_of_bands_per_town"
+                            "number_of_towns_per_county": { "$sum": 1 }
                     }
-                },
-                u"bands_total": {
-                    u"$sum": u"$_id.number_of_bands_per_town"
-                },
-                u"ctotal": {
-                    u"$sum": u"$number_of_towns_per_county"
-                }
-            }
-        },
-        {
-            "$sort": {"_id": 1}
-        }
+        }, 
+        { "$group": { "_id": "$_id.county", "towns": { "$push": { "name": "$_id.town", "num": "$_id.number_of_bands_per_town" }},
+                            "bands_total": { "$sum": "$_id.number_of_bands_per_town"},
+                            "ctotal": {"$sum": "$number_of_towns_per_county"}
+                    }
+        }, 
+        { "$sort": { "_id": 1 }}
     ]
 
-
     counties = Towns.objects.aggregate(pipeline)
-
-    #return jsonify(counties)
-    return render_template("counties_list.html", counties=counties)  #",".join(genres)
-
-    # unclean counties
-        # ["Antrim", "Armagh", 
-        # "Carlow", "Cavan", "Clare" ,"Cork",
-        # "Derry" , "Donega", "Donegal", "Down", "Dublin",
-        # "Fermanagh", "Galway", 
-        # "Kerry", "Kildare", "Kilkenny", 
-        # "Laois", "Leitrim", "Limerick","Longford", "Louth",
-        # "Mayo", "Meath", "Monaghan", "Offaly", 
-        # "Roscommmon", "Roscommon", "Sligo", 
-        # "Tipperary", "Tipperay",  "Tryone", "Tyrone", 
-        # "Waterford", "Westmeath", "Wexford", "Wicklow"]
+    return render_template("counties_list.html", counties=counties)
 
 
 
@@ -358,39 +254,3 @@ def form_phone():
 def show_phone():
     return render_template('public_show_phone.html', phone=session['phone'])
 
-
-
-
-
-# @nav.navigation('mysite_navigation')
-# def create_navbar():
-#     home_view = (View('Home', 'public.home'))
-#     register_view = (View('Register', 'user.register'))
-#     manage_view = (View('Manage Bands', 'bands.manage_bands'))
-#     return Navbar('MySite', home_view, register_view, manage_view)
-
-
-
-
-'''
-db.towns.aggregate([
-{
-    $lookup: {
-         from: "band",
-         let: { "fft" : "$hometown.town", "ffc": "$hometown.county", "bname" : "$band_name" },
-         pipeline: [
-             {$match:
-                 { $expr: 
-                     {$and: 
-                        [ {$eq: ["$$fft", "$town" ]},
-                          {$eq: ["$$ffc", "$county"]} ]
-                      }
-                   }
-              },
-               {$group: {"_id" : "$county",
-               "townz": {$push: {"town": "$town"}}   }},
-               {$sort: {"_id": 1}}],
-         as : "common_bands"
-    }
-}])
-'''
