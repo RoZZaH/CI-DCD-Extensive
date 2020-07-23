@@ -83,6 +83,7 @@ def by_genre():
 @public.route('/search', methods=('GET', 'POST'))
 def search():
     text_query = request.args.get("q")
+
     print(len(text_query))
     page = request.args.get("page", 1, type=int)
     genres = request.args.getlist("genres")
@@ -93,16 +94,16 @@ def search():
     search = re.sub('\=[0-9]*', '=', search)
     
     Qs = [] #Q prefix complex mongoengine queries
-    #filters = {}
+    filters = {}
     
     if len(genres) == 0:
-        #filters['genres__exists'] = 1
-        Qs.append("Q(genres__exists=1)")
+        filters['genres__exists'] = 1
+        #Qs.append("Q(genres__exists=1)")
     else:
         if len(genres) == 1:
                 genres = genres.pop()
                 # bands = Band.objects(Q(genres=genres)).paginate(per_page=1, page=page)
-                #filters['genres'] = genres
+                filters['genres'] = genres
                 Qs.append(f"Q(genres='{genres}')")
         else:
             if andor == "true":
@@ -120,15 +121,15 @@ def search():
     if letter:
         Qs.append(Q(band_name__istartswith=letter))
 
-    pipeline = Qs[0] if len(Qs) == 1 else (' & ').join(Qs)   
-    #pipeline = Q(**filters) #Combination Mode Const
+    # pipeline = Qs[0] if len(Qs) == 1 else (' & ').join(Qs)   
+    pipeline = Q(**filters)
     print(pipeline)
     if len(text_query) > 0:
-        bands = Band.objects.filter(eval(pipeline))
+        bands = Band.objects.filter((pipeline))
         bands = bands.search_text(text_query).order_by("$text_score").paginate(per_page=3, page=page)
         count = bands.pages
     else: 
-        bands = Band.objects(eval(pipeline)).paginate(per_page=3, page=page) #??
+        bands = Band.objects((pipeline)).paginate(per_page=3, page=page) #??
         count = bands.pages
     if bands.total > 0:
         return render_template("bands_list.html", bands=bands, search=search, count=count)

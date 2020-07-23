@@ -107,7 +107,7 @@ fieldset.genres {
 //     flex: 1 1 8ch;
 // }
 
-.genres ul {
+ul.genre-checkbox-wrapper {
     font-size: .85rem;
     width: 100%;
     display: grid;
@@ -123,9 +123,52 @@ fieldset.genres {
     // max-width: 12ch;
 }
 
+
 .genres li label {
     display: block;
     margin-top: -1.2em;
     margin-left: 1em;
     // border: 1px dashed red;
 }
+
+.counties {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(1em, 1fr));
+    // grid-auto-flow: rows;
+}
+
+.counties fieldset {
+    grid-column: span 1;
+}
+
+.province ul {
+
+    font-size: .85rem;
+    display: block;
+}
+
+
+.province li {
+    list-style: none;
+}
+
+.connacht {
+    order: -3;
+    display:grid;
+    align-items: end;
+}
+
+.ulster {
+    order: -2;
+}
+
+.munster {
+    display: grid;
+    align-items: end;
+    order: -1;
+}
+
+.connact  {
+    justify-content: end ;
+}
+

@@ -23,7 +23,12 @@ def get_towns(county):
                                 "val": "$towns"
                             }}}} ]))[0]
 
-
+@api.route('/provinces')
+def list_provinces():
+    return list(Towns.objects.aggregate([
+        {"$group": {"_id": "$province",
+        "counties": { "$push" : "$county"}
+        } }]))
 
 @api.route('/townz/')
 def getz_townz():

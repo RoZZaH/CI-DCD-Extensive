@@ -45,8 +45,8 @@ class SearchForm(FlaskForm):
                                 ("Wicklow",	"Wicklow")
                                 ],
                                 render_kw={"class": "origin-county", "size": "6"})
-    andor = RadioField("search type", 
-                        choices=[("false","any (or search)"), ("true","specifically (and search)")],
+    andor = RadioField("", 
+                        choices=[("false","any"), ("true","Match ALL")],
                         render_kw={},
                         default="false")
     genres = StringField("Musical Genres", 

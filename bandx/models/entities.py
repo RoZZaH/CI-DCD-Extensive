@@ -67,6 +67,15 @@ class Band(db.DynamicDocument):
     links = db.EmbeddedDocumentField(Links,  default=Links) #copy oCreator role
     media_assets = db.EmbeddedDocumentField(Assets) #copy oCreator role
     band_members = db.EmbeddedDocumentListField(BandMember)
+
+    meta = {"indexes" : [ { "fields" : {"$**": "text"} ,
+                         "default_language" : "english",
+                         "textIndexVersion" : 3,
+                         "weights": {"$**": 1},
+                         "cls": False
+                         } ]}
+
+
 #    tours = db.ListField(db.ReferenceField('Tour'))
     # publish
     # meta = {

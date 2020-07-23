@@ -6,19 +6,36 @@
     {{ form.q.label }}
         {{ form.q }}
     <hr>
-    {{ form.andor.label }}
-        {{ form.andor }}
-        {{ genrelist }}
     <fieldset class="genres">
         <legend>Genres</legend>
+        {{ form.andor.label }}
+            {{ form.andor }}
         <ul class="genre-checkbox-wrapper">
         {% for genre in genrelist %}
             <li><input class="debug" type="checkbox" name="genres" value="{{genre}}" ><label>{{genre}}</label></li>
         {% endfor %}
         </ul>
     </fieldset>
-    {{ form.origin_county.label }}
-        {{ form.origin_county }}
+    {# {{ form.origin_county.label }}
+        {{ form.origin_county }} #}
+
+    <fieldset class="counties">
+    {% for province in province_counties %}
+    <fieldset class="province {{ province._id|lower }}">
+
+    <legend>{{ province._id }}</legend>
+     <ul>
+        {% for county in province.counties|sort %}
+        <li><input class="debug" type="checkbox" name="counties" value="{{county}}" ><label>{{county}}</label></li>
+        {% endfor %}
+    </ul>
+    </fieldset>
+    {% endfor %}
+
+
+    </fieldset>
+
+
 
 <input name="page" type="hidden" value="1">
 <button type="submit">Submit</button>
