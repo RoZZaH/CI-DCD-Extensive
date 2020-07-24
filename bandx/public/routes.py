@@ -48,43 +48,49 @@ def band_detail(bname):
     return render_template("band_detail.html", band=band)
 
 
-# @public.route('/a2z', defaults={'initial': 'a'})
-@public.route("/a2z")
-@register_breadcrumb(public, '.', 'Bands')
-def a2z():
-    alphabet = 'abcdefghijklmnopqrstuvwxyz'
- 
+def view_alpha_dlc(*args, **kwargs):
+    if request.path[1:4] == "a-z":
+        alpha = ''
+        alpha = request.view_args['letter']
+        print(alpha)
+        return [{'text': 'Bands', 'url': url_for('public.results')}, { 'text': 'A-Z', 'url': url_for('public.a2z')}, {'text': alpha.upper() }]
+    if request.path == "/":
+        return [{'text':'Bands', 'url': url_for('public.results')}, {'text': 'something'}]
+
+
+@public.route("/a-z/", defaults={'letter': 'a'})
+@public.route("/a-z/<string:letter>", methods=('GET', 'POST')) 
+@register_breadcrumb(public, '.', '', dynamic_list_constructor=view_alpha_dlc)
+def a2z(letter='a', bname=None):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz#' # hastag_etc
+    #letter = letter
     page = request.args.get("page", 1, type=int)
-    letter = request.args.get("letter", "a")
+    #letter = request.args.get("letter", "a")
     bands = Band.objects(band_name__istartswith=letter).paginate(per_page=5, page=page, search=search)
     if bands.total > 0:
-        return render_template("bands_list.html", bands=bands, alphabet=alphabet)
+        return render_template("bands_list.html", bands=bands, alphabet=alphabet, letter=letter)
     else:
-        return "no query sting received", 200
+        return f"no query string received for {letter}", 200
 
 
-# @public.route('/')
-# @register_breadcrumb(public, '.', 'Bands')
-# def home():
-#     page = request.args.get("page", 1, type=int)
-#     bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
-#     return render_template("bands_list.html", bands=bands)
 
-@public.route("/bands/")
-def redirector():
-    return redirect(url_for("public.home"))
-
-
-@public.route('/search') #/genre
-def by_genre():
+@public.route('/search')
+def search():
     form = SearchForm()
     genres = list_genres()
     province_counties = list_provinces()
     return render_template("search.html", form=form, genrelist=genres, province_counties=province_counties)
 
 
+# @public.route("/bands/")
+# def redirector():
+#     return redirect(url_for("public.results"))
+
+
+
+
 @public.route('/', methods=('GET', 'POST'))
-@register_breadcrumb(public, '.', 'Bands')
+@register_breadcrumb(public, '.', '', dynamic_list_constructor=view_alpha_dlc)
 def results():
     filters = {}
     text_query = None
@@ -93,7 +99,8 @@ def results():
     if request.args:
         text_query = request.args.get("q")
         if text_query != None:
-            print(len(text_query))
+            if len(text_query) == 0:
+                text_query = None
         genres = request.args.getlist("genres")
         andor = request.args.get("andor")
         letter = request.args.get("letter")
@@ -124,7 +131,7 @@ def results():
             filters['band_name__istartswith'] = letter
 
 
-    pipeline = Q(**filters) #Combination Mode Const
+    pipeline = Q(**filters) # use _AND or _OR Q Node Combinations
     #print(pipeline)
     if text_query != None:
         bands = Band.objects.filter(pipeline)
@@ -254,3 +261,10 @@ def form_phone():
 def show_phone():
     return render_template('public_show_phone.html', phone=session['phone'])
 
+
+# @public.route('/')
+# @register_breadcrumb(public, '.', 'Bands')
+# def home():
+#     page = request.args.get("page", 1, type=int)
+#     bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
+#     return render_template("bands_list.html", bands=bands)

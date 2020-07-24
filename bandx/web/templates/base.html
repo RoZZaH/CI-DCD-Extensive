@@ -49,7 +49,9 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+    {% block main__header %}{% endblock main__header %}
     {% block content %}{% endblock content %}
+    {% block main__footer %}{% endblock main__footer %}
     </section>
     </main>
     {% if sidebar %}

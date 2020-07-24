@@ -40,6 +40,14 @@ h1.headline{
   font-size: 1.65rem;
 }
 
+.headline--solo {
+  margin: .25em 0 .5em;
+}
+
+.headline--alphabet {
+  text-align: center;
+}
+
 .headline--eyebrow {
   margin: .25em 0;
   font-size: .75rem;
@@ -62,6 +70,15 @@ h1.headline{
 margin: 0;
 }
     
+
+
+.main__header {
+  color: red;
+}
+
+// .main__header--alphabet {
+//   text-align: center;
+// }
 
 
     main p {

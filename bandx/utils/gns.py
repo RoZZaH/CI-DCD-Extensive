@@ -19,7 +19,7 @@ class SuperGroup(NavigationItem):
         self.title = title
         self.items = items
 
-class VText(_View):
+class Alpha(_View):
     def __init__(self, text, endpoint, **kwargs):
         self.text = text
         self.endpoint = endpoint
@@ -27,8 +27,7 @@ class VText(_View):
 
     @property
     def active(self):
-        print( request.path)
-        return request.path == self.get_url()
+        return request.path[:5] == self.get_url()
 
 
 topbar = Navbar('title',
@@ -36,21 +35,21 @@ topbar = Navbar('title',
     View('Bands', 'public.results'),
     items=(
         View('Bands A-Z', 'public.a2z', initial='a'),
-        View('Bands by Genre', 'public.search'),
         View('Bands by Location', 'public.by_location') )
     ),
+    View('Search', 'public.search'),
 )
 
 mobile_first_in = Navbar('title',
     SuperGroup(
     View('Bands', 'public.results'),
     items=(
-        View('Bands A-Z', 'public.a2z'),
-        View('Bands by Genre', 'public.search'),
+        Alpha('Bands A-Z', 'public.a2z'),
         View('Bands by Location', 'public.by_location') )
     ),
     Subgroup('Manage',
         View('Bands', 'manage.manage_bands_home')),
+    View('Search', 'public.search'),
     View('Settings', 'user.account'),
     View('Logout', 'user.logout')
 )
@@ -60,13 +59,12 @@ mobile_first_out = Navbar('title',
     SuperGroup(
     View('Bands', 'public.results'),
     items=(
-        View('Bands A-Z', 'public.a2z'),
-        View('Bands by Genre', 'public.by_genre'),
+        Alpha('Bands A-Z', 'public.a2z'),
         View('Bands by Location', 'public.by_location') )
     ),
+    View('Search', 'public.search'),
     View('Register', 'user.register'),
     View('Sign In', 'user.login'),
-    VText('Bands A-Z', 'public.a2z')
 )
 
 
@@ -150,7 +148,7 @@ class JustLiRenderer(Renderer):
         li = tags.li()
         if node.active:      
             li['class'] = 'active'
-        a = li.add(tags.a(node.get_url(), href=node.get_url() ))
+        a = li.add(tags.a(node.text, href=node.get_url() ))
         return li
     
     

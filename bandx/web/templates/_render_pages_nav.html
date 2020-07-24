@@ -1,0 +1,43 @@
+{# Macro for creating navigation links #}
+{% macro render_pages_nav(pagination, endpoint, letter, search) %}
+<ul>
+{% if pagination.has_prev %}
+    {% if letter %}
+    <li class="prev-page"><a href="{{ url_for(endpoint, letter = letter, page = pagination.prev_num) }} ">&laquo;prev</a></li>
+    {% elif search %}
+    <li class="prev-page"><a href="/?{{ search+pagination.prev_num|string }}">&laquo;prev</a></li>
+    {% else %}
+    <li class="prev-page"><a href="{{ url_for(endpoint, page = pagination.prev_num) }} ">&laquo;prev</a></li>
+    {% endif %}
+{% endif %}
+
+{% if pagination.pages > 1 %}
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+
+        {% if page_num %}
+            {% if letter %}
+            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="{{ url_for(endpoint, letter=letter, page=page_num)   }}">{{ page_num }}</a></li> 
+            {% elif search %}
+            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="/?={{ search+page_num|string }}">{{ page_num }}</a></li> 
+            {% else %}
+            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="{{ url_for(endpoint, page=page_num)   }}">{{ page_num }}</a></li> 
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% if pagination.has_next %}
+    {% if letter %}
+    <li class="next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, letter=letter, page=pagination.next_num) }} ">next&raquo;</a></li>
+    {% elif search %}
+    <li class="next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="/?{{ search+pagination.next_num|string }}">next&raquo;</a></li>
+    {% else %}
+    <li class="next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, page = pagination.next_num) }} ">next&raquo;</a></li>
+    {% endif %}
+{% endif %}
+</ul>
+
+{% endmacro %}
+

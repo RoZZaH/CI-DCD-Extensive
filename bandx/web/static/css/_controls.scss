@@ -1,27 +1,77 @@
 
-.header--mgt {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.controls {
-  
-}
 
 nav.pages__pagelinks {
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  //justify-content: center;
 }
 
-nav.pages__pagelinks ul {
+.pages__pagelinks--below {
+  margin-top: .75em;
+}
+
+
+nav.pages__pagelinks > ul {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   list-style: none;
   margin: 0 0 .25em 0;
   padding: 0;
 }
 
-nav.pages_pagelinks ul li {
+.breadcrumbs {
+  width: 100%;
+  justify-self: flex-start;
+  border-bottom: 1px solid rgb(214, 214, 214);
+  margin-bottom: .25em;
+  padding: .25em;
+}
+
+
+.wrapper__alphabet {
+  background-color: rgb(196, 196, 196);
+
+}
+
+.wrapper__alphabet--top {
+  padding: 4px 4px 0;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  margin-bottom: .75em;
+}
+
+.wrapper__alphabet--bottom {
+  padding: 0 4px 4px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-top: 0.75em;
+}
+
+nav.pages__pagelinks ul li {
   margin-left: 0;
+}
+
+.pages__pagelinks ul {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.pages__pagelinks li:first-child {
+  margin-left: auto;
+}
+
+.pages__pagelinks li:first-child.prev-page {
+  margin-left: 0;
+  margin-right: auto;
+  justify-self: flex-start;
+}
+
+.pages__pagelinks  li.next-page {
+  margin-left: auto;
+  justify-self: flex-end;
 }
 
 .btn {
@@ -43,6 +93,25 @@ nav.pages_pagelinks ul li {
   background-color: $accent;
 }
 
+
+.pages__pagelinks__left--alphabet a {
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.pages__pagelinks__left--alphabet a:hover,
+.pages__pagelinks__left--alphabet a:focus {
+  border: 1px solid blue;
+}
+
+
+.pages__pagelinks__left--alphabet .btn--pagelink--current {
+  background-color: transparent;
+  font-weight: bold;
+  color: $text-main;
+  border: 1px solid $text-main;
+}
+
 .btn-subform{
   // padding: .25em .5em;
   font-size: 0.95rem;
@@ -58,6 +127,15 @@ nav.pages_pagelinks ul li {
 }
 
 
+.header--mgt {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controls {
+
+}
 
 .add{
   background: mediumseagreen;
