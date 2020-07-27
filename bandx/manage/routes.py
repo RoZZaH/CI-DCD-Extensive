@@ -4,7 +4,7 @@ from PIL import Image # Pillow
 from flask import (Blueprint, flash, current_app, jsonify,
     redirect, render_template, request, Response,
     url_for)
-from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb
+from flask_breadcrumbs import Breadcrumbs, default_breadcrumb_root, register_breadcrumb
 
 from flask_login import current_user, login_required, login_user, logout_user
 
@@ -19,7 +19,7 @@ default_breadcrumb_root(manage, '.public')
 
 @manage.route("/")
 @manage.route("/bands")
-@register_breadcrumb(manage, '.bands', 'Manage My Bands')
+#@register_breadcrumb(manage, '.bands', 'Manage My Bands')
 def manage_bands_home(bname=None):
     user = User.objects(id=current_user.id).first()
     page = request.args.get("page", 1, type=int)
@@ -77,8 +77,10 @@ def add_band():
             contact.contact_emails.append(new_email) 
         weblinks = Links()
         weblinks.enquiries = form.enquiries_url.data
+        catalogue_name = de_article(form.band_name.data)
         band = Band(
                 band_name= form.band_name.data,
+                catalogue_name = catalogue_name,
                 description = form.description.data,
                 created_by = user,
                 hometown={"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data},
@@ -95,7 +97,7 @@ def add_band():
         band.genres = list(filter(None, set(genrelist)))
         band.save()
         # user.update(push__posts=post) remember to add band to user
-        return redirect(url_for('public.home'))
+        return redirect(url_for('public.results'))
     towns = Towns.objects(county="Antrim").first()["towns"]
     form.hometown.origin_town.choices = [(otown, otown) for otown in towns]
     genres = list_genres()
@@ -114,7 +116,7 @@ def view_band_dlc(*args, **kwargs):
         return []
 
 @manage.route("/band/<string:bname>/")
-@register_breadcrumb(manage, '.', '', dynamic_list_constructor=view_band_dlc)
+# @register_breadcrumb(manage, '.', '', dynamic_list_constructor=view_band_dlc)
 def preview_band(bname):
     band = Band.objects(band_name=bname).first()
     image_file = url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image)
@@ -154,6 +156,7 @@ def update_band_profile(bname):
         weblinks.enquiries = form.enquiries_url.data
         # found band overwrite props
         band.band_name= form.band_name.data
+        band.catalogue_name = de_article(form.band_name.data)
         band.description = form.description.data
         band.genres.clear()
         genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]

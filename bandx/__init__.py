@@ -4,6 +4,8 @@ from flask_assets import Environment, Bundle
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_breadcrumbs import Breadcrumbs
+#from flask_breadcrumbs import current_breadcrumbs
+
 from flask_nav.elements import Navbar, Subgroup, View
 from bandx.utils.assets import bundles
 from bandx.utils.gns import nav, topbar, initialise_nav
@@ -79,7 +81,6 @@ assets = Environment(app)
 assets.register(bundles)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
-Breadcrumbs(app=app)
 initialise_db(app)
 initialise_nav(app)
 login_manager.login_view = "user.login"
@@ -93,4 +94,5 @@ app.register_blueprint(api)
 app.register_blueprint(public)
 app.register_blueprint(manage)
 app.register_blueprint(user)
+Breadcrumbs(app=app)
 # nav.register_element('secondary', sns)

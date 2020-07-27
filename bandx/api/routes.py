@@ -3,7 +3,7 @@ from bandx.models.entities import Band, Towns
 
 api = Blueprint('api', __name__)
 
-@api.route("/genres")
+@api.route("/genrez")
 def list_genres():
     return list(Band.objects.aggregate([
         {"$unwind": "$genres"},

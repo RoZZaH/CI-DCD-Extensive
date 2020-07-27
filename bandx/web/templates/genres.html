@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Bands by Genre</h1>
+<ul>
+{% for genre in genres %}
+<li><a href="/?genres={{genre._id|lower}}">{{ genre._id|title }}</a> ({{genre.no_of_bands_per_genre}} bands) </li>
+{% endfor %}
+</ul>
+{% endblock content %}

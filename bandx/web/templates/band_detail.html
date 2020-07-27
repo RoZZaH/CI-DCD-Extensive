@@ -2,7 +2,6 @@
 {% block content %}
 <header class="main__header">
 {% include "include_breadcrumbs.html" %}
-<hr class="hr--breadcrumbs hr--left">
 <div class="header--mgt">
     <div class="headlines">
         <h6 class="headline--eyebrow">{{ band.description }}</h6><!-- newpaper terms leadin -->
@@ -31,6 +30,8 @@
 {% endif %}
 
 <h2 class="headline--profile">Profile</h2>
+<p class="debug">{{ referrer }}</p>
+<p class="debug">LETTER {{ letter if letter}}</p>
 <p>{{ band.profile }}</p>
 
 <!-- band details -->

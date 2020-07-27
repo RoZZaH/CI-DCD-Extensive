@@ -5,7 +5,7 @@ from flask import (jsonify, Blueprint, \
         url_for)
 
 #from flask_paginate import Pagination
-from flask_breadcrumbs import default_breadcrumb_root, register_breadcrumb, Breadcrumbs
+from flask_breadcrumbs import Breadcrumbs, default_breadcrumb_root, register_breadcrumb
 from flask_wtf import FlaskForm
 import phonenumbers
 from wtforms import StringField, SubmitField, RadioField
@@ -40,27 +40,49 @@ def show_tours():
     return jsonify(tours)
 
 
+def band_dlc(*args,**kwargs):
+    bname = request.view_args["bname"]
+    return [{'text': bname}]
 
 
 @public.route("/band/<string:bname>/", methods=('GET', 'POST'))
-def band_detail(bname):
+@public.route("/band/<string:bname>/<string:letter>", methods=('GET', 'POST'))
+@register_breadcrumb(public, '.bname', '', dynamic_list_constructor=band_dlc)
+def band_detail(bname, letter=None):
+    referrer = request.referrer
     band = Band.objects(band_name=bname).first()
-    return render_template("band_detail.html", band=band)
+    if letter:
+        return render_template("band_detail.html", band=band, referrer=referrer, letter=letter)
+    else:
+        return render_template("band_detail.html", band=band, referrer=referrer)
+
+
+# @public.route("/a-z/<string:bname>/")
+# def alpha_band(bname):
+#     # referrer = request.referrer
+#     band = Band.objects(band_name=bname).first()
+#     return render_template("band_detail.html", band=band)
 
 
 def view_alpha_dlc(*args, **kwargs):
     if request.path[1:4] == "a-z":
         alpha = ''
         alpha = request.view_args['letter']
+        bname = None
+        if 'band' in request.view_args:
+            bname = request.view_args['band']
+        referrer = request.referrer
         print(alpha)
-        return [{'text': 'Bands', 'url': url_for('public.results')}, { 'text': 'A-Z', 'url': url_for('public.a2z')}, {'text': alpha.upper() }]
-    if request.path == "/":
-        return [{'text':'Bands', 'url': url_for('public.results')}, {'text': 'something'}]
+        print(bname)
+        if bname:
+            return [{ 'text': 'A-Z', 'url': url_for('public.a2z')}, {'text': alpha.upper() }, {text: bname.title()}]
+        else:
+            return [{ 'text': 'A-Z', 'url': url_for('public.a2z')}, {'text': alpha.upper() }]
 
 
 @public.route("/a-z/", defaults={'letter': 'a'})
 @public.route("/a-z/<string:letter>", methods=('GET', 'POST')) 
-@register_breadcrumb(public, '.', '', dynamic_list_constructor=view_alpha_dlc)
+# @register_breadcrumb(public, '.a2z', '', dynamic_list_constructor=view_alpha_dlc)
 def a2z(letter='a', bname=None):
     alphabet = 'abcdefghijklmnopqrstuvwxyz#' # hastag_etc
     #letter = letter
@@ -68,7 +90,7 @@ def a2z(letter='a', bname=None):
     #letter = request.args.get("letter", "a")
     bands = Band.objects(band_name__istartswith=letter).paginate(per_page=5, page=page, search=search)
     if bands.total > 0:
-        return render_template("bands_list.html", bands=bands, alphabet=alphabet, letter=letter)
+        return render_template("bands_list.html", bands=bands, alphabet=alphabet, letter=letter) #if alphabet send to diff route
     else:
         return f"no query string received for {letter}", 200
 
@@ -82,15 +104,18 @@ def search():
     return render_template("search.html", form=form, genrelist=genres, province_counties=province_counties)
 
 
-# @public.route("/bands/")
-# def redirector():
-#     return redirect(url_for("public.results"))
+@public.route('/genres')
+def by_genre():
+    pipeline = [{ "$unwind": "$genres"}, {"$group": {"_id": "$genres", "no_of_bands_per_genre": { "$sum": 1}}} ]
+    genres = list(Band.objects.aggregate(pipeline))
+    return render_template("genres.html", genres=genres)
+
 
 
 
 
 @public.route('/', methods=('GET', 'POST'))
-@register_breadcrumb(public, '.', '', dynamic_list_constructor=view_alpha_dlc)
+@register_breadcrumb(public, '.', 'Bands')
 def results():
     filters = {}
     text_query = None
@@ -105,6 +130,7 @@ def results():
         andor = request.args.get("andor")
         letter = request.args.get("letter")
         counties = request.args.getlist("counties")
+        town = request.args.get("town")
         search = request.query_string.decode('UTF-8')
         search = re.sub('\=[0-9]*', '=', search)
        
@@ -127,6 +153,11 @@ def results():
             else:
                 filters['hometown__county__in'] = counties
 
+        if town is None or len(town) == 0:
+            pass
+        else:
+            filters['hometown__town__iexact'] = town
+
         if letter:
             filters['band_name__istartswith'] = letter
 
@@ -146,48 +177,43 @@ def results():
         return "no query sing received", 200
 
 
+
+
+
 @public.route('/location')
 def by_location():
  
-    pipeline = [
-        { "$unwind": { "path": "$towns" } }, 
-        { "$lookup": { "from": "band",
-                        "let": { "townt": "$towns", "townc": "$county" },
-                "pipeline": [
-                    { "$project": { "_id": 0, "band_name": 1, "hometown": 1 } },
-                    { "$replaceRoot": { "newRoot": 
-                                        { "$mergeObjects": [
-                                            {
-                                                "bandname": "$band_name",
-                                                "town": "",
-                                                "county": ""
-                                            },
-                                            "$hometown"
-                                            ]
-                                        }
-                                    }},
-                    { "$match": { "$expr": { "$and": [ { "$eq": [ "$town", "$$townt" ] }, { "$eq": [ "$county", "$$townc" ] } ]}}},
-                    { "$project": { "_id": 1, "bandname": 1 } } 
-                    ], "as": "bands" }}, 
-        { "$replaceRoot": { "newRoot": { "$mergeObjects": [ { "bandlisting": { "$size": "$bands.bandname" }, "town": "$towns", "county": "$county" } ] }}}, 
-        { "$group": { "_id": {
-                            "county": "$county",
-                            "town": "$town",
-                            "number_of_bands_per_town": "$bandlisting"
-                            },
-                            "number_of_towns_per_county": { "$sum": 1 }
+    pipeline = [{ "$unwind": "$towns" }, 
+                { "$lookup": {
+                    "from": "band",
+                    "let": { "townt": "$towns", "townc": "$county" },
+                    "pipeline": [
+                        { "$project": { "_id": 0, "band_name": 1, "hometown": 1 } },
+                        { "$replaceRoot": { "newRoot": 
+                                            { "$mergeObjects": [ { "bandname": "$band_name", "town": "", "county": "" }, "$hometown" ] }
+                                          }
+                        },
+                        { "$match": { "$expr": { "$and": [ { "$eq": [ "$town", "$$townt" ] }, { "$eq": [ "$county", "$$townc" ] } ] }} },
+                        { "$project": { "_id": 1, "bandname": 1 }}
+                    ],
+                    "as": "bands"
                     }
-        }, 
-        { "$group": { "_id": "$_id.county", "towns": { "$push": { "name": "$_id.town", "num": "$_id.number_of_bands_per_town" }},
-                            "bands_total": { "$sum": "$_id.number_of_bands_per_town"},
-                            "ctotal": {"$sum": "$number_of_towns_per_county"}
-                    }
-        }, 
-        { "$sort": { "_id": 1 }}
+                }, 
+                { "$replaceRoot": { "newRoot": 
+                                    { "$mergeObjects": 
+                                        [ { "bandlisting": { "$size": "$bands.bandname" }, "town": "$towns", "county": "$county", "province": "$province" } ]
+                                    }
+                                }
+                }, 
+                { "$group": { "_id": { "province": "$province", "county": "$county" },
+                                "towns": { "$push": { "town": "$town", "no_of_bands": "$bandlisting" }}}
+                }, 
+                { "$project": { "_id": 0, "province": "$_id.province", "counties": "$_id.county", "towns" : "$towns", "no_bands_per_county": { "$sum": "$towns.no_of_bands" } }}, 
+                { "$group": { "_id": "$province", "counties": { "$push": {"county": "$counties", "no_of_bands_per_county": "$no_bands_per_county",  "towns": "$towns"} } }}
     ]
-
-    counties = Towns.objects.aggregate(pipeline)
-    return render_template("counties_list.html", counties=counties)
+    provinces = Towns.objects.aggregate(pipeline)
+    #return jsonify(list(provinces))
+    return render_template("provinces.html", provinces=provinces)
 
 
 
@@ -206,6 +232,25 @@ def delete_tour(index):
 @public.route('/grid')
 def show_grid():
     return render_template("grid.html")
+
+
+@public.route('/deart/')
+def de_articlise():
+    bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog']
+    articles = {'a': '', 'an':'', 'the':''}
+    cat_bands = []
+
+    for band in bands:
+        _cat_name = []
+        _articles = []
+        for word in band.split():
+            _articles.append(word) if word.lower() in articles else _cat_name.append(word)
+        if len(_articles) > 0:
+            _band = ' '.join(_cat_name) + ', ' + ' '.join(_articles)
+        else:
+            _band = ' '.join(_cat_name)
+        cat_bands.append(_band)
+    return jsonify(cat_bands)
 
 
 class PhoneForm(FlaskForm):
@@ -268,3 +313,60 @@ def show_phone():
 #     page = request.args.get("page", 1, type=int)
 #     bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
 #     return render_template("bands_list.html", bands=bands)
+
+
+'''
+    pipeline = [
+        { "$unwind": { "path": "$towns" } }, 
+        { "$lookup": { "from": "band",
+                        "let": { "townt": "$towns", "townc": "$county" },
+                "pipeline": [
+                    { "$project": { "_id": 0, "band_name": 1, "hometown": 1 } },
+                    { "$replaceRoot": { "newRoot": 
+                                        { "$mergeObjects": [
+                                            {
+                                                "bandname": "$band_name",
+                                                "town": "",
+                                                "county": ""
+                                            },
+                                            "$hometown"
+                                            ]
+                                        }
+                                    }},
+                    { "$match": { "$expr": { "$and": [ { "$eq": [ "$town", "$$townt" ] }, { "$eq": [ "$county", "$$townc" ] } ]}}},
+                    { "$project": { "_id": 1, "bandname": 1 } } 
+                    ], "as": "bands" }}, 
+        { "$replaceRoot": { "newRoot": { "$mergeObjects": [ { "bandlisting": { "$size": "$bands.bandname" }, "town": "$towns", "county": "$county" } ] }}}, 
+        { "$group": { "_id": {
+                            "county": "$county",
+                            "town": "$town",
+                            "number_of_bands_per_town": "$bandlisting"
+                            },
+                            "number_of_towns_per_county": { "$sum": 1 }
+                    }
+        }, 
+        { "$group": { "_id": "$_id.county", "towns": { "$push": { "name": "$_id.town", "num": "$_id.number_of_bands_per_town" }},
+                            "bands_total": { "$sum": "$_id.number_of_bands_per_town"},
+                            "ctotal": {"$sum": "$number_of_towns_per_county"}
+                    }
+        }, 
+        { "$sort": { "_id": 1 }}
+    ]
+'''
+
+# @public.route('/location')
+# def by_location():
+#     pipeline = [ { "$group": {
+                
+#             "_id": "$province",
+#             "counties": { "$push": "$county" },
+        
+#     }}]
+#     provinces = list(Towns.objects.aggregate(pipeline))
+    
+#     # return jsonify(provinces)
+#     return render_template("provinces.html", provinces=provinces)
+
+# @public.route("/bands/")
+# def redirector():
+#     return redirect(url_for("public.results"))

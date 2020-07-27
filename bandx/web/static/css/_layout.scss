@@ -36,10 +36,16 @@
 }
 
 .navigation {
-    display: flex;
-    grid-area: navigation;
-    flex-direction: column-reverse;
+    height: 70px;
+    text-align: right;
+    line-height: 70px;
+    float: right;
+    grid-column: 2/span 2
 }
+//     display: flex;
+//     grid-area: navigation;
+//     flex-direction: column-reverse;
+// }
 
 .primary-nav {
     grid-area: primaryNav;

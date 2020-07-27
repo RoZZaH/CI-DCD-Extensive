@@ -73,7 +73,7 @@ margin: 0;
 
 
 .main__header {
-  color: red;
+  //color: red;
 }
 
 // .main__header--alphabet {
@@ -233,6 +233,13 @@ hr {
   background: $footer-bg;
   margin: 0.5em 0;
 }
+
+
+.breadcrumbs--alphabet,
+.breadcrumbs--alphabet a {
+  color: $text-secondary;
+}
+
 
 li > ul > li {
   list-style-type: square;

@@ -57,6 +57,8 @@ nav.pages__pagelinks ul li {
   display: flex;
   width: 100%;
   justify-content: center;
+  list-style: none;
+  padding-left: 0;
 }
 
 .pages__pagelinks li:first-child {
@@ -147,4 +149,46 @@ nav.pages__pagelinks ul li {
   background: tomato;
 }
 
+.leaderboard {
+list-style: none;
+}
+
+.leaderboard * {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+
+
+.leaderboard input[type="checkbox"] {
+  display: none;
+}
+
+
+// .leaderboard > .leaderboard-county input[type="checkbox"] {
+//   display: block;
+// }
+.leaderboard-county li {
+  padding-left: .75em;
+}
+
+.leaderboard-town li {
+  padding-left: .5em;
+}
+
+.leaderboard-county, .leaderboard-town {
+  display: none;
+}
+
+#connacht:checked ~ .leaderboard-county,
+#ulster:checked ~ .leaderboard-county,
+#leinster:checked ~ .leaderboard-county,
+#munster:checked ~ .leaderboard-county {
+  display: block;
+}
+
+.county:checked ~ .leaderboard-town{
+  display: block;
+}
 

@@ -41,3 +41,18 @@ def save_picture(form_picture, band=False, output_size=default_size ):
     i.save(picture_path)
 
     return picture_fn
+
+
+#lstrip , rstrip and hashtag cataloging
+# regex split
+def de_article(bandname):
+    articles = {'a': '', 'an':'', 'the':''}
+    _band_name = []
+    _articles = []
+    for word in bandname.split():
+        _articles.append(word) if word.lower() in articles else _band_name.append(word)
+    if len(_articles) > 0:
+        _bandname = ' '.join(_band_name) + ', ' + ' '.join(_articles)
+    else:
+        _bandname = ' '.join(_band_name)
+    return _bandname

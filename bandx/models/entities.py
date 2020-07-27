@@ -58,6 +58,7 @@ class Band(db.DynamicDocument):
     created_by = db.ReferenceField('User') 
     date_created = db.DateTimeField(required=True, default=datetime.utcnow)
     band_name = db.StringField(max_length=120, required=True) #Unique=True
+    catalogue_name = db.StringField(max_length=120, required=True)
     profile = db.StringField()
     description = db.StringField(max_length=120)
     genres = db.ListField(db.StringField(default='unclassified'))

@@ -41,6 +41,7 @@ topbar = Navbar('title',
 )
 
 mobile_first_in = Navbar('title',
+    #RawTag('<li><label for="toggle">&#9776;<input type="checkbox" id="toggle"></li>'),
     SuperGroup(
     View('Bands', 'public.results'),
     items=(
@@ -56,11 +57,13 @@ mobile_first_in = Navbar('title',
 
 
 mobile_first_out = Navbar('title',
+    #RawTag('<li class="mtoggle"><label for="mtoggle">&#9776;<input type="checkbox" id="mtoggle"></li>'),
     SuperGroup(
     View('Bands', 'public.results'),
     items=(
         Alpha('Bands A-Z', 'public.a2z'),
-        View('Bands by Location', 'public.by_location') )
+        View('Bands by Location', 'public.by_location'),
+        View('Bands by Genre', 'public.by_genre') )
     ),
     View('Search', 'public.search'),
     View('Register', 'user.register'),
@@ -128,13 +131,14 @@ class GnsRenderer(Renderer):
 
 class JustLiRenderer(Renderer):
     def visit_Navbar(self, node):
-        nav_tag = tags.nav(_class="some-class navbar")
-        ul = nav_tag.add(tags.ul())
+        #nav_tag = tags.nav(_class="some-class navbar")
+        #ul = nav_tag.add(tags.ul())
+        ul = tags.ul(_class="mobile-nav debug")
         # sub = []
         for item in node.items:
             ul.add(self.visit(item))
 
-        return nav_tag #.add(*sub)
+        return ul #nav_tag #.add(*sub)
 
     def visit_View(self, node):
         li = tags.li()
