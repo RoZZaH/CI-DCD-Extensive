@@ -172,3 +172,33 @@ ul.genre-checkbox-wrapper {
     justify-content: end ;
 }
 
+
+.is-invalid {
+    border: 1px solid red !important;
+    font-size: 1.1rem;
+    padding: 0.2em;
+}
+
+.invalid-feedback {
+    margin: 0;
+    padding: 0;
+    grid-column: 2 / span 2;
+    color: firebrick;
+    font-size: 1rem;
+    line-height: 1em;
+}
+
+input#contact_details-contact_emails-email_title {
+    width: 50%;
+}
+
+ul#contact_details-contact_numbers-mobile {
+    list-style: none;
+    display: flex;
+    padding-left: 0;
+}
+
+ul#contact_details-contact_numbers-mobile li:first-child {
+    margin-left: 0;
+    margin-right: 1em;
+}

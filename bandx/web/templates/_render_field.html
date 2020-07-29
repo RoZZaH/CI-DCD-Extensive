@@ -2,7 +2,7 @@
 
     {{ field.label }}
         {% if field.errors %}
-            {{ field(**kwargs)|safe(class="is-invalid") }}
+            {{ field(class_="is-invalid", **kwargs)|safe  }}
             <div class="invalid-feedback">
                 {% for error in field.errors %}
                     <span>{{ error }}</span>

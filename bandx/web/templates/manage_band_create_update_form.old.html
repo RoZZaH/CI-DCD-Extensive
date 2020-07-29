@@ -4,7 +4,6 @@
 {% block content %}
 <header class="main__header">
 {% include "include_breadcrumbs.html" %}
-<hr class="hr--breadcrumbs hr--left">
 <div class="header--mgt">
 <h1>{{ title }}</h1>
 <btn class="btn btn-subform remove del-band">Delete Band</a>
@@ -14,7 +13,11 @@
             {{ form.hidden_tag() }}
             <fieldset class="l-one-third" style="">
             <legend>Band Promo Image</legend>
+            {% if band %}
             <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }}" > {# filename=band.media.tour_media.pictures.square #}
+            {% else %}
+            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}" >
+            {% endif %}
             {{ form.media_assets.featured_image.label }}
                 {{ form.media_assets.featured_image(class="form-control-file") }}
                 {% if form.media_assets.featured_image.errors %}
@@ -63,7 +66,7 @@
             <legend>Genres</legend>
             
                 <ul class="genre-checkbox-wrapper">
-            {% for genre in genrelist %}<li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre in band.genres else ''}}><label>{{genre}}</label></li>
+            {% for genre in genrelist|sort %}<li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre in band.genres else ''}}><label>{{genre}}</label></li>
             {% endfor %}
             </ul>
             <label>Other:</label>

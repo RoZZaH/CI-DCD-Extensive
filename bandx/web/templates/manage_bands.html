@@ -2,7 +2,6 @@
 {% block content %}
 <header class="main--header">
 {% include "include_breadcrumbs.html" %}
-<hr class="hr--breadcrumbs hr--left">
 <nav class="pages__pagelinks"><ul>
 {% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
     {% if page_num %}
