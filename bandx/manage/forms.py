@@ -4,9 +4,8 @@ from flask_login import current_user
 from bandx.models.entities import User, Towns
 from wtforms import (BooleanField, DateField, Form, FormField, FieldList, HiddenField, 
                       PasswordField, RadioField, SelectField, StringField, SubmitField, TextAreaField,)
-
 from wtforms.validators import DataRequired, Optional, Length, EqualTo, Email, URL, ValidationError
-
+import phonenumbers
 
 class HomeTownForm(Form):
     origin_county = SelectField("From County", choices = [
@@ -62,10 +61,26 @@ class PhoneFormlet(Form):
                         coerce=int,
                         render_kw={},
                         default="True")
-    number = StringField("Number",
-                        render_kw={"placeholder":"+353", "class":"number-field", "id":"phone"},
-                        validators=[Length(max=15)])
-    
+    region = RadioField('', choices= [
+                                    ('IE', 'Ireland'),
+                                    ('GB', 'N.I./UK'),
+                                    ('None','Other')
+
+                        ], default='IE')
+    phone = StringField('', validators=[DataRequired()])
+    # number = StringField("Number",
+    #                     render_kw={"placeholder":"+353", "class":"number-field", "id":"phone"},
+    #                     validators=[Length(max=15)])  
+
+    def validate_phone(self, phone):
+        try:
+            p = phonenumbers.parse(phone.data, self.region.data)
+            if not phonenumbers.is_valid_number(p):
+                raise ValueError()
+        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+            raise ValidationError('Invalid phone number')
+
+
 class MediaAssetsFormlet(Form):
     featured_image = FileField("Band Profile Image",
                                 validators=[FileAllowed(['jpg', 'png', 'jpeg'])]

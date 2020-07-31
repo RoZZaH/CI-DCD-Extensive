@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% from "_render_field.html" import render_field %}
 
 {% block content %}
@@ -87,14 +88,22 @@
             {{ render_field(form.contact_details.contact_emails.email_address) }}
             
             <ul id="contact_details-contact_numbers-mobile">
-                <li><input id="contact_details-contact_numbers-mobile-0" name="contact_details-contact_numbers-mobile" type="radio" {{ 'checked' if form.contact_details.contact_numbers.mobile.data==1 else '' }} value=1> <label for="contact_details-contact_numbers-mobile-0">mobile</label></li>
+                <li><input id="contact_details-contact_numbers-mobile-0" name="contact_details-contact_numbers-mobile" type="radio" {{ 'checked' if form.contact_details.contact_numbers.mobile.data!=0 else '' }} value=1> <label for="contact_details-contact_numbers-mobile-0">mobile</label></li>
                 <li><input id="contact_details-contact_numbers-mobile-1" name="contact_details-contact_numbers-mobile" type="radio" {{ 'checked' if form.contact_details.contact_numbers.mobile.data==0 else '' }} value=0> <label for="contact_details-contact_numbers-mobile-1">landline</label></li>
             </ul>
-            
-            {{ 'checked' if form.contact_details.contact_numbers.mobile.data == 1 else 'not checked' }}
-    
-            {{ render_field(form.contact_details.contact_numbers.number) }}
-            {{ render_field(form.enquiries_url)}}
+            {% if not band %}
+                {{ render_field(form.contact_details.contact_numbers.region) }}
+                {{ render_field(form.contact_details.contact_numbers.phone) }}
+                {{ render_field(form.enquiries_url)}}
+            {% else %}
+                <input id="contact_details-contact_numbers-region-2" name="contact_details-contact_numbers-region" type="hidden"  value="None" >
+                <div style="position: relative; top: 0; margin-bottom: 0.5em">
+                {{ render_field(form.contact_details.contact_numbers.phone) }}
+                </div>
+                <div style="position: relative; top: 0">
+                {{ render_field(form.enquiries_url)}}
+                </div>
+            {% endif %}
             <!-- /form -->
         </fieldset>
         {{ form.submit(class="btn btn-outline-info") }}
@@ -123,10 +132,11 @@
 
 
 {% block javascript %}
+
     {% assets "org_band_js" %}
     <script src="{{ ASSET_URL }}" ></script>
-    {% endassets %}
-    
+    {% endassets %}    
+    <script src="{{ url_for('static_js', filename='libs/intlTelInput.min.js') }}"></script>
     <script>
     /* generate and select Towns dropdown menu */
     const selected_county = "{{ selected_county }}" || "Antrim"
@@ -141,12 +151,61 @@
 
     document.querySelector(".del-band").addEventListener("click", () => {  
         toggleClass(modal, "show")
-    })
+    });
 
     document.querySelector("#del-modal .cancel").addEventListener("click", (e) => {
         e.preventDefault()
         toggleClass(modal, "show")
-    })
+    });
+
+
+
+    // individual ids 
+    var wtf_phone_field = document.getElementById('contact_details-contact_numbers-phone');
+    wtf_phone_field.style.position = 'absolute';
+    wtf_phone_field.style.top = '-9999px';
+    wtf_phone_field.style.left = '-9999px';
+    wtf_phone_field.parentElement.insertAdjacentHTML('beforeend', '<div><input type="tel" id="_phone"></div>');
+    var fancy_phone_field = document.getElementById('_phone');
+    var fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
+    initialCountry:"gb",
+    preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
+    //separateDialCode: true,
+    nationalMode: true,
+    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
+    });    
+    fancy_phone_iti.setNumber(wtf_phone_field.value);
+    fancy_phone_field.addEventListener('blur', function() {
+        if(checkRegionState()){
+        wtf_phone_field.value = fancy_phone_iti.getNumber();
+        }else{
+        wtf_phone_field.value = fancy_phone_field.value
+        }
+    }); 
+
+    function checkRegionState(){
+        {% if band %}
+        if (document.getElementById('contact_details-contact_numbers-region-2').value == "None")
+        {% else %}
+        let radios = document.querySelectorAll("#contact_details-contact_numbers-region input[type=radio]")
+        let i = radios.length - 1
+        if (radios[i].checked && radios[i].value == "None")
+        {% endif %}
+        {
+            document.querySelector(".iti__flag-container").classList.remove("hide")
+            return true
+        }else{
+            document.querySelector(".iti__flag-container").classList.add("hide")
+            return false
+        }
+    }
+
+    document.querySelectorAll("#region input[type=radio]").forEach( el => el.addEventListener("click", checkRegionState));
+    
+    document.addEventListener("DOMContentLoaded", function(){
+    checkRegionState()
+    });
+
 
 
     </script>

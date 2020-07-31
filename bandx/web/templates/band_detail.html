@@ -58,17 +58,18 @@
         {% endfor %}
 </dl>
 <dl>
-    <dt>Bookings</dt>
-        <dd>{{ band.contact_details.contact_generic_title }}</dd>
-        {% for email in band.contact_details.contact_emails %}
-        <dd><a href="mailto:{{ email.email_address }}">Email</a> : {{ email.email_address }}</dd>
-        {% endfor %}
-        {% for phone in band.contact_details.contact_numbers %}
-        <dd><a href="tel:{{ phone.number}}">{{ 'Mobile' if phone.mobile else 'Phone' }}</a> : {{ phone.number }}</dd>{# icon for mob/landline #}
-        {% endfor %}
-        <dd><a href="{{ band.links.enquiries }}">Online Enquiries</a></dd><!-- servcice -->
+    <dt>{{ band.contact_details.contact_generic_title }}</dt>
+        {% if band.contact_details.contact_name %}
+        <dd>{{ band.contact_details.contact_name }}, {{ band.contact_details.contact_title }}</dd>
+        {% endif %}
+        <dd><a href="mailto:{{ band.contact_details.contact_emails.email_address }}">Email</a> : {{ band.contact_details.contact_emails.email_address }}</dd>
+
+        <dd><a href="tel:{{ band.contact_details.contact_numbers.number }}">{{ 'Mobile' if band.contact_details.contact_numbers.mobile else 'Phone' }}</a> : {{ band.contact_details.contact_numbers.number }}</dd>{# icon for mob/landline #}
+        {% if band.links.enquiries %} 
+        <dd><a href="{{ band.links.enquiries }}">Online Enquiries</a></dd>
+        {% endif %}
 </dl>
-{# <dl>Websites:</dl> #}
+
 
 
 

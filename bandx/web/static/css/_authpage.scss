@@ -192,13 +192,33 @@ input#contact_details-contact_emails-email_title {
     width: 50%;
 }
 
-ul#contact_details-contact_numbers-mobile {
+ul#contact_details-contact_numbers-mobile,
+ul#contact_details-contact_numbers-region, {
     list-style: none;
     display: flex;
     padding-left: 0;
 }
 
-ul#contact_details-contact_numbers-mobile li:first-child {
+ul#contact_details-contact_numbers-mobile li:first-child,
+ul#contact_details-contact_numbers-region li:first-child {
     margin-left: 0;
-    margin-right: 1em;
+    margin-right: 2em;
+}
+
+ul#contact_details-contact_numbers-region li {
+    margin-right: 2em;
+}
+
+
+.iti__flag {
+    background-image: url("../img/flags.png");
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .iti__flag {background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/img/flags@2x.png");}
+}
+
+input#_phone  {
+    margin: 2.5em;
+    width: 15ch;
 }

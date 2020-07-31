@@ -14,7 +14,7 @@ from bandx.utils.gns import nav
 from bandx.api.routes import list_genres
 from bandx.utils.helpers import *
 from mongoengine.errors import NotUniqueError
-
+import phonenumbers
 
 manage = Blueprint('manage', __name__, url_prefix='/manage') # import_name , usually the current module
 default_breadcrumb_root(manage, '.public')
@@ -77,9 +77,10 @@ def add_band():
             contact.contact_generic_title = "Enquiries"
         else:
             contact.contact_generic_title = form.contact_details.contact_generic_title.data
+        phone = phonenumbers.parse(form.contact_details.contact_numbers.phone.data, form.contact_details.contact_numbers.region.data)
         new_phone = Phone(
-                mobile = form.contact_details.contact_numbers.mobile.data,
-                number = form.contact_details.contact_numbers.number.data
+                mobile = bool(form.contact_details.contact_numbers.mobile.data),
+                number = phonenumbers.format_number(phone, phonenumbers.PhoneNumberFormat.E164)
         )
         contact.contact_numbers = new_phone
         new_email = Email(
@@ -148,9 +149,10 @@ def update_band_profile(bname):
         contact.contact_name = form.contact_details.contact_name.data
         contact.contact_title = form.contact_details.contact_title.data
         contact.contact_generic_title = form.contact_details.contact_generic_title.data
+        phone = phonenumbers.parse(form.contact_details.contact_numbers.phone.data, form.contact_details.contact_numbers.region.data)
         new_phone = Phone(
                 mobile = bool(form.contact_details.contact_numbers.mobile.data),
-                number = form.contact_details.contact_numbers.number.data
+                number = phonenumbers.format_number(phone, phonenumbers.PhoneNumberFormat.E164)
         )
         contact.contact_numbers = new_phone
         new_email = Email(
@@ -190,7 +192,8 @@ def update_band_profile(bname):
         form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
         form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
         form.contact_details.contact_numbers.mobile.data = band.contact_details.contact_numbers.mobile
-        form.contact_details.contact_numbers.number.data = band.contact_details.contact_numbers.number
+        form.contact_details.contact_numbers.region.data = "None"
+        form.contact_details.contact_numbers.phone.data = band.contact_details.contact_numbers.number
         form.contact_details.contact_emails.email_title.data = band.contact_details.contact_emails.email_title
         form.contact_details.contact_emails.email_address.data = band.contact_details.contact_emails.email_address
         form.media_assets.featured_video.data = (("https://www.youtube.com/watch?v=" if band.media_assets.featured_video["service"] == "youtube" else "https://www.vimeo.com/"  )   +band.media_assets.featured_video["vid"]) if band.media_assets.featured_video else None

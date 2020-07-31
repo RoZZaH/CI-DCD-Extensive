@@ -84,6 +84,7 @@ def view_alpha_dlc(*args, **kwargs):
 @public.route("/a-z/<string:letter>", methods=('GET', 'POST')) 
 # @register_breadcrumb(public, '.a2z', '', dynamic_list_constructor=view_alpha_dlc)
 def a2z(letter='a', bname=None):
+    # find first band - A House
     alphabet = 'abcdefghijklmnopqrstuvwxyz#' # hastag_etc
     #letter = letter
     page = request.args.get("page", 1, type=int)
@@ -109,8 +110,6 @@ def by_genre():
     pipeline = [{ "$unwind": "$genres"}, {"$group": {"_id": "$genres", "no_of_bands_per_genre": { "$sum": 1}}} ]
     genres = list(Band.objects.aggregate(pipeline))
     return render_template("genres.html", genres=genres)
-
-
 
 
 
@@ -159,7 +158,7 @@ def results():
             filters['hometown__town__iexact'] = town
 
         if letter:
-            filters['band_name__istartswith'] = letter
+            filters['catalogue_name__istartswith'] = letter
 
 
     pipeline = Q(**filters) # use _AND or _OR Q Node Combinations
@@ -169,7 +168,7 @@ def results():
         bands = bands.search_text(text_query).order_by("$text_score").paginate(per_page=3, page=page)
         count = bands.pages
     else: 
-        bands = Band.objects(pipeline).paginate(per_page=5, page=page) #??
+        bands = Band.objects(pipeline).order_by("$catalogue_name").paginate(per_page=5, page=page) #??
         count = bands.pages
     if bands.total > 0:
         return render_template("bands_list.html", bands=bands, search=search, count=count)
