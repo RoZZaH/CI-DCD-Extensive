@@ -9,7 +9,8 @@ from wtforms.validators import DataRequired, Optional, Length, EqualTo, Email, U
  
 
 class SearchForm(FlaskForm):
-    q = StringField("Text Query")
+    q = StringField("",
+                    render_kw={"placeholder" : "search for.. band description, band member, genre" })
     origin_county = SelectMultipleField("From County", choices = [
                                 ("Antrim",	"Antrim"),
                                 ("Armagh",	"Armagh"),
@@ -45,10 +46,10 @@ class SearchForm(FlaskForm):
                                 ("Wicklow",	"Wicklow")
                                 ],
                                 render_kw={"class": "origin-county", "size": "6"})
-    andor = RadioField("", 
+    andor = RadioField("Match", 
                         choices=[("f","any"), ("t","Match ALL")],
                         render_kw={},
-                        default="false")
+                        default="f")
     genres = StringField("Musical Genres", 
                             render_kw={"id": "testInput",
                                     "style":"text-transform: lowercase;",

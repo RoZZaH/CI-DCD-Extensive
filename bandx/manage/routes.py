@@ -117,7 +117,7 @@ def add_band():
         return redirect(url_for('manage.manage_bands_home'))
     towns = Towns.objects(county="Antrim").first()["towns"]
     form.hometown.origin_town.choices = [(otown, otown) for otown in towns]
-    return render_template("manage_band_create_update_form.html", form=form, genrelist=genres, form_legend = form_legend, band=False)
+    return render_template("manage_band_create_form.html", form=form, genrelist=genres, form_legend = form_legend, band=False)
 
 
 
@@ -203,7 +203,7 @@ def update_band_profile(bname):
     selected_town = band.hometown["town"] if band.hometown["town"] is not None else "none"
     genres = list_genres()
     form_legend="Edit Band Profile"
-    return render_template("manage_band_create_update_form.html", form=form, genrelist=genres, form_legend="Edit Band Profile",
+    return render_template("manage_band_update_form.html", form=form, genrelist=genres, form_legend="Edit Band Profile",
                             selected_county=selected_county, selected_town=selected_town, band=band)
 
 

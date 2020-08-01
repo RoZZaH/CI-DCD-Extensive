@@ -1,15 +1,34 @@
 #datab {
-    display: contents;
-    border: 1px solid grey;
-    border-radius: 6px;
+    position: relative;
+    border: 2px solid red;
+    grid-column: 2/-2;
     font-size: 1.25rem;
     padding-bottom:  1.5em;
+    min-height: 100wh;
 }
 
-
-fieldset {
-    grid-column: 2 / span 1;
+#form-part-1 {
+    position: absolute;
+    grid-column: 2/-2;
+    background: $body-bg;
+    border: 2px solid black;
 }
+#form-part-2 {
+    position: absolute;
+    grid-column: 2/-2;
+    background: $body-bg;
+    display: none;
+}
+#form-part-3 {
+    position: absolute;
+    grid-column: 2/-2;
+    background: $body-bg;
+    display: none;
+}
+
+// fieldset {
+//     grid-column: 2 / span 1;
+// }
 
 fieldset > legend {
     width: auto;
@@ -78,7 +97,7 @@ input[type=radio] {
     width: auto;
 }
 
-.genres ul,
+#genres ul,
 .phone-wrapper ul#mobile,
 .phone-wrapper ul#region,
  {
@@ -92,84 +111,139 @@ input[type=radio] {
     margin-right: 1em;
 }
 
-fieldset.genres {
+#search {
+    margin: 2em 0 0;
+    padding: 2em 0;
+    border-bottom: 1px solid $accent;
 }
 
-// .genres ul {
-//     display: flex;
-//     flex-direction: row;
-//     flex-wrap: wrap;
-//     height: 10ch;
-// }
+#search input {
+    height: 2.25em;
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    border-top: none;
+    border-bottom: 1px solid #DDD;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
+    padding: .25em .5em;
 
-// .genres li {
-//     border: 1px dotted pink;
-//     flex: 1 1 8ch;
-// }
+}
 
-ul.genre-checkbox-wrapper {
+#genres ul{
+    display: grid;
     font-size: .85rem;
     width: 100%;
-    display: grid;
-    grid-template-rows: repeat(6, minmax(1em, 1fr));
-    grid-gap: 0 .35em;
-    grid-auto-flow: column;
-    grid-auto-columns: repeat(auto-fill, 1fr);
-    // grid-template-rows: ;
+    letter-spacing: .075em;
+    // grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(7, minmax(1em, 1fr));
+    grid-auto-flow: column dense;
+    align-items: center;
+    grid-gap: .5em .35em;
 }
 
-.genres li {
-    display: inline;
-    // max-width: 12ch;
+li#andor-any,
+// li#andor-all,
+li#genres-all {
+grid-auto-flow: row;
+margin-bottom: .75em;
+}
+
+li#andor-any {
+    grid-column: 1 / span 2;
+    
+}
+// li#andor-all {
+//     grid-column: 3;
+// }
+li#genres-all {
+    grid-column: -1;
 }
 
 
-.genres li label {
+#genres li:not(#andor-all):not(#andor-any):not(#genres-all) label {
     display: block;
     margin-top: -1.2em;
-    margin-left: 1em;
-    // border: 1px dashed red;
+    margin-left: 1.5em;
 }
 
-.counties {
+// label#g-all {
+//     display: block; 
+//     margin: 0em !important; 
+//     padding: 0em !important;
+// }
+
+#counties {
+    margin: 2em 0;
     display: grid;
     grid-template-columns: repeat(2, minmax(1em, 1fr));
-    // grid-auto-flow: rows;
+    letter-spacing: .075em;
 }
 
-.counties fieldset {
+.province {
     grid-column: span 1;
+    display: grid;
+    grid-template-columns: minmax(1em, 1fr) minmax(130px, 250px) minmax(1em, 1fr) ;
+    grid-template-rows: 2em repeat(auto-fill, 1fr);
 }
 
 .province ul {
-
-    font-size: .85rem;
-    display: block;
+    grid-column: 2;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
+.province li:first-of-type {
+    font-size: 1.125rem;
+    text-align: center;
+    line-height: 2em;
+    
+}
+
+.province .province-title {
+    margin-right: 0.5em;
+    color: $logo-green;
+}
 
 .province li {
+    font-size: .85rem;
     list-style: none;
-}
-
-.connacht {
-    order: -3;
-    display:grid;
+    display: block;
+    grid-row: 2;
+    grid-column: 2;
+    width: minmax(100px, 200px);
     align-items: end;
+    
 }
 
-.ulster {
+.province li label,
+.province li input {
+    width: auto;
+}
+
+.province li input {
+    margin-right: 0.5em;
+}
+
+
+
+#connacht {
+    order: -3;
+
+}
+
+#ulster {
     order: -2;
 }
 
-.munster {
+#munster {
     display: grid;
-    align-items: end;
     order: -1;
 }
 
-.connact  {
-    justify-content: end ;
+#connact  {
+  
 }
 
 
@@ -221,4 +295,8 @@ ul#contact_details-contact_numbers-region li {
 input#_phone  {
     margin: 2.5em;
     width: 15ch;
+}
+
+.iti .iti--allow-dropdown{
+    background: grey;
 }

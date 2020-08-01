@@ -3,30 +3,31 @@
 {% block content %}
 <form method="GET" action="{{ url_for('public.results')}}" >
 {# render_field #}
-    {{ form.q.label }}
-        {{ form.q }}
-    <hr>
-    <fieldset class="genres">
-        <legend>Genres</legend>
-        {{ form.andor.label }}
-            {{ form.andor }}
-        <ul class="genre-checkbox-wrapper">
-        {% for genre in genrelist %}
-            <li><input class="debug" type="checkbox" name="genres" value="{{genre}}" ><label>{{genre}}</label></li>
+    <div id="search">
+        {{ form.q }}<button type="submit">Search</button>
+    </div>
+    <fieldset id="genres">
+        <legend class="colon-after">By Genre</legend>
+        <ul id="genres">
+            <li id="andor-any"><b>Match</b> <label for="andor-0"><input id="andor-0" name="andor" type="radio" checked value="f"> any selected</label> <label for="andor-1"><input id="andor-1" name="andor" type="radio" value="t"> ALL&nbsp;selected</label></li>
+            {# <li id="andor-all"></li> #}
+            <li id="genres-all"><label for="g-all">Select All <input type="checkbox" id="g-all" value="all"></label></li>
+        {% for genre in genrelist|sort %}
+            <li><input id="g-{{genre}}" class="debug" type="checkbox" name="genres" value="{{genre}}" ><label for="g-{{genre}}">{{genre | title}}</label></li>
         {% endfor %}
         </ul>
     </fieldset>
     {# {{ form.origin_county.label }}
         {{ form.origin_county }} #}
 
-    <fieldset class="counties">
+    <fieldset id="counties">
+    <legend class="colon-after">By Location</legend>
     {% for province in province_counties %}
-    <fieldset class="province {{ province._id|lower }}">
-
-    <legend>{{ province._id }}</legend>
+    <fieldset class="province" id="{{ province._id|lower }}">
      <ul>
+        <li><span class="province-title">{{ province._id }}</span><input class="debug" type="checkbox" name="{{ province._id|lower }}" value="all"></li>
         {% for county in province.counties|sort %}
-        <li><input class="debug" type="checkbox" name="counties" value="{{county}}" ><label>{{county}}</label></li>
+        <li><input id="{{ county }}" class="debug" type="checkbox" name="counties" value="{{county}}"><label for="{{ county }}">{{ 'L/Derry' if county=="Derry" else county }}</label></li>
         {% endfor %}
     </ul>
     </fieldset>
@@ -38,10 +39,16 @@
 
 
 <input name="page" type="hidden" value="1">
-<button type="submit">Submit</button>
+<button type="submit">Search</button>
 </form>
 
 {% endblock content %}
+
+{% block javascript %}
+<script src="{{ url_for('static_js', filename='search.js') }}"></script>
+
+{% endblock javascript %}
+
 
 {#} {{ 'checked' if genre in band.genres else ''}}
     <input name="q" type="text" value="">
