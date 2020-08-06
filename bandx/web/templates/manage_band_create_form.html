@@ -1,46 +1,56 @@
-{% extends "base.html" %}
-
+{% extends "base_form.html" %}
 {% from "_render_field.html" import render_field %}
 
-{% block content %}
+
+{% block main__header %}
 <header class="main__header">
 <div class="header--mgt">
 <h1>{{ title }}</h1>
 </div>
 </header>
+{% endblock main__header %}
+
+
+{% block main__content %}
 <form method="POST" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist.genres|safe }}">
         {{ form.hidden_tag() }}
-    <div id="form-part-1">
-        <fieldset class="l-one-third" style="">
+    {% if step == "band_details" %}
+    <div class="form-part" data-part="1">
+        <fieldset id="band-image">
             <legend>Band Promo Image</legend>                               {# filename=band.media.tour_media.pictures.square #}
-            <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/defaultband.jpg') }}" >
-            {{ form.media_assets.featured_image.label }}
-                {# fix recesss styling #}
-                {{ form.media_assets.featured_image(class="form-control-file") }}
-                {% if form.media_assets.featured_image.errors %}
-                    {% for error in form.media_assets.featured_image.errors %}
+                <p class="hint">Please choose a square Promotional Image<br/>
+                <small><abbr title="Joint Photographic Experts Group">JPG</abbr> or <abbr title="Portable Network Graphics">PNG</abbr> image files allowed &ndash; will be resized to 400px&nbsp;&times;&nbsp;400px</small></p>
+                {{ form.featured_image }}
+                {% if form.featured_image.errors %}
+                    {% for error in form.featured_image.errors %}
                         <span class="alert-danger">{{ error }}</span><br/>
                     {% endfor %}
                 {% endif %}
         </fieldset>
-        <fieldset class="r-two-thirds">
+        {# <input type=hidden name="contact_details-contact_numbers-mobile" value=0> #}
+        <fieldset id="band-details">
             <legend>Band Details</legend>
             {{ render_field(form.band_name) }}
             {{ render_field(form.description) }}
             {{ render_field(form.strapline) }}
-            <fieldset class="genres">
+        </fieldset>
+        <fieldset id="genres">
                 <legend>Genres</legend>
-                <ul class="genre-checkbox-wrapper">
+                <ul id="genre-checkbox-wrapper">
                 {% for genre in genrelist|sort %}
-                    <li><input class="debug" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre == "rock"}}><label>{{ genre|title }}</label></li>
+                    <li><input id="{{genre}}" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre == "rock"}}><label for="{{genre}}">{{ genre|title }}</label></li>
                 {% endfor %}
                 </ul>
                 <label>Other:</label>
                     <input type="text" name="genre">
-            </fieldset>
         </fieldset>
+        <input type=hidden name="step" value="band_background">
+        <button type="submit">Next</button>
     </div>
-    <div id="form-part-2">
+
+    {% elif step == "band_background" %}
+    <div class="form-part" data-part="2">
+        {{ stuff }}
         <fieldset class="l-one-third" style="">
         <legend>Background</legend>
         {{ form.hometown.origin_county.label }}
@@ -48,7 +58,7 @@
         {{ form.hometown.origin_town.label }}
             {{ form.hometown.origin_town }}
         {{ render_field(form.profile) }}
-        </fieldset>
+
         <fieldset class="half" data-formlet="member">
             <legend>Band Members</legend>
                 <div id="subforms-container-member" class="subform">
@@ -56,18 +66,18 @@
                         <div id="member-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
                             <label for="members-{{ loop.index0 }}-instruments">Instrument(s)</label>
                             {# error checking for instruments ? - at least one? #}
-                                <input id="members-{{ loop.index0 }}-instruments" name="members-{{ loop.index0 }}-instruments" type="text" value="{{ band.band_members[loop.index0]['instruments'] if band else ''  }}"> {# |join(', ') - placeholder="use commas, between, instruments" #}
+                                <input id="members-{{ loop.index0 }}-instruments" name="members-{{ loop.index0 }}-instruments" type="text" value="" placeholder="use commas, between, instruments"> {# |join(', ') - placeholder="use commas, between, instruments" #}
                             <label for="members-{{ loop.index0 }}-musician">Musician&#39;s Name</label>
                             {% if form.errors and form.members[loop.index0].musician.errors %}
                                 {% set idx = loop.index0 %}
-                                <input id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="{{ request.form['members-'+idx|string+'-musician'] }}">       
+                                <input id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="">       
                                 <div class="invalid-feedback">
                                 {% for error in form.members[idx].musician.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                                 </div>
                             {% else %}
-                                <input id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="{{ band.band_members[loop.index0]['musician'] if band else ''  }}">       
+                                <input id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="">       
                             {% endif %}
                             {% if loop.index0 > 0 %}
                             <button type="button" class="remove btn-subform">Remove</button>
@@ -78,11 +88,16 @@
                 <button type="button" class="add btn-subform">Add Band Member</button>
                 <!-- /subform -->
             </fieldset>
+            </fieldset>
+            <input type=hidden name="step" value="band_promotion">
+            <button type="submit">Next</button>
         </div>
-        <div id="form-part-3">
+        {% elif step == "band_promotion" %}
+        <div class="form-part" data-part="3">
+        {{ stuff }}
             <fieldset class="half">
                 <legend>Promotion</legend>
-                {{ render_field(form.media_assets.featured_video) }}
+                {{ render_field(form.featured_video) }}
                 {{ render_field(form.contact_details.contact_name) }}
                 {{ render_field(form.contact_details.contact_title) }}
                 {{ render_field(form.contact_details.contact_emails.email_title) }}
@@ -98,80 +113,87 @@
                     </div> #}
                 <!-- /form -->
             </fieldset>
+            <input type=hidden name="step" value="band_save">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
+        {% endif %}
 </form>
-     {% if form.errors %}
-            {{ form.errors }}
-        {% endif %}
-    {% if data is defined %}
-            <p>Received data: {{ data }}</p>
-        {% endif %}
+
+{% include "_form_debug_errors.html" %}
+     
+{% endblock main__content %}
 
 
+{% block main__footer %}
+<footer class="main__footer debug">
+refresh
+    <button id="prev">Prev</button> <button id="next">Next</button>
+</footer>
+{% endblock main__footer %}
 
-{% endblock content %}
 
 <!-- JS -->
 {% block javascript %}
 
-    {% assets "org_band_js" %}
-    <script src="{{ ASSET_URL }}" ></script>
-    {% endassets %}    
-    <script src="{{ url_for('static_js', filename='libs/intlTelInput.min.js') }}"></script>
-    <script>
-    /* generate and select Towns dropdown menu */
-    const selected_county = "Antrim";
-    choiceSelect("select.origin-county", selected_county);
-    loadTowns(selected_county)
-    .then(data => document.querySelector("select.origin-town").innerHTML = data)
-    .then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"));
+{% assets "org_band_js" %}
+<script src="{{ ASSET_URL }}" ></script>
+{% endassets %}    
+<script src="{{ url_for('static_js', filename='libs/intlTelInput.min.js') }}"></script>
+<script>
+/* generate and select Towns dropdown menu */
+const selected_county = "Antrim";
+choiceSelect("select.origin-county", selected_county);
+loadTowns(selected_county)
+.then(data => document.querySelector("select.origin-town").innerHTML = data)
+.then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"));
 
-
-    // individual ids 
-  
 
 // individual ids 
-    var wtf_phone_field = document.getElementById('contact_details-contact_numbers-phone');
-    wtf_phone_field.style.position = 'absolute';
-    wtf_phone_field.style.top = '-9999px';
-    wtf_phone_field.style.left = '-9999px';
-    wtf_phone_field.parentElement.insertAdjacentHTML('beforeend', '<div><span style="font-size:.8em;">Phone Number:</span><input type="tel" id="_phone"></div>');
-    var fancy_phone_field = document.getElementById('_phone');
-    var fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
-      initialCountry:"ie",
-      preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
-      //separateDialCode: true,
-      nationalMode: true,
-      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
-    });    
-    fancy_phone_iti.setNumber(wtf_phone_field.value);
-    fancy_phone_field.addEventListener('blur', function() {
-        if(checkRegionState()){
-          wtf_phone_field.value = fancy_phone_iti.getNumber();
-        }else{
-          wtf_phone_field.value = fancy_phone_field.value
-        }
-    }); 
-
-  function checkRegionState(){
-    let radios = document.querySelectorAll("#contact_details-contact_numbers-region input[type=radio]")
-    let i = radios.length - 1
-    if (radios[i].checked && radios[i].value == "None") {
-        document.querySelector(".iti__flag-container").classList.remove("hide")
-        return true
+var wtf_phone_field = document.getElementById('contact_details-contact_numbers-phone');
+wtf_phone_field.style.position = 'absolute';
+wtf_phone_field.style.top = '-9999px';
+wtf_phone_field.style.left = '-9999px';
+wtf_phone_field.parentElement.insertAdjacentHTML('beforeend', '<div><span style="font-size:.8em;">Phone Number:</span><input type="tel" id="_phone"></div>');
+var fancy_phone_field = document.getElementById('_phone');
+var fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
+    initialCountry:"ie",
+    preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
+    //separateDialCode: true,
+    nationalMode: true,
+    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
+});    
+fancy_phone_iti.setNumber(wtf_phone_field.value);
+fancy_phone_field.addEventListener('blur', function() {
+    if(checkRegionState()){
+        wtf_phone_field.value = fancy_phone_iti.getNumber();
     }else{
-      
-      document.querySelector(".iti__flag-container").classList.add("hide")
-      return false
+        wtf_phone_field.value = fancy_phone_field.value
     }
-  }
+}); 
 
-    document.querySelectorAll("#contact_details-contact_numbers-region input[type=radio]").forEach( el => el.addEventListener("click", checkRegionState));
+function checkRegionState(){
+let radios = document.querySelectorAll("#contact_details-contact_numbers-region input[type=radio]")
+let i = radios.length - 1
+if (radios[i].checked && radios[i].value == "None") {
+    document.querySelector(".iti__flag-container").classList.remove("hide")
+    return true
+}else{
     
-    document.addEventListener("DOMContentLoaded", function(){
-    checkRegionState()
-    })
+    document.querySelector(".iti__flag-container").classList.add("hide")
+    return false
+}
+}
 
-    </script>
+document.querySelectorAll("#contact_details-contact_numbers-region input[type=radio]").forEach( el => el.addEventListener("click", checkRegionState));
+
+document.addEventListener("DOMContentLoaded", function(){
+checkRegionState()
+})
+
+document.getElementById("next").addEventListener("click", function(){
+    current = document.querySelector(".form-part")
+    console.log(current.dataset.part)
+})
+
+</script>
 {% endblock javascript %}

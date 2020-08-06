@@ -139,3 +139,41 @@ class CreateUpdateBandForm(FlaskForm):
 
 
 
+class CreateBandForm1(FlaskForm):
+    band_name = StringField("Band Name",
+                            render_kw={"placeholder": "Org Name / Band / Venue"},
+                            validators=[DataRequired()])
+    description = StringField("Description",
+                            render_kw={"placeholder": "Ska Reggae Band from Belfast"},
+                            validators=[DataRequired()])
+    strapline = StringField("Band Motto / Strapline",
+                            render_kw={"id": "testLower"})
+    genres = StringField("Musical Genres", 
+                            render_kw={"id": "testInput",
+                                       "style":"text-transform: lowercase;",})
+    featured_image = FileField("Band Profile Image",
+                                validators=[FileAllowed(['jpg', 'png', 'jpeg'])]
+                                )
+    created_by = HiddenField()
+    submit = SubmitField("Next")
+    
+    
+class CreateBandForm2(FlaskForm):
+    hometown = FormField(HomeTownForm)
+    profile = TextAreaField("Profile",
+                            render_kw={"placeholder": "Brief Bio/History, band origins and direction"},
+                            validators=[DataRequired()]
+                            )
+    members = FieldList(FormField(BandMemberFormlet), min_entries=1)
+    submit = SubmitField("Next")
+
+
+class CreateBandForm3(FlaskForm):
+    contact_details = FormField(ContactFormlet)
+    enquiries_url = StringField("Online Enquiries Link",
+                            render_kw={"placeholder": "Org Name / Band / Venue"},
+                            validators=[Optional(), URL()])
+    featured_video = StringField("Featured Video Link",
+                            render_kw={"placeholder": "link to youtube or vimeo"},
+                            validators=[Optional(), URL()])
+    submit = SubmitField("Save")

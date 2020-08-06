@@ -1,0 +1,6 @@
+{% if form.errors %}
+    {{ form.errors }}
+{% endif %}
+{% if data is defined %}
+    <p>Received data: {{ data }}</p>
+{% endif %}

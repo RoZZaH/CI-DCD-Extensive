@@ -1,0 +1,79 @@
+{% extends "base_form.html" %}
+
+{% from "_render_grid_field.html" import render_field %}
+
+
+{% block main__header %}
+<header class="main__header">
+<div class="header--mgt">
+<h1>{{ title }}</h1>
+</div>
+</header>
+{% endblock main__header %}
+
+{% block main__content %}
+<div class="content-block">
+
+    <form action="" method="post" id="register">
+        <label for="bname" class="field">
+            <span class="label-text">Band Name</span>
+            <input autocomplete="off" autofocus class="form-control" name="bname" placeholder="Band Name" type="text">
+            <ul class="unique-band-yes-no"><li>&nbsp;</li></ul>
+        </label>
+        <label class="field">
+            <span class="label-text">From County</span>
+            {{ form.hometown.origin_county }}
+        </label>
+        <label class="field">
+            <span class="label-text">From Town/Locality</span>
+            {{ form.hometown.origin_town }}
+        </label>
+        <div class="form-footer">
+            <button class="btn btn-primary" id="submittion" type="submit">Next</button>
+        </div>
+    </form>
+
+</div>
+{% endblock main__content %}
+
+{% block main__footer %}
+<footer class="main__footer">
+<p>footer stuff</p>
+</footer>
+{% endblock main__footer %}
+
+{% block javascript %}
+
+{% assets "org_band_js" %}
+<script src="{{ ASSET_URL }}" ></script>
+{% endassets %}    
+
+    <script>
+        /* generate and select Towns dropdown menu */
+        const selected_county = "Antrim";
+        choiceSelect("select.origin-county", selected_county);
+        loadTowns(selected_county)
+        .then(data => document.querySelector("select.origin-town").innerHTML = data)
+        .then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"));
+
+        const bname = document.querySelector('input[name=bname]');
+        bname.addEventListener("keyup", checkband)
+        async function checkband() {
+            const response = await fetch('/check_band_name?q=' + bname.value)
+            const json = await response.json()
+            toggleUniqueMessage(json) 
+        };
+        function toggleUniqueMessage(tOrf=false){
+            if(tOrf == true){
+                bname.nextElementSibling.classList.remove("yes");
+                bname.nextElementSibling.classList.add("no");
+                bname.nextElementSibling.innerHTML = "<li>Error: Band name NOT unique!</li>";
+            }else{
+                bname.nextElementSibling.classList.remove("no");
+                bname.nextElementSibling.classList.add("yes");
+                bname.nextElementSibling.innerHTML = "<li>Band name unique, OK</li>";
+            }
+        }
+    </script>
+
+{% endblock javascript %}

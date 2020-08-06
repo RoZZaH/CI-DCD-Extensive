@@ -10,6 +10,15 @@ bundles = {
         depends= "./css/*.scss",
         output="gen/home.%(version)s.css"
     ),
+    "form_css" : Bundle(
+        "./css/libs/intlTelInput.css",
+        "./css/libs/normalize.css",
+        "./css/libs/tags.css",
+        "./css/form.scss",
+        filters= "libsass", #"cssmin",
+        depends= "./css/*.scss",
+        output="gen/form.%(version)s.css"
+    ),
     "org_band_js": Bundle(
         "./js/libs/jquery.min.js", #v3.3.1
         "./js/libs/tags.js",

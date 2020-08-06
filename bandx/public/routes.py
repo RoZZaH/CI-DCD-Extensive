@@ -173,7 +173,7 @@ def results():
     if bands.total > 0:
         return render_template("bands_list.html", bands=bands, search=search, count=count)
     else:
-        return "no query sing received", 200
+        return "no query string received", 200
 
 
 

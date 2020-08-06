@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>bandX</title>
       <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
-
         <!-- link to google fonts -->
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
-
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/base-min.css">
         <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/buttons-min.css">
         <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/tables-min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/css/intlTelInput.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/css/intlTelInput.css">
 
     {% assets "home_css" %}
       <link rel="stylesheet" href="{{ ASSET_URL }}" >
@@ -38,7 +36,7 @@
     <!-- /HEADER -->
     </header>
     <main {{ 'class="auth"' if current_user.is_authenticated else '' }}>
-    <section class="main-grid content-area {%if sidebar %}{{ 'has-sidebar' }}{% endif %}">
+    <section class="main-grid content-area {{ 'has-sidebar' if sidebar else '' }}">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -72,11 +70,5 @@
                 <li class="social-item"><a href="#" class="social-link"><i class="fab fa-instagram"></i></a></li>
             </ul>
     </footer>
-
-
-
-  
-
- </div>
 </body>
 </html>

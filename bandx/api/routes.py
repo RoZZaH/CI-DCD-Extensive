@@ -1,3 +1,4 @@
+import re
 from flask import jsonify, Blueprint, request
 from bandx.models.entities import Band, Towns
 
@@ -30,20 +31,26 @@ def list_provinces():
         "counties": { "$push" : "$county"}
         } }]))
 
+
 @api.route('/townz/')
 def getz_townz():
     return jsonify(Towns.objects(county="Antrim"))
 
-    # [(otown.town, otown.town) for otown in Towns.objects(county="Antrim")]
-    # towns = Towns.objects(county=county)
 
-    # townsArray = []
-
-    # for town in towns:
-    #     townObj = {}
-    #     townObj["val"] = town.town
-    #     townObj["name"] = town.town
-    #     townsArray.append(townObj)
-
-    # return jsonify({"towns": townsArray})
-    # return jsonify(towns)
+@api.route('/check_band_name')
+def check():
+    bandname = re.sub(' {2,}', ' ', request.args.get("q"))
+    print(bandname)
+    results = list(Band.objects(band_name__iexact=bandname))
+    lastmatch = ""
+    if len(bandname) < 1 or len(results) < 1 :
+        return jsonify(False), 400
+    elif len(lastmatch) > 0 and (results[0].lower() == lastmatch.lower().rstrip()):
+        return jsonify(False), 400
+    elif len(lastmatch) > 0 and (result[0].lower() != lastmatch.lower().rstrip()):
+        lastmatch = ""
+        return jsonify(False), 400
+    else:
+        lastmatch = results[0]
+        print(lastmatch)
+        return jsonify(True), 200

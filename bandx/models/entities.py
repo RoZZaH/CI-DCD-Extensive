@@ -28,7 +28,7 @@ class Phone(db.EmbeddedDocument):
 
 class Contact(db.EmbeddedDocument):
     contact_name = db.StringField(max_length=120)
-    contact_title = db.StringField(max_length=50)
+    contact_title = db.StringField(max_length=50, default="Enquiries")
     contact_generic_title = db.StringField(max_length=50, default="Enquiries")
     contact_emails = db.EmbeddedDocumentField(Email, default=Email)
     contact_numbers = db.EmbeddedDocumentField(Phone, default=Phone)

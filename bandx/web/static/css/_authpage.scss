@@ -1,34 +1,28 @@
 #datab {
-    position: relative;
-    border: 2px solid red;
-    grid-column: 2/-2;
+    // border: 2px solid red;
+    grid-column: 1/-1;
     font-size: 1.25rem;
     padding-bottom:  1.5em;
     min-height: 100wh;
+    position: relative; // positioning context;
 }
 
-#form-part-1 {
-    position: absolute;
-    grid-column: 2/-2;
-    background: $body-bg;
-    border: 2px solid black;
-}
-#form-part-2 {
-    position: absolute;
-    grid-column: 2/-2;
-    background: $body-bg;
-    display: none;
-}
-#form-part-3 {
-    position: absolute;
-    grid-column: 2/-2;
-    background: $body-bg;
-    display: none;
+
+
+#band-details {
+    order: -1;
 }
 
-// fieldset {
-//     grid-column: 2 / span 1;
-// }
+fieldset {
+    grid-column: 2 / span 1;
+    margin: .75em;
+}
+
+fieldset > fieldset {
+    margin: 0;
+    grid-column: auto;
+}
+
 
 fieldset > legend {
     width: auto;
@@ -37,13 +31,28 @@ fieldset > legend {
     text-transform: uppercase;
 }
 
-fieldset > *,
-.subform > * {
-   display: block;
-   width: 100%;
+#band-image {
+    margin-top: 0;
 }
 
-fieldset input:not([type="radio"]):not([type="checkbox"]),
+.hint {
+    font-size: .85rem;
+    // color: $text-secondary;
+}
+
+#media_assets-featured_image {
+    width: 90%;
+}
+
+// fieldset > *,
+// .subform > * {
+//    display: block;
+//    width: 100%;
+// }
+
+
+
+fieldset input:not([type="radio"]):not([type="checkbox"]):not(#media_assets-featured_image),
 fieldset textarea {
     height: 1.75em;
     width: 100%;
@@ -300,3 +309,26 @@ input#_phone  {
 .iti .iti--allow-dropdown{
     background: grey;
 }
+
+
+ul.unique-band-yes-no {
+    display: block;
+    line-height: initial;
+    margin-top: 0;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    margin-left: 0;
+}
+
+form ul.yes > li {
+    padding: .25em .5em;
+    color: $alert-success-txt;
+    background: $alert-success-bg;
+}
+
+ul.unique-band-yes-no.no li {
+    padding: .25em .5em;
+    color: $alert-danger-txt;
+    background: $alert-danger-bg;
+}
+
