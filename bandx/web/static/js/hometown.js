@@ -1,10 +1,9 @@
-[ ...document.getElementsByClassName("origin-county") ].forEach(
-    el => el.addEventListener("change", function(){
-    oTown_select = el.nextElementSibling.nextElementSibling;
-    loadTowns(el.value).then(
+document.querySelector("select.origin-county").addEventListener("change", function(){ 
+    oTown_select = document.querySelector("select.origin-town")
+    loadTowns(this.value).then(
         data => oTown_select.innerHTML = data
     )
-}))
+})
 
 
 async function loadTowns(county="Antrim"){
@@ -17,6 +16,7 @@ async function loadTowns(county="Antrim"){
     return optionHTML
 }
 
+/* selecting town if value known */
 function choiceSelect(selector, choiceVar){
     let choices = document.querySelector(selector).options
     for(choice of choices) {

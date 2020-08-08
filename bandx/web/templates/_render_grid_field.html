@@ -1,6 +1,7 @@
 {% macro render_field(field) %}
 
-    {{ field.label }}
+    <label for="bandname" class="field">
+        <span class="label-text">{{ field.label }}</span>
         {% if field.errors %}
             {{ field(class_="is-invalid", **kwargs)|safe  }}
             <ul class="invalid-feedback">
@@ -11,5 +12,6 @@
         {% else %}
             {{ field(**kwargs)|safe }}
         {% endif %}
+    </label>
 
 {% endmacro %}

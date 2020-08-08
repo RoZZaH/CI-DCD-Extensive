@@ -21,7 +21,7 @@
 
 #wrapper {
     @include grid-main;
-    grid-template-rows: 3.5em 1fr 3em;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas: "head head head"
                          ". main ."
                          "foot foot foot";
@@ -32,27 +32,42 @@ header.header--branding {
     @include grid-main;
     grid-template-columns: 1 / -1;
     grid-area: head;
-    overflow: hidden;
+    // overflow: hidden;
 }
 
 
 header.header--branding > nav {
     @include grid-2_2;
     display: grid;
-    grid-template-columns:  2fr 1fr;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: auto 0;
 }
 
 header.header--branding > nav > .logo {
     grid-column: 1;
+    grid-row: 1;
 }
+
 header.header--branding > nav > .navigation {
-    grid-column: -1;
+    grid-column: -2;
+    grid-row: 1;
 }
+
+header.header--branding > nav > .mnav {
+    grid-column: 1/-1;
+    grid-row: 2;
+
+}
+
 
 
 main {
-    @include grid-2_2;
-    overflow-y: scroll;
+    // overflow-y: scroll;
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    align-items: center;
+    height: 100%;
 }
 
 main > header,
@@ -66,7 +81,6 @@ main > footer {
 
 form,
 .form-part {
-    @include grid-2_2;
     display: grid;
     justify-content: space-around;
 }
@@ -88,16 +102,16 @@ ul.invalid-feedback {
     background: $alert-danger-bg;
 }
 
-#band-details {
-    order: -2;
-}
+// #band-details {
+//     order: -2;
+// }
 
-#genres {
-    order: -1;
-}
+// #genres {
+//     order: -1;
+// }
 
 fieldset {
-    grid-column: 2 / span 1;
+    grid-column: 1 / span 2;
     margin-bottom: .5em;
 }
 
@@ -151,16 +165,15 @@ fieldset textarea {
 
 
 
-footer.main__footer {
-    display: grid;
+footer.form__footer {
+    @include grid-main;
     grid-area: foot;
     background: red;
     border-top: 1px solid $text-secondary;
     overflow: hidden;
 }
 
-footer.main__footer > p{
-
+footer.form__footer > p{
     grid-column: 2;
 }
 
@@ -169,7 +182,7 @@ ul.unique-band-yes-no {
     line-height: initial;
     grid-column: 2;
     margin: 2px 0;
-    padding: 4px;
+    padding: 4px 6px;
     font-size: .9rem;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
@@ -186,44 +199,43 @@ ul.no {
     background: $alert-danger-bg;
 }
 
-.content-block {
-    display: grid;
-    align-items: center;
-    height: 100%;
-}
+
 
 form {
-    margin: 1em;
+    margin: 1em 0;
     padding: 1em;
     display: grid;
-    grid-template-rows: repeat(auto-fit, max-content);
-    grid-template-columns: max-content 1fr;
-    background-color: $text-muted;
+    grid-auto-rows: auto;
+    grid-template-columns: 1fr;
+    background-color: $footer-bg;
     grid-gap: 0 1em;
     border-radius: 5px;
-    border-top-left-radius: 0;
     border-bottom-right-radius: 12px;
 }
 
 
-// .field:first-of-type {
-//     margin-bottom: 0em; 
-//     grid-row: 1;
-// }
 
 .field {
-    grid-column: 1 / span 2;
+    grid-column: 1;
     display: grid;
     margin-bottom: 2em;
     grid: inherit;
-    grid-template-columns: 12ch 1fr;
-    grid-template-columns: subgrid;
+    grid-template-columns: 1fr;
     grid-gap: inherit;
+    align-items: end;
 }
 
-.field:first-of-type .label-text {
+label[for="band_name"].field .label-text {
     font-weight: 700;
     font-size: 1.2rem;
+}
+
+ul.invalid-feedback{
+    grid-column: 1 / span 2;
+    margin-bottom: .5em;
+    padding: 4px 6px;
+    font-size: .9rem;
+    border-radius: 3px;
 }
 
 // .field input,
@@ -235,11 +247,42 @@ form {
     content: ' : '
 }
 
-.form-footer {
-    grid-column: 1 / span 2;
+.form-header {
     display: grid;
-    // grid: inherit;
-    // grid-template-columns: subgrid;
-    justify-items: end;
+    grid-row: 1;
+    grid-column: 1 / -1;
+    font-size: .85rem;
 }
 
+.form-footer {
+    grid-column: 1 / -1;
+    display: grid;
+    justify-items: end;
+
+}
+
+
+
+
+input[name="band_name"]:not(output):-moz-ui-invalid {
+    box-shadow: none;
+}
+
+input[name="band_name"]:not(output):-moz-ui-invalid:-moz-focusring {
+    box-shadow: 0 0 2px 2px rgba(42, 255, 31, 0.4);
+}
+
+
+@media (min-width: 600px){
+
+    form {
+        grid-template-columns: max-content 1fr;
+        grid-column: 1 / span 2;
+    }
+    .field {
+        grid-template-columns: max-content 1fr;
+        grid-template-columns: subgrid;
+        grid-column: 1 / span 2;
+
+    }
+}

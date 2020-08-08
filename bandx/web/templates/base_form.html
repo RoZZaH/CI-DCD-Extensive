@@ -29,6 +29,8 @@
                 {# {{ nav.gns.render(renderer='just_gns') }} #}
         <!-- a mobile menu toggle -->
         <label for="mtoggle">&#9776;</label><input type="checkbox" id="mtoggle" style="margin: 0">
+        </div>
+        <div class="mnav">
         {%- if current_user.is_authenticated -%}
             {{ nav.mob_in.render(renderer='just_li') }}
         {% else %}
@@ -51,8 +53,9 @@
     {% endwith %}
     {% block main__header %}{% endblock main__header %}
     {% block main__content %}{% endblock main__content %}
-    </main>
     {% block main__footer %}{% endblock main__footer %}
+    </main>
+    {% block form__footer %}{% endblock form__footer %}
    
     {% block javascript %}{% endblock javascript %}
     <!-- / MAIN -->

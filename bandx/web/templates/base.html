@@ -26,6 +26,8 @@
                   {# {{ nav.gns.render(renderer='just_gns') }} #}
         <!-- a mobile menu toggle -->
         <label for="mtoggle">&#9776;</label><input type="checkbox" id="mtoggle" style="margin: 0">
+        </div>
+        <div class="mnav">
         {%- if current_user.is_authenticated -%}
             {{ nav.mob_in.render(renderer='just_li') }}
         {% else %}

@@ -2,6 +2,7 @@ import re
 from flask import jsonify, Blueprint, request
 from bandx.models.entities import Band, Towns
 
+
 api = Blueprint('api', __name__)
 
 @api.route("/genrez")
@@ -51,6 +52,6 @@ def check():
         lastmatch = ""
         return jsonify(False), 400
     else:
-        lastmatch = results[0]
+        lastmatch = results[0]["band_name"]
         print(lastmatch)
         return jsonify(True), 200

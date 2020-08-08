@@ -13,37 +13,33 @@
 
 {% block main__content %}
 
-    <form method="POST" action="{{ url_for('manage.add_band', stage=1) }}">
-    {% set step = "band_name_hometown" %}
+<form method="POST" action="{{ url_for('manage.add_band', stage=2) }}" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist.genres|safe }}">
+    {% if stage == 2  %}
 
         {{ form.hidden_tag() }}
-        {% if step == "band_name_hometown" %}
-        <label for="band_name" class="field">
-            <span class="label-text">Band Name</span>
-            {{ form.band_name }}
-            <ul class="unique-band-yes-no {{ 'no' if form.band_name.errors }}">
-            {% if form.band_name.errors %}
-                {% for error in form.band_name.errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-            {% else %}
-                <li>&nbsp;</li>
-            {% endif %}
+    <div class="form-header">
+     <h1>{{ bname }}</h1>
+    </div>
+    {# <fieldset id="band-details">
+        <legend>Band Details</legend> #}
+        {{ render_field(form.description) }}
+        {{ render_field(form.strapline) }}
+    {# </fieldset> #}
+    <fieldset id="genres">
+            <legend>Genres</legend>
+            <ul id="genre-checkbox-wrapper">
+            {% for genre in genrelist|sort %}
+                <li><input id="{{genre}}" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre == "rock"}}><label for="{{genre}}">{{ genre|title }}</label></li>
+            {% endfor %}
             </ul>
-        </label>
-        <label class="field">
-            <span class="label-text">From County</span>
-            {{ form.hometown.origin_county }}
-        </label>
-        <label class="field">
-            <span class="label-text">From Town/Locality</span>
-            {{ form.hometown.origin_town }}
-        </label>
-        <div class="form-footer">
-            <button class="btn btn-primary" id="submittion" type="submit">Next</button>
-        </div>
-        {% endif %}
-    </form>
+            <label>Other:</label>
+                <input type="text" name="genre">
+    </fieldset>
+    <div class="form-footer">
+        <button class="btn btn-primary" id="submittion" type="submit">Next</button>
+    </div>
+    {% endif %}
+</form>
 <hr>
     {% if form.errors %}
             {{ form.errors }}

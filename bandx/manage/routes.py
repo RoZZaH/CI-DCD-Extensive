@@ -9,7 +9,7 @@ from flask_breadcrumbs import Breadcrumbs, default_breadcrumb_root, register_bre
 from flask_login import current_user, login_required, login_user, logout_user
 
 from bandx.models.entities import Band, Towns, User, Phone, Contact, Links, Email, BandMember, Assets
-from bandx.manage.forms import CreateUpdateBandForm, CreateBandForm1, CreateBandForm2, CreateBandForm3
+from bandx.manage.forms import CreateUpdateBandForm, CreateBandForm1, CreateBandForm2, CreateBandForm3, CreateBandForm4
 from bandx.utils.gns import nav
 from bandx.api.routes import list_genres
 from bandx.utils.helpers import *
@@ -50,15 +50,129 @@ def get_video_service_and_id(url):
 
 @manage.route('/bands/checkband')
 def checkband():
-    form = CreateBandForm2()
-
-    return render_template('check_band.html', form=form) #form_legend = form_legend, title=title or form_legend, step=step, )
-
-
+    form = CreateBandForm1()
+    genres = list_genres()
+    return render_template('check_band.html', form=form, genrelist=genres) #form_legend = form_legend, title=title or form_legend, step=step, )
 
 
-@manage.route("/bands/new/", methods=("GET", "POST"))
-def add_band():
+
+@manage.route('/bands/new/', defaults={'stage': 1}, methods=("GET","POST"))
+@manage.route('/bands/new/<int:stage>/', methods=("GET","POST"))
+def add_band(stage):
+    genres = list_genres()
+    if stage == 1:
+        form = CreateBandForm1()
+        if request.method == "POST" and form.validate_on_submit():
+            #if form.band_name.validate(form):
+            catalogue_name = de_article(form.band_name.data)
+            session["band"] = { 
+            "band_name": form.band_name.data,
+            "catalogue_name" : catalogue_name,
+            "hometown" : {"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data}
+            }
+            form = CreateBandForm2()
+            stage=2
+            return render_template("manage_new_stage2_band_details.html", form=form, stage=stage, genrelist=genres, bname=session["band"]["band_name"])
+        else: 
+            form = CreateBandForm1()
+            return render_template('check_band.html', form=form, stage=1)
+    
+    if stage == 2:
+        form = CreateBandForm2()
+        if request.method == "POST" and form.validate_on_submit():
+            returned_genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]
+            session["band"]["strapline"] = form.strapline.data
+            session["band"]["description"] = form.description.data
+            session["band"]["genres"] = list(filter(None, set(returned_genrelist)))
+            session.modified = True
+            form = CreateBandForm3()
+            stage = 3
+           # return jsonify(session["band"])
+            return render_template("manage_new_stage3_band_profile.html", form=form, stage=stage, bname=session["band"]["band_name"])
+        else:
+            stage = 2
+            return render_template("manage_new_stage2_band_details.html", form=form, stage=stage, genrelist=genres, bname=session["band"]["band_name"])
+         
+    if stage == 3:
+        form = CreateBandForm3()
+        if request.method == "POST" and form.validate_on_submit():
+            if form.featured_image.data:
+                picture_file = save_picture(form.featured_image.data, band=True)
+                featured_image = picture_file if picture_file else 'defaultband.jpg'
+            else:
+                featured_image = "defaultband.jpg"
+            session["band"]["featured_image"] = featured_image
+            session["band"]["profile"] = form.profile.data
+            session["band"]["members"] = [{**member} for member in form.members.data ]
+            session.modified = True
+            form = CreateBandForm4()
+            stage = 4
+            return render_template("manage_new_stage4_band_contact.html", form=form, stage=stage, bname=session["band"]["band_name"])
+        else:
+            stage = 3
+            return render_template("manage_new_stage3_band_profile.html", form=form, stage=stage, bname=session["band"]["band_name"])
+
+    if stage == 4:
+        form = CreateBandForm4()
+        if request.method == "POST" and form.validate_on_submit():
+            user = User.objects(id=current_user.id).first()
+            contact = Contact()
+            contact.contact_name = form.contact_details.contact_name.data
+            if len(form.contact_details.contact_title.data.rstrip()) == 0:
+                contact.contact_title = "Enquiries"
+            else:
+                contact.contact_title = form.contact_details.contact_title.data
+            if len(form.contact_details.contact_generic_title.data.rstrip()) == 0:
+                contact.contact_generic_title = "Enquiries"
+            else:
+                contact.contact_generic_title = form.contact_details.contact_generic_title.data
+            _phone = phonenumbers.parse(form.contact_details.contact_numbers.phone.data, form.contact_details.contact_numbers.region.data)
+            contact.contact_numbers = Phone(
+                    mobile = bool(form.contact_details.contact_numbers.mobile.data),
+                    number = phonenumbers.format_number(_phone, phonenumbers.PhoneNumberFormat.E164)
+            )
+            contact.contact_emails = Email(
+                email_title = form.contact_details.contact_emails.email_title.data,
+                email_address = form.contact_details.contact_emails.email_address.data
+            )
+            weblinks = Links( enquiries = form.enquiries_url.data )
+            assets = Assets(
+                featured_image = session["band"]["featured_image"]
+            )
+            if form.featured_video.data:
+                assets["featured_video"] = get_video_service_and_id(form.featured_video.data)
+
+            band = Band(
+                    band_name = session["band"]["band_name"],
+                    catalogue_name =  session["band"]["catalogue_name"],
+                    genres = session["band"]["genres"],
+                    hometown = session["band"]["hometown"],
+                    description = session["band"]["description"],
+                    strapline = session["band"]["strapline"],
+                    profile = session["band"]["profile"],
+                    band_members = [BandMember(**member) for member in session["band"]["members"]],
+                    media_assets = assets,
+                    contact_details = contact,
+                    links = weblinks,
+                    created_by = user
+                )
+            band.save()
+            band_id = band.id
+            # user.update(push__posts=post) remember to add band to user
+            #return redirect(url_for('manage.manage_bands_home'))
+            band = Band.objects(id=band_id).first()
+            return render_template("band_detail.html", band=band)
+        else:
+            stage = 4
+            return render_template("manage_new_stage4_band_contact.html", form=form, stage=stage, bname=session["band"]["band_name"])
+
+
+
+
+
+
+@manage.route("/bands/new_old", methods=("GET", "POST"))
+def add_band2():
     form = CreateBandForm1()
     genres = list_genres()
     form_legend = "Add Band"

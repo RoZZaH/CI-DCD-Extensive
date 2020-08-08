@@ -1,0 +1,119 @@
+{% extends "base_form.html" %}
+
+{% from "_render_grid_field.html" import render_field %}
+
+
+{% block main__header %}
+<header class="main__header">
+<div class="header--mgt">
+<h1>{{ title }}</h1>
+</div>
+</header>
+{% endblock main__header %}
+
+{% block main__content %}
+
+<form method="POST" action="{{ url_for('manage.add_band', stage=3) }}" enctype="multipart/form-data">
+    {% if stage == 3  %}
+
+        {{ form.hidden_tag() }}
+    <div class="form-header">
+     <h1>{{ bname }}</h1>
+    </div>
+    {{ render_field(form.profile) }} {# styling #}
+    <fieldset class="half" data-formlet="member">
+        <legend>Band Members</legend>
+            <div id="subforms-container-member" class="subform">
+                    {% for subform in form.members %} {#   #}
+                    <div id="member-{{ loop.index0 }}-form" class="subform" data-index="{{ loop.index0 }}">
+                        <label for="members-{{ loop.index0 }}-instruments">Instrument(s)</label>
+                        {# error checking for instruments ? - at least one? #}
+                            <input id="members-{{ loop.index0 }}-instruments" name="members-{{ loop.index0 }}-instruments" type="text" value="" placeholder="use commas, between, instruments"> {# |join(', ') - placeholder="use commas, between, instruments" #}
+                        <label for="members-{{ loop.index0 }}-musician">Musician&#39;s Name</label>
+                        {% if form.errors and form.members[loop.index0].musician.errors %}
+                            {% set idx = loop.index0 %}
+                            <input id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="">       
+                            <div class="invalid-feedback">
+                            {% for error in form.members[idx].musician.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                            </div>
+                        {% else %}
+                            <input id="members-{{ loop.index0 }}-musician" name="members-{{ loop.index0 }}-musician" type="text" value="">       
+                        {% endif %}
+                        {% if loop.index0 > 0 %}
+                        <button type="button" class="remove btn-subform">Remove</button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="add btn-subform">Add Band Member</button>
+            <!-- /subform -->
+    </fieldset>
+    <fieldset id="band-image">
+        <legend>Band Promo Image</legend>                               {# filename=band.media.tour_media.pictures.square #}
+            <p class="hint">Please choose a square Promotional Image<br/>
+            <small><abbr title="Joint Photographic Experts Group">JPG</abbr> or <abbr title="Portable Network Graphics">PNG</abbr> image files allowed &ndash; will be resized to 400px&nbsp;&times;&nbsp;400px</small></p>
+            {{ form.featured_image }}
+            {% if form.featured_image.errors %}
+                {% for error in form.featured_image.errors %}
+                    <span class="alert-danger">{{ error }}</span><br/>
+                {% endfor %}
+            {% endif %}
+    </fieldset>
+    <div class="form-footer">
+        <button class="btn btn-primary" id="submittion" type="submit">Next</button>
+    </div>
+    {% endif %}
+</form>
+<hr>
+    {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+    {% if data is defined %}
+            <p>Received data: {{ data }}</p>
+        {% endif %}
+
+{% endblock main__content %}
+
+{% block form__footer %}
+<footer class="form__footer">
+<p>footer stuff</p>
+</footer>
+{% endblock form__footer %}
+
+{% block javascript %}
+
+{% assets "org_band_js" %}
+<script src="{{ ASSET_URL }}" ></script>
+{% endassets %}    
+
+    <script>
+        /* generate and select Towns dropdown menu */
+        const selected_county = "Antrim";
+        choiceSelect("select.origin-county", selected_county);
+        loadTowns(selected_county)
+        .then(data => document.querySelector("select.origin-town").innerHTML = data)
+        .then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"));
+        /* async check on uniqueness of band name */
+        const bname = document.querySelector('input[name=band_name]');
+        bname.addEventListener("keyup", checkband)
+        async function checkband() {
+            const response = await fetch('/check_band_name?q=' + bname.value)
+            const json = await response.json()
+            toggleUniqueMessage(json) 
+        };
+        function toggleUniqueMessage(tOrf=false){
+            if(tOrf == true){
+                bname.nextElementSibling.classList.remove("yes");
+                bname.nextElementSibling.classList.add("no");
+                bname.nextElementSibling.innerHTML = "<li>Error: Band name NOT unique!</li>";
+            }else{
+                bname.nextElementSibling.classList.remove("no");
+                bname.nextElementSibling.classList.add("yes");
+                bname.nextElementSibling.innerHTML = "<li>Band name unique, OK</li>";
+            }
+        }
+    </script>
+
+{% endblock javascript %}

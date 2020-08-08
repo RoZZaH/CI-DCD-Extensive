@@ -133,7 +133,7 @@ class JustLiRenderer(Renderer):
     def visit_Navbar(self, node):
         #nav_tag = tags.nav(_class="some-class navbar")
         #ul = nav_tag.add(tags.ul())
-        ul = tags.ul(_class="mobile-nav debug")
+        ul = tags.ul(_class="mobile-nav")
         # sub = []
         for item in node.items:
             ul.add(self.visit(item))

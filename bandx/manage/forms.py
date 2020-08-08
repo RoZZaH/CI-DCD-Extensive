@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from bandx.models.entities import User, Towns
+from bandx.models.entities import User, Band, Towns
 from wtforms import (BooleanField, DateField, Form, FormField, FieldList, HiddenField, 
                       PasswordField, RadioField, SelectField, StringField, SubmitField, TextAreaField,)
-from wtforms.validators import DataRequired, Optional, Length, EqualTo, Email, URL, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, InputRequired, Length, Optional, URL, ValidationError, StopValidation
 import phonenumbers
 
 class HomeTownForm(Form):
@@ -138,11 +138,22 @@ class CreateUpdateBandForm(FlaskForm):
     submit = SubmitField("Save")
 
 
+def check_bandname_unique(form, field):
+        bname = field.data
+        if len(list(Band.objects(band_name__iexact=bname))) > 0:
+            raise ValidationError("This band name is already taken; sorry.")
+
 
 class CreateBandForm1(FlaskForm):
-    band_name = StringField("Band Name",
-                            render_kw={"placeholder": "Org Name / Band / Venue"},
-                            validators=[DataRequired()])
+    band_name = StringField(render_kw={"placeholder": "Band Name"},
+                            validators=[check_bandname_unique])
+    hometown = FormField(HomeTownForm)
+
+
+class CreateBandForm2(FlaskForm):
+    # band_name = StringField("Band Name",
+    #                         render_kw={"placeholder": "Org Name / Band / Venue"},
+    #                         validators=[DataRequired()])
     description = StringField("Description",
                             render_kw={"placeholder": "Ska Reggae Band from Belfast"},
                             validators=[DataRequired()])
@@ -151,24 +162,24 @@ class CreateBandForm1(FlaskForm):
     genres = StringField("Musical Genres", 
                             render_kw={"id": "testInput",
                                        "style":"text-transform: lowercase;",})
-    featured_image = FileField("Band Profile Image",
-                                validators=[FileAllowed(['jpg', 'png', 'jpeg'])]
-                                )
     created_by = HiddenField()
     submit = SubmitField("Next")
     
     
-class CreateBandForm2(FlaskForm):
-    hometown = FormField(HomeTownForm)
+class CreateBandForm3(FlaskForm):
+    # hometown = FormField(HomeTownForm)
     profile = TextAreaField("Profile",
                             render_kw={"placeholder": "Brief Bio/History, band origins and direction"},
                             validators=[DataRequired()]
                             )
     members = FieldList(FormField(BandMemberFormlet), min_entries=1)
+    featured_image = FileField("Band Profile Image",
+                            validators=[FileAllowed(['jpg', 'png', 'jpeg'])]
+                            )
     submit = SubmitField("Next")
 
 
-class CreateBandForm3(FlaskForm):
+class CreateBandForm4(FlaskForm):
     contact_details = FormField(ContactFormlet)
     enquiries_url = StringField("Online Enquiries Link",
                             render_kw={"placeholder": "Org Name / Band / Venue"},
