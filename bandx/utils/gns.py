@@ -42,14 +42,19 @@ topbar = Navbar('title',
 
 mobile_first_in = Navbar('title',
     #RawTag('<li><label for="toggle">&#9776;<input type="checkbox" id="toggle"></li>'),
+    View('Home', 'public.results'),
     SuperGroup(
     View('Bands', 'public.results'),
     items=(
         Alpha('Bands A-Z', 'public.a2z'),
-        View('Bands by Location', 'public.by_location') )
+        View('Bands by Location', 'public.by_location'),
+        View('Bands by Genre', 'public.by_genre') )
     ),
-    Subgroup('Manage',
-        View('Bands', 'manage.manage_bands_home')),
+    SuperGroup(
+    View('Manage', 'manage.redirector'),
+    items=(
+        View('Bands', 'manage.manage_bands_home'), )
+    ),
     View('Search', 'public.search'),
     View('Settings', 'user.account'),
     View('Logout', 'user.logout')
@@ -58,6 +63,7 @@ mobile_first_in = Navbar('title',
 
 mobile_first_out = Navbar('title',
     #RawTag('<li class="mtoggle"><label for="mtoggle">&#9776;<input type="checkbox" id="mtoggle"></li>'),
+    View('Home', 'public.results'),
     SuperGroup(
     View('Bands', 'public.results'),
     items=(
@@ -141,9 +147,9 @@ class JustLiRenderer(Renderer):
         return ul #nav_tag #.add(*sub)
 
     def visit_View(self, node):
-        li = tags.li()
+        li = tags.li(_class = node.text.strip().replace(' ', '-').lower() )
         if node.active:
-            li['class'] = 'active'
+            li['class'] = node.text.strip().replace(' ', '-').lower() + ' active'
         a = li.add(tags.a(node.text, href=node.get_url() ))
         return li
 
@@ -163,9 +169,9 @@ class JustLiRenderer(Renderer):
 
 
     def visit_SuperGroup(self, node):
-        li = tags.li(_class="subNav")
+        li = tags.li(_id=node.title.text.strip().replace(' ', '-').lower(), _class="subNav")
         if node.title.active:
-            li['class'] = 'active'
+            li['class'] = 'subNav active'
         a = li.add(tags.a(node.title.text, href=node.title.get_url()))
         ul = tags.ul(*[self.visit(item) for item in node.items])
         # ul = a.append(ul)

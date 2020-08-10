@@ -1,54 +1,139 @@
-/* ==============
-    GEN. LAYOUT 
-   ============== */
-.main-grid {
+@mixin navlinks {
+    margin: 0;
+    padding: 0;
     display: grid;
-    grid-template-columns: minmax(1em, 1fr) minmax(260px, 500px) minmax(1em, 1fr) ;
+    list-style: none;
 }
 
-/* ==============
-    HEADER
-   ============== */
-
-.main-menu {
-    grid-area: header;
+@mixin grid-main {
     display: grid;
-    grid-column: 2/-2;
-    grid-template-areas:
-        "logo navigation navigation"
-    ;
+    grid-template-columns: minmax(1em, 1fr) minmax(260px, 500px) minmax(1.5em, 1.1fr);
+    @media (min-width: 600px){
+        display: grid;
+        grid-template-columns: minmax(1em, 1fr) 260px 600px minmax(1.5em, 1.1fr);
+    }
 }
 
-.logo {
-    grid-area: logo;
-    margin-bottom: 6px;
-    // display: inline-block;
+@mixin grid-2_2 {
+    grid-column: 2 / -2;
+    @media (min-width: 600px){
+        grid-column: 2 / span 2;
+    }
 }
 
-.navigation {
-    height: 70px;
-    text-align: right;
-    line-height: 70px;
-    float: right;
-    grid-column: 2/span 2
+@mixin grid-1_1 {
+    grid-column: 1 / -1;
 }
+
+
+@mixin for-desktop {
+    @media (min-width: 600px){
+            display: grid;
+            grid-template-columns: minmax(1em, 1fr) 260px 600px minmax(1.5em, 1.1fr);
+    }
+}
+
+
+
+
+body {
+    @include grid-main;
+    grid-template-rows: auto 0 1fr auto;
+    grid-template-areas: "head head head"
+                         "head head head"
+                         ". main ."
+                         "foot foot foot";
+            @media (min-width: 600px){
+            grid-template-rows: 0 auto 1fr auto;
+            grid-template-areas: "head head head head"
+                                 "head head head head"
+                                    ". main main ."
+                                 "foot foot foot foot";
+            }
+    min-height: 100vh;
+}
+
+header.header--branding {
+    @include grid-main;
+    grid-template-columns: 1 / -1;
+    grid-area: head;
+    // overflow: hidden;
+}
+
+
+header.header--branding > nav {
+    @include grid-2_2;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: auto 0;
+    @media (min-width: 600px){
+        @include grid-1_1;
+        display: initial;
+
+    }
+}
+
+header.header--branding > nav > .logo {
+    grid-column: 1;
+    grid-row: 1;
+    @media (min-width: 600px){
+        display: none;
+       }   
+}
+
+header.header--branding > nav > .navigation {
+    grid-column: -2;
+    grid-row: 1;
+    @media (min-width: 600px){
+        display: none;
+       }   
+}
+
+header.header--branding > nav > .mnav {
+    grid-column: 1/-1;
+    grid-row: 2;
+    @media (min-width: 600px){
+        @include grid-1_1;
+        display: grid;
+    }
+
+
+}
+
+
+
+
+
+main {
+    // overflow-y: scroll;
+    @include grid-2_2;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    align-items: center;
+    height: 100%;
+}
+
+main > header,
+.header--mgt {
+    @include grid-1_1;
+}
+
+main > footer {
+
+}
+
+// .primary-nav {
+//     grid-area: primaryNav;
 //     display: flex;
-//     grid-area: navigation;
-//     flex-direction: column-reverse;
+//     // flex-basis: fit-content;
+
 // }
 
-.primary-nav {
-    grid-area: primaryNav;
-    display: flex;
-    // flex-basis: fit-content;
-
-}
-
-.secondary-nav {
-    grid-area: secondaryNav;
-    display: flex;
-    flex-direction: row-reverse;
-}
+// .secondary-nav {
+//     grid-area: secondaryNav;
+//     display: flex;
+//     flex-direction: row-reverse;
+// }
 
 /* ==============
     MAIN
@@ -68,21 +153,33 @@
 }
 
 
+
+
+
+
 /* ============
       FOOTER 
    ============ */
-   .footer {
+.footer {
+    @include grid-main;
+    grid-area: foot;
     background-color: $footer-bg;
-    padding: 4em 0;
     text-align: center;
     grid-template-areas: 
         ". social ."
         ". main .";
+    
+    @media (min-width: 600px){
+        grid-template-areas: 
+        ". main social .";
+    }
 }
 
-.footer-main,
+.footer-main {
+    grid-area: main;
+}
 .social-list {
-    grid-column: 2/-2 ;
+    grid-area: social;
 }
 
 .footer-logo,
@@ -95,10 +192,6 @@
 .footer-fineprint {
     font-size: .75rem;
     margin-top: 4em;
-}
-
-.footer-main {
-    grid-area: main; /* position of this matters */
 }
 
 .social-list {
@@ -122,15 +215,15 @@
 }
 
 @media (min-width: 600px){
-    .footer {
-        text-align: left;
-        grid-template-areas: 
-            ". main main social .";
-    }
+    // .footer {
+    //     text-align: left;
+    //     grid-template-areas: 
+    //         ". main main social .";
+    // }
 
-    .social-list {
-        justify-content: end;
-    }
+    // .social-list {
+    //     justify-content: end;
+    // }
 }
 
 dl {
@@ -239,114 +332,4 @@ ul.genre-tags li:last-child:after {
 
 main.auth {
     background: linear-gradient(175deg, rgba(240,236,238,1) 46%, rgba(185,185,185,1) 100%);
-}
-
-
-.card {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1.5em;
-    background: $body-bg;
-    border: 1px solid $text-muted;
-    padding: 1em;
-}
-
-.card a {
-    text-decoration: none;
-}
-
-.card h2 a {
-    color: $text-main;
-    border-bottom: 2px dotted $text-muted;
-}
-
-.card-img {
-    background-position: center;
-    background-size: cover;
-}
-
-.card-img a {
-    display: block;
-    height: 300px;
-    margin: 15px 30px;
-}
-
-.card-content {
-    margin-top: 0.8em;
-    width: 100%;
-}
-
-.card-content ul {
-    margin-left: 0;
-    padding-left: 1em;
-    // list-style-type: square;
-}
-
-.card-content li {
-    // margin-left: 1;
-}
-
-.card-footer {
-   padding-top: 0.5em;
-}
-
-
-.card-footer ul {
-    margin: 0;
-    display: flex;
-    flex-direction: row;
-    padding-left: 1em;
-    list-style-type: none;
-    justify-content: flex-end;
-    align-items: center;
-    flex-grow: 1;
-    padding-left: 0;
-}
-
-.card-footer li.edit {
-    margin-left: auto;
-}
-
-
-@media (min-width: 600px){
-
-    .card {
-        font-size: 0.85rem;
-        flex-direction: row;
-        padding: .8em;
-    }
-
-    .card-img a {
-        width: 200px;
-        height: 200px;
-        margin: 0px;
-    }
-
-    .card-content {
-        margin-top: 0;
-        margin-left: 0.8em;
-        display: flex;
-        flex-direction: column;
-        width: calc(100% - 200px);
-    }
-
-    .card-content h2 {
-        font-size: 1.25rem;
-    }
-
-    .card-content ul {
-        margin: auto 0 0 1em;
-    }
-
-    .card-footer {
-        margin-top: auto;
-    }
-    .card-footer ul {
-        margin: 0;
-    }
-
-    .card-footer .btn {
-        padding: .35rem .85rem;
-    }
-
 }

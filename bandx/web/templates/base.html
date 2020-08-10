@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>bandX</title>
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
-        <!-- link to google fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/base-min.css">
-        <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/buttons-min.css">
-        <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/tables-min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/css/intlTelInput.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/base-min.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/buttons-min.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/tables-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/css/intlTelInput.css">
 
     {% assets "home_css" %}
       <link rel="stylesheet" href="{{ ASSET_URL }}" >
     {% endassets %}
 </head>
 <body>
-    <header class="main-grid header--branding">
+    <header class="header--branding">
     <nav class="main-menu">
         <div class="logo">
         <a href="{{ url_for('public.results') }}">Band<span>&times;</span></a>
@@ -38,7 +38,7 @@
     <!-- /HEADER -->
     </header>
     <main {{ 'class="auth"' if current_user.is_authenticated else '' }}>
-    <section class="main-grid content-area {{ 'has-sidebar' if sidebar else '' }}">
+    <section class="main-grid content-area {{ 'has-sidebar' if sidebar else '' }}"> 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -60,17 +60,18 @@
     {% endif %}
     {% block javascript %}{% endblock javascript %}
     <!-- / MAIN -->
-    <footer class="footer main-grid">
+    <footer class="footer">
         <div class="footer-main">
             <img src="img/logo.png" alt="" class="footer-logo">
             <p class="footer-text">BandX listings database for Touring Bands, Players and Artists.<br>Helping Artists, Agents and Venues promote events and launches.</p>
             <p class="footer-fineprint">© RoZZaH 2020</p>
+            <i class="fab fa-facebook-square"></i>
         </div>
-            <ul class="social-list">
-                <li class="social-item"><a href="#" class="social-link"><i class="fab fa-facebook-square"></i></a></li>
-                <li class="social-item"><a href="#" class="social-link"><i class="fab fa-twitter"></i></a></li>
-                <li class="social-item"><a href="#" class="social-link"><i class="fab fa-instagram"></i></a></li>
-            </ul>
+        <ul class="social-list">
+            <li class="social-item"><a href="#" class="social-link"><i class="fab fa-facebook-square"></i></a></li>
+            <li class="social-item"><a href="#" class="social-link"><i class="fab fa-twitter"></i></a></li>
+            <li class="social-item"><a href="#" class="social-link"><i class="fab fa-instagram"></i></a></li>
+        </ul>
     </footer>
 </body>
 </html>
