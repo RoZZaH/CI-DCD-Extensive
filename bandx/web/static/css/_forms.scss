@@ -1,89 +1,367 @@
-@mixin navlinks {
+#datab {
+    // border: 2px solid red;
+    grid-column: 1/-1;
+    font-size: 1.25rem;
+    padding-bottom:  1.5em;
+    min-height: 100wh;
+    position: relative; // positioning context;
+}
+
+
+
+#band-details {
+    order: -1;
+}
+
+fieldset {
+    grid-column: 2 / span 1;
+    margin: .75em;
+}
+
+fieldset > fieldset {
+    margin: 0;
+    grid-column: auto;
+}
+
+
+fieldset > legend {
+    width: auto;
+    padding: .25em;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+#band-image {
+    margin-top: 0;
+}
+
+.hint {
+    font-size: .85rem;
+    // color: $text-secondary;
+}
+
+#media_assets-featured_image {
+    width: 90%;
+}
+
+// fieldset > *,
+// .subform > * {
+//    display: block;
+//    width: 100%;
+// }
+
+
+
+fieldset input:not([type="radio"]):not([type="checkbox"]):not(#media_assets-featured_image),
+fieldset textarea {
+    height: 1.75em;
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    border-top: none;
+    border-bottom: 1px solid #DDD;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
+    padding: .25em .5em;
+}
+
+.fieldset > label,
+.subform > label {
+    box-shadow: none;
+}
+
+input[type="submit"]{
+    grid-column: 2;
+}
+
+fieldset textarea {
+    height: 16em; // less on desktop - wider
+    resize: none;
+    // font-size: 0.9rem;
+}
+
+
+label, input :not([type="radio"]):not([type="checkbox"]), textarea, select {
+    margin: .25em 0 .5em;
+}
+
+
+
+.numbers-radio-wrapper {
+    align-items: baseline;
+}
+
+.numbers-radio-wrapper label {
+    font-size: 1.25rem;
+    line-height: 2em;
+    padding: .25em 0;
+}
+
+.numbers-radio-wrapper input[type="radio"] {
+    margin-right: 1em;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    width: auto;
+}
+
+
+input#remember  {
+    line-height: initial;
+    margin: 0;
+    width: 10px;
+    justify-self: end;
+}
+
+#remeber {
+    align-items: center;
+}
+
+
+
+#genres ul,
+.phone-wrapper ul#mobile,
+.phone-wrapper ul#region {
+    list-style: none;
+    display: flex;
+    padding-left: 0;
+  
+}
+
+.phone-wrapper ul#mobile li {
+    margin-right: 1em;
+}
+
+#search {
+    margin: 2em 0 0;
+    padding: 2em 0;
+    border-bottom: 1px solid $accent;
+}
+
+#search input {
+    height: 2.25em;
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    border-top: none;
+    border-bottom: 1px solid #DDD;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
+    padding: .25em .5em;
+
+}
+
+#genres ul{
+    display: grid;
+    font-size: .85rem;
+    width: 100%;
+    letter-spacing: .075em;
+    // grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(7, minmax(1em, 1fr));
+    grid-auto-flow: column dense;
+    align-items: center;
+    grid-gap: .5em .35em;
+}
+
+li#andor-any,
+// li#andor-all,
+li#genres-all {
+grid-auto-flow: row;
+margin-bottom: .75em;
+}
+
+li#andor-any {
+    grid-column: 1 / span 2;
+    
+}
+// li#andor-all {
+//     grid-column: 3;
+// }
+li#genres-all {
+    grid-column: -1;
+}
+
+
+#genres li:not(#andor-all):not(#andor-any):not(#genres-all) label {
+    display: block;
+    margin-top: -1.2em;
+    margin-left: 1.5em;
+}
+
+// label#g-all {
+//     display: block; 
+//     margin: 0em !important; 
+//     padding: 0em !important;
+// }
+
+#counties {
+    margin: 2em 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(1em, 1fr));
+    letter-spacing: .075em;
+}
+
+.province {
+    grid-column: span 1;
+    display: grid;
+    grid-template-columns: minmax(1em, 1fr) minmax(130px, 250px) minmax(1em, 1fr) ;
+    grid-template-rows: 2em repeat(auto-fill, 1fr);
+}
+
+.province ul {
+    grid-column: 2;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.province li:first-of-type {
+    font-size: 1.125rem;
+    text-align: center;
+    line-height: 2em;
+    
+}
+
+.province .province-title {
+    margin-right: 0.5em;
+    color: $logo-green;
+}
+
+.province li {
+    font-size: .85rem;
+    list-style: none;
+    display: block;
+    grid-row: 2;
+    grid-column: 2;
+    width: minmax(100px, 200px);
+    align-items: end;
+    
+}
+
+.province li label,
+.province li input {
+    width: auto;
+}
+
+.province li input {
+    margin-right: 0.5em;
+}
+
+
+
+#connacht {
+    order: -1;
+
+}
+
+#ulster {
+    order: -2;
+}
+
+#munster {
+    order: -3;
+}
+
+#leinster  {
+  order: 1;
+}
+
+
+.is-invalid {
+    border: 1px solid red !important;
+    font-size: 1.1rem;
+    padding: 0.2em;
+}
+
+.invalid-feedback {
     margin: 0;
     padding: 0;
-    display: grid;
+    grid-column: 2 / span 2;
+    color: firebrick;
+    font-size: 1rem;
+    line-height: 1em;
+}
+
+input#contact_details-contact_emails-email_title {
+    width: 50%;
+}
+
+ul#contact_details-contact_numbers-mobile,
+ul#contact_details-contact_numbers-region, {
     list-style: none;
+    display: flex;
+    padding-left: 0;
 }
 
-@mixin grid-main {
-    display: grid;
-    grid-template-columns: minmax(1em, 1fr) minmax(260px, 500px) minmax(1.5em, 1.1fr);
+ul#contact_details-contact_numbers-mobile li:first-child,
+ul#contact_details-contact_numbers-region li:first-child {
+    margin-left: 0;
+    margin-right: 2em;
 }
 
-@mixin grid-2_2 {
-    grid-column: 2 / -2;
-}
-
-@mixin grid-1_1 {
-    grid-column: 1 / -1;
-}
-
-
-#wrapper {
-    @include grid-main;
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas: "head head head"
-                         ". main ."
-                         "foot foot foot";
-    min-height: 100vh;
-}
-
-header.header--branding {
-    @include grid-main;
-    grid-template-columns: 1 / -1;
-    grid-area: head;
-    // overflow: hidden;
+ul#contact_details-contact_numbers-region li {
+    margin-right: 2em;
 }
 
 
-header.header--branding > nav {
-    @include grid-2_2;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    grid-template-rows: auto 0;
+.iti__flag {
+    background-image: url("../img/flags.png");
 }
 
-header.header--branding > nav > .logo {
-    grid-column: 1;
-    grid-row: 1;
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .iti__flag {background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/img/flags@2x.png");}
 }
 
-header.header--branding > nav > .navigation {
-    grid-column: -2;
-    grid-row: 1;
+input#_phone  {
+    margin: 2.5em;
+    width: 15ch;
 }
 
-header.header--branding > nav > .mnav {
-    grid-column: 1/-1;
-    grid-row: 2;
-
+.iti .iti--allow-dropdown{
+    background: grey;
 }
 
+ul.unique-band-yes-no {
+    display: block;
+    line-height: initial;
+    margin-top: 0;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    margin-left: 0;
+}
 
+form ul.yes > li {
+    padding: .25em .5em;
+    color: $alert-success-txt;
+    background: $alert-success-bg;
+}
 
-main {
-    // overflow-y: scroll;
-    grid-column: 2;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+ul.unique-band-yes-no.no li {
+    padding: .25em .5em;
+    color: $alert-danger-txt;
+    background: $alert-danger-bg;
+}
+
+.content-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.content-block.center {
+    margin: 0 0 3em;
     align-items: center;
-    height: 100%;
 }
 
-main > header,
-.header--mgt {
-    @include grid-1_1;
+.content-block.center p {
+    font-size: 1.25rem;
+    text-align: center;
 }
 
-main > footer {
-
-}
-
-form,
-.form-part {
-    display: grid;
-    justify-content: space-around;
-}
+// form,
+// .form-part {
+//     display: grid;
+//     justify-content: space-evenly;
+// }
 
 form ul, form li {
     list-style: none;
@@ -166,7 +444,6 @@ fieldset textarea {
 
 
 footer.form__footer {
-    @include grid-main;
     grid-area: foot;
     background: red;
     border-top: 1px solid $text-secondary;
@@ -202,8 +479,9 @@ ul.no {
 
 
 form {
-    margin: 1em 0;
+    margin: 1em auto;
     padding: 1em;
+    grid-column: 1 / -1;
     display: grid;
     grid-auto-rows: auto;
     grid-template-columns: 1fr;
@@ -211,6 +489,7 @@ form {
     grid-gap: 0 1em;
     border-radius: 5px;
     border-bottom-right-radius: 12px;
+    max-width: 60ch;
 }
 
 
@@ -256,11 +535,15 @@ ul.invalid-feedback{
 
 .form-footer {
     grid-column: 1 / -1;
-    display: grid;
-    justify-items: end;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row-reverse;
 
 }
 
+.content-block .form-footer {
+    margin: 0 2em;
+}
 
 
 

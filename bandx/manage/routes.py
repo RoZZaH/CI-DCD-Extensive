@@ -25,8 +25,8 @@ default_breadcrumb_root(manage, '.public')
 def manage_bands_home(bname=None):
     user = User.objects(id=current_user.id).first()
     page = request.args.get("page", 1, type=int)
-    bands = Band.objects(created_by=user).order_by('-date_created').paginate(per_page=8, page=page)
-    return render_template("manage_bands.html", bands=bands, sidebar=True)
+    bands = Band.objects(created_by=user).order_by('-date_created').paginate(per_page=9, page=page)
+    return render_template("manage_bands.html", bands=bands, sidebar=False)
 
 @manage.route("/bands/")
 def redirector():
@@ -52,7 +52,7 @@ def get_video_service_and_id(url):
 def checkband():
     form = CreateBandForm1()
     genres = list_genres()
-    return render_template('check_band.html', form=form, genrelist=genres) #form_legend = form_legend, title=title or form_legend, step=step, )
+    return render_template('manage_new_stage1_band_check.html', form=form, genrelist=genres) #form_legend = form_legend, title=title or form_legend, step=step, )
 
 
 
@@ -75,7 +75,7 @@ def add_band(stage):
             return render_template("manage_new_stage2_band_details.html", form=form, stage=stage, genrelist=genres, bname=session["band"]["band_name"])
         else: 
             form = CreateBandForm1()
-            return render_template('check_band.html', form=form, stage=1)
+            return render_template('manage_new_stage1_band_check.html', form=form, stage=1)
     
     if stage == 2:
         form = CreateBandForm2()

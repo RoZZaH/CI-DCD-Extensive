@@ -23,7 +23,7 @@ def register():
         user.save() #db.session.add(user), db.session.commit()
         flash(f"Account created for {form.username.data}! You are now able to log in.", "success") #tuple (msg,cat)
         return redirect(url_for("user.login"))
-    return render_template("register.html", title="Register", form=form)
+    return render_template("register.html", title="Register", form=form, sidebar=0)
 
 
 @user.route("/login", methods=("GET","POST"))
@@ -45,7 +45,7 @@ def login():
 @user.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for("public.home"))
+    return redirect(url_for("public.results"))
 
 default_size = (125, 125)
 def save_picture(form_picture, output_size=default_size ):

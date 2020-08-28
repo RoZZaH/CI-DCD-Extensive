@@ -4,16 +4,16 @@ $primary-color-light2: lighten($primary-color, 20%);
 $mustard: #3dc104;
 $mustard-light: lighten($mustard, 25%);
 $mustard-dark: darken($mustard, 25%);
-$logo-green: rgb(28, 76, 0);
+$logo-green: rgb(34, 90, 2);
 $red-brick: firebrick;
 $remove-red: rgb(221, 65, 44);
-$body-bg: #fbfbfb;
+$body-bg: #faf9eb;
 $footer-bg: #eee;
 
-$accent: rgb(91, 221, 65);
+$accent: rgb(14, 219, 7);
 
 $text-main: #3a3a3a;
-$text-muted: #8e8e8e;
+$text-muted: #a0a0a0;
 $text-secondary: #6a6a6a;
 
 $border-color: rgb(91, 221, 65);
@@ -28,8 +28,11 @@ $alert-danger-txt: #e45d3d;
 $alert-danger-bg: #fff1f0;
 
 
+@mixin navbar-gradient{
+background-color :rgb(0, 66, 48);
 
-
+} 
+    
 
 @mixin flex-center {
     display: flex;

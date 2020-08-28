@@ -1,43 +1,33 @@
 {% extends "base.html" %}
-{% block content %}
+{% from "_render_grid_field.html" import render_field %}
+{% block main__content %}
 <div class="content-block">
     <form method="POST" action="">
     {{ form.hidden_tag() }}
-    <fieldset class="loginform">
-        <legend>Sign In</legend>
-        {{ form.email.label }}
-            {% if form.email.errors %}
-                {{ form.email(class="is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.email.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.email}}
-            {% endif %}
-        {{ form.password.label }}
-            {% if form.password.errors %}
-                {{ form.password(class="is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.password.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.password }}
-            {% endif %}
-        {{ form.remember(class="form-check") }}
-        {{ form.remember.label(class='form-check') }}
-    </fieldset>
+    <div class="form-header">
+    <h3>Sign In</h3>
+    </div>
+        {{ render_field(form.email) }}
+        {{ render_field(form.password) }}
+       
+        {{ form.remember }}
+        {{ form.remember.label }}
+    <div class="form-footer">
         {{ form.submit(class='btn-form-submit') }}
         <span class="forgot-password"><small><a href="#">Forgot Password?</a></small></span>
+    </div>
     </form>
 </div>
-<div class="content-block">
+<div class="content-block center">
     <small>Don't have an Account? <a href="{{ url_for('user.register') }}">Sign Up Today</a></small>
 </div>
 
 
 
-{% endblock content %}
+{% endblock main__content %}
+
+{% block form__footer %}
+<footer class="footer">
+{% include 'include_footer.html' %}
+</footer>
+{% endblock form__footer %}

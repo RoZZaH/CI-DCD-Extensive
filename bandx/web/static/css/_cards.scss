@@ -7,6 +7,7 @@
     background: $body-bg;
     border: 1px solid $text-muted;
     padding: 1em;
+    // max-width: 60ch;
 }
 
 .card a {
@@ -66,45 +67,45 @@
 }
 
 
-@media (min-width: 600px){
+// @media (min-width: 600px){
 
-    .card {
-        font-size: 0.85rem;
-        flex-direction: row;
-        padding: .8em;
-    }
+//     .card {
+//         font-size: 0.85rem;
+//         flex-direction: row;
+//         padding: .8em;
+//     }
 
-    .card-img a {
-        width: 200px;
-        height: 200px;
-        margin: 0px;
-    }
+//     .card-img a {
+//         width: 200px;
+//         height: 200px;
+//         margin: 0px;
+//     }
 
-    .card-content {
-        margin-top: 0;
-        margin-left: 0.8em;
-        display: flex;
-        flex-direction: column;
-        width: calc(100% - 200px);
-    }
+//     .card-content {
+//         margin-top: 0;
+//         margin-left: 0.8em;
+//         display: flex;
+//         flex-direction: column;
+//         width: calc(100% - 200px);
+//     }
 
-    .card-content h2 {
-        font-size: 1.25rem;
-    }
+//     .card-content h2 {
+//         font-size: 1.25rem;
+//     }
 
-    .card-content ul {
-        margin: auto 0 0 1em;
-    }
+//     .card-content ul {
+//         margin: auto 0 0 1em;
+//     }
 
-    .card-footer {
-        margin-top: auto;
-    }
-    .card-footer ul {
-        margin: 0;
-    }
+//     .card-footer {
+//         margin-top: auto;
+//     }
+//     .card-footer ul {
+//         margin: 0;
+//     }
 
-    .card-footer .btn {
-        padding: .35rem .85rem;
-    }
+//     .card-footer .btn {
+//         padding: .35rem .85rem;
+//     }
 
-}
+// }

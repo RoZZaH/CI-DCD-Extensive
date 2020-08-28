@@ -1,40 +1,42 @@
 {% extends "base.html" %}
-{% block content %}
-<header class="main__header">
+{% block main__content %}
+<header class="header--main">
 {% include "include_breadcrumbs.html" %}
-<div class="header--mgt">
-    <div class="headlines">
-        <h6 class="headline--eyebrow">{{ band.description }}</h6><!-- newpaper terms leadin -->
-        <h1 class="headline">{{ band.band_name }}</h1>
-        <h4 class="headline--strapline">{{ band.strapline }}</h4>
-    </div>
-{% if current_user.is_authenticated %} 
-    <div class="controls">
-        <a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add" >Edit Band</a>
-    </div>
-{% endif %}
-<!-- /header--mgt -->
-</div>
 </header>
-{# {{ band.media_assets.featured_video.service  }} #}
+<div class="content-block">
+    <div class="header--mgt">
+        <div class="headlines">
+            <h6 class="headline--eyebrow">{{ band.description }}</h6><!-- newpaper terms leadin -->
+            <h1 class="headline">{{ band.band_name }}</h1>
+            <h4 class="headline--strapline">{{ band.strapline }}</h4>
+        </div>
+    {% if current_user.is_authenticated %} 
+        <div class="controls">
+            <a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add" >Edit Band</a>
+        </div>
+    {% endif %}
+    <!-- /header--mgt -->
+    </div>
+
 {% if band %}
-{% if band.media_assets.featured_video %}
-<div id="video-wrapper">
-   {% if band.media_assets.featured_video.service == "youtube"  %}
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ band.media_assets.featured_video.vid }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-   {% else %}
-   <iframe width="560" height="315" src="https://player.vimeo.com/video/{{ band.media_assets.featured_video.vid }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-   {% endif %}
-</div>
-{% endif %}
+    {% if band.media_assets.featured_video %}
+        <div id="video-wrapper">
+        {% if band.media_assets.featured_video.service == "youtube"  %}
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ band.media_assets.featured_video.vid }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        {% else %}
+        <iframe width="560" height="315" src="https://player.vimeo.com/video/{{ band.media_assets.featured_video.vid }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        {% endif %}
+        </div>
+    {% endif %}
 {% endif %}
 
 <h2 class="headline--profile">Profile</h2>
-<p class="debug">{{ referrer }}</p>
-<p class="debug">LETTER {{ letter if letter}}</p>
 <p>{{ band.profile }}</p>
+</div>
+{% endblock main__content %}
 
 <!-- band details -->
+{% block sidebar %}
 <dl>
     <dt class="colon-after">Hometown</dt>
         <dd>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</dd>
@@ -51,7 +53,9 @@
         <dd class="featured-img">
             <img class="band-img" src="{{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image if band.media_assets.featured_image else 'band_profile_pics/defaultband.jpg') }}" >
         </dd>
-        <dd class="featured-img featured-img-caption">Image description</dd><!-- more images -->
+        {% if band.media_assets.featured_image %}
+        <dd class="featured-img featured-img-caption">Promotional Image for {{ band.band_name }}</dd><!-- more images -->
+        {% endif %}
     <dt class="colon-after">Members</dt>
         {% for member in band.band_members %}
         <dd>{{ member.musician }} &mdash; {{ member.instruments }}</dd>
@@ -69,14 +73,13 @@
         <dd><a href="{{ band.links.enquiries }}">Online Enquiries</a></dd>
         {% endif %}
 </dl>
+{% endblock sidebar %}
 
 
 
 
 
 
-
-{% endblock content %}
 
 {% block javascript %}
     {% assets "org_band_js" %}

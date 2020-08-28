@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bandX</title>
+    <title>Bandz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
 
     <!-- link to google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
 
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/base-min.css">
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/buttons-min.css">
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/tables-min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/css/intlTelInput.css">
 
-    {% assets "form_css" %}
+    {% assets "home_css" %}
         <link rel="stylesheet" href="{{ ASSET_URL }}" >
     {% endassets %}
 </head>
@@ -42,7 +42,7 @@
     </nav>
     <!-- /HEADER -->
     </header>
-    <main {{ 'class="auth"'|safe if current_user.is_authenticated else '' }}>
+    <main class="main-grid content-area {{ 'has-sidebar' if sidebar }} {{ 'auth' if current_user.is_authenticated  }}">
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

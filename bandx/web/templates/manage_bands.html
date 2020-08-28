@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block content %}
-<header class="main--header">
+{% block main__content %}
+<header class="header--main">
 {% include "include_breadcrumbs.html" %}
+{% if bands.pages > 1 %}
 <nav class="pages__pagelinks"><ul>
 {% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
     {% if page_num %}
@@ -11,6 +12,7 @@
     {% endif %}
 {% endfor %}
 </ul></nav>
+{% endif %}
 <div class="header--mgt">
 <div class="headlines">
 <h1>Manage Bands</h1>
@@ -41,7 +43,8 @@
     </div>
 </div>
 {% endfor %}
-<footer class="pages">
+<footer class="footer--main pages">
+{% if bands.pages > 1 %}
 <nav class="pages__pagelinks"><ul>
 {% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
     {% if page_num %}
@@ -51,11 +54,6 @@
     {% endif %}
 {% endfor %}
 </ul></nav>
+{% endif %}
 </footer>
-{% endblock content %}
-{% block sidebar %}
-<div class="sidebar">
-    <p> hello sidebar !</p>
-
-</div>
-{% endblock sidebar %} 
+{% endblock main__content %}

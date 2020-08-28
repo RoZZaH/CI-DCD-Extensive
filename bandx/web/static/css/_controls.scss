@@ -1,10 +1,10 @@
 
 
-nav.pages__pagelinks {
+.pages__pagelinks {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  //justify-content: center;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
 }
 
 .pages__pagelinks--below {
@@ -12,13 +12,19 @@ nav.pages__pagelinks {
 }
 
 
-nav.pages__pagelinks > ul {
+.pages__pagelinks > ul {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   list-style: none;
+  justify-content: center;
   margin: 0 0 .25em 0;
   padding: 0;
+}
+
+.pages__pagelinks >  li {
+  list-style: none;
+  margin: 0;
 }
 
 .breadcrumbs {
@@ -32,7 +38,7 @@ nav.pages__pagelinks > ul {
 
 .wrapper__alphabet {
   background-color: rgb(196, 196, 196);
-
+  grid-column: 1 / -1;
 }
 
 .wrapper__alphabet--top {
@@ -49,21 +55,15 @@ nav.pages__pagelinks > ul {
   margin-top: 0.75em;
 }
 
-nav.pages__pagelinks ul li {
-  margin-left: 0;
-}
-
-.pages__pagelinks ul {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  list-style: none;
-  padding-left: 0;
-}
-
 .pages__pagelinks li:first-child {
   margin-left: auto;
 }
+
+
+.wrapper__alphabet .pages__pagelinks li:first-child {
+  margin-left: 0;
+}
+
 
 .pages__pagelinks li:first-child.prev-page {
   margin-left: 0;
@@ -81,6 +81,18 @@ nav.pages__pagelinks ul li {
   background-color: rgb(196, 196, 196);
   padding: .25rem .5rem;
   // margin: .25rem;
+}
+
+.btn a:link,
+.btn a:visited {
+  color: $text-main;
+  text-decoration: none;
+}
+
+.btn a:hover,
+.btn a:focus {
+  color: black;
+  font-weight: 500;
 }
 
 .btn--pagelink {

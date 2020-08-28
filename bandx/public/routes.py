@@ -1,8 +1,7 @@
 import re, json
-from flask import (jsonify, Blueprint, \
-    session, \
-    redirect, request, render_template, \
-        url_for)
+from flask import (jsonify, Blueprint,
+    redirect, request, render_template,
+    session, url_for)
 
 #from flask_paginate import Pagination
 from flask_breadcrumbs import Breadcrumbs, default_breadcrumb_root, register_breadcrumb
@@ -52,9 +51,9 @@ def band_detail(bname, letter=None):
     referrer = request.referrer
     band = Band.objects(band_name=bname).first()
     if letter:
-        return render_template("band_detail.html", band=band, referrer=referrer, letter=letter)
+        return render_template("band_detail.html", band=band, referrer=referrer, letter=letter, sidebar=True)
     else:
-        return render_template("band_detail.html", band=band, referrer=referrer)
+        return render_template("band_detail.html", band=band, referrer=referrer, sidebar=True)
 
 
 # @public.route("/a-z/<string:bname>/")
@@ -80,20 +79,39 @@ def view_alpha_dlc(*args, **kwargs):
             return [{ 'text': 'A-Z', 'url': url_for('public.a2z')}, {'text': alpha.upper() }]
 
 
+    
+def closest_letters(alphaset, letter):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz#'
+    pos_letter = alphabet.find(letter)
+    rel_positions = [(index - pos_letter) for index, char in enumerate(alphabet) if char in alphaset]
+    for n in rel_positions:
+        if n < 0:
+            neg = n
+        else:
+            pos = n
+            return (alphabet[pos_letter+neg], alphabet[pos_letter+pos])
+ 
+
+
 @public.route("/a-z/", defaults={'letter': 'a'})
 @public.route("/a-z/<string:letter>", methods=('GET', 'POST')) 
 # @register_breadcrumb(public, '.a2z', '', dynamic_list_constructor=view_alpha_dlc)
 def a2z(letter='a', bname=None):
     # find first band - A House
     alphabet = 'abcdefghijklmnopqrstuvwxyz#' # hastag_etc
-    #letter = letter
     page = request.args.get("page", 1, type=int)
-    #letter = request.args.get("letter", "a")
-    bands = Band.objects(band_name__istartswith=letter).paginate(per_page=5, page=page, search=search)
+    bands = Band.objects(catalogue_name__istartswith=letter).paginate(per_page=5, page=page, search=search)
     if bands.total > 0:
-        return render_template("bands_list.html", bands=bands, alphabet=alphabet, letter=letter) #if alphabet send to diff route
+        return render_template("bands_list.html", bands=bands, alphabet=alphabet, letter=letter, bands_total = bands.total) #if alphabet send to diff route
     else:
-        return f"no query string received for {letter}", 200
+        pipeline = [{ "$group" : { "_id": {"$toLower": { "$substr": ["$catalogue_name",  0, 1  ] }} }}, {"$sort": {"_id": 1}} ]
+        alphaset = [ b["_id"] for b in Band.objects.aggregate(pipeline) ]
+        letters_tup = closest_letters(alphaset, letter)
+        return render_template("bands_list.html", alphabet=alphabet, letter=letter, bands_total = bands.total, closest_letters=letters_tup, fullpage=True)
+
+    
+    
+
 
 
 
@@ -109,7 +127,7 @@ def search():
 def by_genre():
     pipeline = [{ "$unwind": "$genres"}, {"$group": {"_id": "$genres", "no_of_bands_per_genre": { "$sum": 1}}} ]
     genres = list(Band.objects.aggregate(pipeline))
-    return render_template("genres.html", genres=genres)
+    return render_template("genres.html", genres=genres, fullpage=True)
 
 
 
@@ -165,16 +183,16 @@ def results():
     #print(pipeline)
     if text_query != None:
         bands = Band.objects.filter(pipeline)
-        bands = bands.search_text(text_query).order_by("$text_score").paginate(per_page=3, page=page)
+        bands = bands.search_text(text_query).order_by("$text_score").paginate(per_page=10, page=page)
         count = bands.pages
     else: 
-        bands = Band.objects(pipeline).order_by("$catalogue_name").paginate(per_page=5, page=page) #??
+        bands = Band.objects(pipeline).order_by("$catalogue_name").paginate(per_page=10, page=page) #??
         count = bands.pages
     if bands.total > 0:
-        return render_template("bands_list.html", bands=bands, search=search, count=count)
+        bands_total = bands.total
+        return render_template("bands_list.html", bands=bands, search=search, count=count, bands_total=bands_total)
     else:
         return "no query string received", 200
-
 
 
 
@@ -212,7 +230,7 @@ def by_location():
     ]
     provinces = Towns.objects.aggregate(pipeline)
     #return jsonify(list(provinces))
-    return render_template("provinces.html", provinces=provinces)
+    return render_template("provinces.html", provinces=provinces, fullpage=True)
 
 
 
@@ -306,66 +324,3 @@ def show_phone():
     return render_template('public_show_phone.html', phone=session['phone'])
 
 
-# @public.route('/')
-# @register_breadcrumb(public, '.', 'Bands')
-# def home():
-#     page = request.args.get("page", 1, type=int)
-#     bands = Band.objects.order_by('-date_created').paginate(per_page=5, page=page)
-#     return render_template("bands_list.html", bands=bands)
-
-
-'''
-    pipeline = [
-        { "$unwind": { "path": "$towns" } }, 
-        { "$lookup": { "from": "band",
-                        "let": { "townt": "$towns", "townc": "$county" },
-                "pipeline": [
-                    { "$project": { "_id": 0, "band_name": 1, "hometown": 1 } },
-                    { "$replaceRoot": { "newRoot": 
-                                        { "$mergeObjects": [
-                                            {
-                                                "bandname": "$band_name",
-                                                "town": "",
-                                                "county": ""
-                                            },
-                                            "$hometown"
-                                            ]
-                                        }
-                                    }},
-                    { "$match": { "$expr": { "$and": [ { "$eq": [ "$town", "$$townt" ] }, { "$eq": [ "$county", "$$townc" ] } ]}}},
-                    { "$project": { "_id": 1, "bandname": 1 } } 
-                    ], "as": "bands" }}, 
-        { "$replaceRoot": { "newRoot": { "$mergeObjects": [ { "bandlisting": { "$size": "$bands.bandname" }, "town": "$towns", "county": "$county" } ] }}}, 
-        { "$group": { "_id": {
-                            "county": "$county",
-                            "town": "$town",
-                            "number_of_bands_per_town": "$bandlisting"
-                            },
-                            "number_of_towns_per_county": { "$sum": 1 }
-                    }
-        }, 
-        { "$group": { "_id": "$_id.county", "towns": { "$push": { "name": "$_id.town", "num": "$_id.number_of_bands_per_town" }},
-                            "bands_total": { "$sum": "$_id.number_of_bands_per_town"},
-                            "ctotal": {"$sum": "$number_of_towns_per_county"}
-                    }
-        }, 
-        { "$sort": { "_id": 1 }}
-    ]
-'''
-
-# @public.route('/location')
-# def by_location():
-#     pipeline = [ { "$group": {
-                
-#             "_id": "$province",
-#             "counties": { "$push": "$county" },
-        
-#     }}]
-#     provinces = list(Towns.objects.aggregate(pipeline))
-    
-#     # return jsonify(provinces)
-#     return render_template("provinces.html", provinces=provinces)
-
-# @public.route("/bands/")
-# def redirector():
-#     return redirect(url_for("public.results"))

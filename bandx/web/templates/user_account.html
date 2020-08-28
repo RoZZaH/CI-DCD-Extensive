@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block content %}
+{% block main__content %}
 <h1>Account Settings for <span class="highlight">{{ current_user.username }}</span></h1>
 <div class="content-block">
     <div class="media">
@@ -50,4 +50,4 @@
             {{ form.submit(class="btn btn-outline-info") }}
     </form>
 </div>
-{% endblock content %}
+{% endblock main__content %}

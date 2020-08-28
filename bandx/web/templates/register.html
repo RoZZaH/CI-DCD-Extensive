@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block content %}
+{% block main__content %}
 <div class="content-block">
     <form method="POST" action="">
     {{ form.hidden_tag() }}
@@ -50,13 +50,21 @@
                 {{ form.confirm_password }}
             {% endif %}
     </fieldset>
+    <div class="form-footer">
         {{ form.submit(class='btn-form-submit') }}
+    </div>
     </form>
 </div>
-<div class="content-block">
+<div class="content-block center">
     <small>Already have an Account? <a href="{{ url_for('user.login') }}">Sign In</a></small>
 </div>
 
 
 
-{% endblock content %}
+{% endblock main__content %}
+
+{% block form__footer %}
+    <footer class="footer">
+    {% include 'include_footer.html' %}
+    </footer>
+{% endblock form__footer %}

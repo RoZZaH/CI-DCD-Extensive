@@ -3,12 +3,14 @@
 <ul>
 {% if pagination.has_prev %}
     {% if letter %}
-    <li class="prev-page"><a href="{{ url_for(endpoint, letter = letter, page = pagination.prev_num) }} ">&laquo;prev</a></li>
+    <li class="btn btn--pagelink prev-page"><a href="{{ url_for(endpoint, letter = letter, page = pagination.prev_num) }} ">&laquo;prev</a></li>
     {% elif search %}
-    <li class="prev-page"><a href="/?{{ search+pagination.prev_num|string }}">&laquo;prev</a></li>
+    <li class="btn btn--pagelink prev-page"><a href="/?{{ search+pagination.prev_num|string }}">&laquo;prev</a></li>
     {% else %}
-    <li class="prev-page"><a href="{{ url_for(endpoint, page = pagination.prev_num) }} ">&laquo;prev</a></li>
+    <li class="btn btn--pagelink prev-page"><a href="{{ url_for(endpoint, page = pagination.prev_num) }} ">&laquo;prev</a></li>
     {% endif %}
+{% else %}
+<li class="prev-page"></li>
 {% endif %}
 
 {% if pagination.pages > 1 %}
@@ -30,12 +32,14 @@
 
 {% if pagination.has_next %}
     {% if letter %}
-    <li class="next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, letter=letter, page=pagination.next_num) }} ">next&raquo;</a></li>
+    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, letter=letter, page=pagination.next_num) }} ">next&raquo;</a></li>
     {% elif search %}
-    <li class="next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="/?{{ search+pagination.next_num|string }}">next&raquo;</a></li>
+    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="/?{{ search+pagination.next_num|string }}">next&raquo;</a></li>
     {% else %}
-    <li class="next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, page = pagination.next_num) }} ">next&raquo;</a></li>
+    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, page = pagination.next_num) }} ">next&raquo;</a></li>
     {% endif %}
+{% else %}
+<li class="next-page"></li>
 {% endif %}
 </ul>
 

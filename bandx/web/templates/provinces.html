@@ -1,5 +1,15 @@
 {% extends "base.html" %}
-{% block content %}
+{% block main__header %}
+<header class="header--main">
+<div class="breadcrumbs">
+<small>You are here</small>:&nbsp; 
+<a href="{{ url_for('public.results') }}">Bands</a>&nbsp;&#62;
+<b>Bands by County</b>
+</div>
+<h1 class="mt-1 centered">Bands by County<br><small class="muted">on the Island of Ireland</small></h1>
+</header>
+{% endblock main__header %}
+{% block main__content %}
 
 <ul class="leaderboard">
 {% for province in provinces %}
@@ -26,7 +36,7 @@
     </li>
 {% endfor %}
 </ul>
-{% endblock content %}
+{% endblock main__content %}
 
 {% block javascript %}
 <script>
