@@ -1,6 +1,6 @@
 import re
 from flask import jsonify, Blueprint, request
-from bandx.models.entities import Band, Towns
+from bandz.models.entities import Band, Towns
 
 
 api = Blueprint('api', __name__)

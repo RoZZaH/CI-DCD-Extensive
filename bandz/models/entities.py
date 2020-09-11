@@ -1,6 +1,6 @@
 from datetime import datetime
-from bandx import login_manager
-from bandx.models.db import db # can't import from actx circular import
+from bandz import login_manager
+from bandz.models.db import db # can't import from actx circular import
 from flask_login import UserMixin # methods required by login_manager
 from bson.objectid import ObjectId
 
@@ -57,6 +57,7 @@ class Band(db.DynamicDocument):
     date_created = db.DateTimeField(required=True, default=datetime.utcnow)
     band_name = db.StringField(unique=True, max_length=120, required=True)
     catalogue_name = db.StringField(max_length=120, required=True)
+    solo = db.BooleanField(default=0)
     profile = db.StringField()
     description = db.StringField(max_length=120)
     genres = db.ListField(db.StringField(default='unclassified'))

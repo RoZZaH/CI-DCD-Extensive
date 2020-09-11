@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from bandx.models.entities import User, Towns
+from bandz.models.entities import User, Towns
 from wtforms import (BooleanField, DateField, Form, FormField, FieldList, HiddenField, 
                       RadioField, SelectField, SelectMultipleField, StringField, SubmitField, TextAreaField,)
 

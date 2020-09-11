@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from bandx.models.entities import User, Band, Towns
+from bandz.models.entities import User, Band, Towns
 from wtforms import (BooleanField, DateField, Form, FormField, FieldList, HiddenField, 
                       PasswordField, RadioField, SelectField, StringField, SubmitField, TextAreaField,)
 from wtforms.validators import DataRequired, Email, EqualTo, InputRequired, Length, Optional, URL, ValidationError, StopValidation
@@ -95,7 +95,7 @@ class EmailFormlet(Form):
                             render_kw={"placeholder": "Enquiries" },
                             validators=[Optional()])
     email_address = StringField("Email Address",
-                            render_kw={"placeholder": "enquiries@bandx.ie" },
+                            render_kw={"placeholder": "enquiries@bandz.ie" },
                             validators=[DataRequired(), Email()])
 
 
@@ -112,6 +112,11 @@ class ContactFormlet(Form):
 
 
 class CreateUpdateBandForm(FlaskForm):
+    solo = RadioField("Band or Individual", 
+                        choices=[(1, "Solo Artist"),(0,"Band")],
+                        coerce=int,
+                        render_kw={},
+                        default="False")
     band_name = StringField("Band Name",
                             render_kw={"placeholder": "Org Name / Band / Venue"},
                             validators=[DataRequired()])
@@ -145,6 +150,11 @@ def check_bandname_unique(form, field):
 
 
 class CreateBandForm1(FlaskForm):
+    solo = RadioField("Band or Individual", 
+                        choices=[(1, "Solo Artist"),(0,"Band")],
+                        coerce=int,
+                        render_kw={},
+                        default="False")
     band_name = StringField(render_kw={"placeholder": "Band Name"},
                             validators=[check_bandname_unique])
     hometown = FormField(HomeTownForm)

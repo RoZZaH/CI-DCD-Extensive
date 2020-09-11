@@ -18,6 +18,10 @@
 
         {{ form.hidden_tag() }}
         {% if step == "band_name_hometown" %}
+        <ul id="solo">
+            <li><input id="solo-0" name="solo" type="radio" value=0 checked=checked> <label for="solo-0">Band</label></li>
+            <li><input id="solo-1" name="solo" type="radio" value=1> <label for="solo-1">Solo Artist</label></li>
+        </ul>
         <label for="band_name" class="field">
             <span class="label-text">Band Name</span>
             {{ form.band_name }}

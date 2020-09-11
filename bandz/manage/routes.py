@@ -8,11 +8,11 @@ from flask_breadcrumbs import Breadcrumbs, default_breadcrumb_root, register_bre
 
 from flask_login import current_user, login_required, login_user, logout_user
 
-from bandx.models.entities import Band, Towns, User, Phone, Contact, Links, Email, BandMember, Assets
-from bandx.manage.forms import CreateUpdateBandForm, CreateBandForm1, CreateBandForm2, CreateBandForm3, CreateBandForm4
-from bandx.utils.gns import nav
-from bandx.api.routes import list_genres
-from bandx.utils.helpers import *
+from bandz.models.entities import Band, Towns, User, Phone, Contact, Links, Email, BandMember, Assets
+from bandz.manage.forms import CreateUpdateBandForm, CreateBandForm1, CreateBandForm2, CreateBandForm3, CreateBandForm4
+from bandz.utils.gns import nav
+from bandz.api.routes import list_genres
+from bandz.utils.helpers import *
 from mongoengine.errors import NotUniqueError
 import phonenumbers
 
@@ -62,13 +62,15 @@ def add_band(stage):
     genres = list_genres()
     if stage == 1:
         form = CreateBandForm1()
-        if request.method == "POST" and form.validate_on_submit():
-            #if form.band_name.validate(form):
-            catalogue_name = de_article(form.band_name.data)
+        if request.method == "POST" and form.validate_on_submit(): 
+            #return request.form
+            if form.band_name.validate(form):
+                catalogue_name = de_article(form.band_name.data) if int(form.solo.data) == 0 else de_singularise(form.band_name.data)
             session["band"] = { 
             "band_name": form.band_name.data,
             "catalogue_name" : catalogue_name,
-            "hometown" : {"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data}
+            "hometown" : {"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data},
+            "solo": form.solo.data
             }
             form = CreateBandForm2()
             stage=2
@@ -154,7 +156,8 @@ def add_band(stage):
                     media_assets = assets,
                     contact_details = contact,
                     links = weblinks,
-                    created_by = user
+                    created_by = user,
+                    solo = bool(session["band"]["solo"])
                 )
             band.save()
             band_id = band.id

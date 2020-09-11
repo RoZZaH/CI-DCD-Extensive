@@ -6,8 +6,8 @@ from flask import (Blueprint, flash, current_app, jsonify,
     redirect, render_template, request, Response,
     url_for)
 from flask_bcrypt import generate_password_hash, check_password_hash
-from bandx.models.entities import User, Towns, Band #Venue, Tour, TourDate
-from bandx.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm)
+from bandz.models.entities import User, Towns, Band #Venue, Tour, TourDate
+from bandz.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm)
 from flask_login import current_user, login_required, login_user, logout_user
 
 user = Blueprint('user', __name__) # import_name , usually the current module

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from bandx.models.entities import User
+from bandz.models.entities import User
 from wtforms import BooleanField, DateField, Form, FormField, FieldList, HiddenField, PasswordField, RadioField, StringField, SelectField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Optional, Length, EqualTo, Email, URL, ValidationError
 

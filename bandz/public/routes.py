@@ -11,11 +11,11 @@ from wtforms import StringField, SubmitField, RadioField
 from wtforms.validators import DataRequired, ValidationError
 from mongoengine.queryset import QuerySet
 from mongoengine.queryset.visitor import Q, QNode
-from bandx.utils.gns import nav
+from bandz.utils.gns import nav
 from flask_nav.elements import Navbar, Subgroup, View
-from bandx.models.entities import Band, Towns
-from bandx.public.forms import SearchForm
-from bandx.api.routes import list_genres, list_provinces
+from bandz.models.entities import Band, Towns
+from bandz.public.forms import SearchForm
+from bandz.api.routes import list_genres, list_provinces
 # import pymongo
 
 public = Blueprint('public', __name__) # import_name , usually the current module

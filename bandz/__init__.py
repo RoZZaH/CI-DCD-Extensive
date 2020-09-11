@@ -7,12 +7,12 @@ from flask_breadcrumbs import Breadcrumbs
 #from flask_breadcrumbs import current_breadcrumbs
 
 from flask_nav.elements import Navbar, Subgroup, View
-from bandx.utils.assets import bundles
-from bandx.utils.gns import nav, topbar, initialise_nav
-from bandx.models.db import initialise_db
+from bandz.utils.assets import bundles
+from bandz.utils.gns import nav, topbar, initialise_nav
+from bandz.models.db import initialise_db
 
 
-# from bandx.public.routes import topbar
+# from bandz.public.routes import topbar
 
 
 app = Flask(__name__,
@@ -86,10 +86,10 @@ initialise_nav(app)
 login_manager.login_view = "user.login"
 login_manager.login_message_category = "info" #boostrap category for flash message
 
-from bandx.api.routes import api
-from bandx.public.routes import public
-from bandx.users.routes import user
-from bandx.manage.routes import manage
+from bandz.api.routes import api
+from bandz.public.routes import public
+from bandz.users.routes import user
+from bandz.manage.routes import manage
 app.register_blueprint(api)
 app.register_blueprint(public)
 app.register_blueprint(manage)

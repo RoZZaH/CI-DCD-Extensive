@@ -3,7 +3,7 @@ import os, secrets, re
 #from datetime import datetime
 from PIL import Image # Pillow
 
-from bandx import app, pictures_folder
+from bandz import app, pictures_folder
 
 profile_pics = os.path.join(pictures_folder, "user_profile_pics")
 band_pics = os.path.join(pictures_folder, "band_profile_pics")
@@ -56,3 +56,8 @@ def de_article(bandname):
     else:
         _bandname = ' '.join(_band_name)
     return _bandname
+
+
+def de_singularise(artistname):
+    _artist = artistname.split()
+    return _artist[-1] + ', ' + (" ").join(_artist[:-1])
