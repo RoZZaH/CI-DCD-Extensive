@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block main__content %}
+<div class="content-block">
+    <h1>Initial Setup</h1>
+    <form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <fieldset>
+        <legend>Initial Setup</legend>
+        {{ form.username.label(class="") }}
+            {% if form.username.errors %}
+                {{ form.username(class="is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.username }}
+            {% endif %}
+        {{ form.email.label }}
+            {% if form.email.errors %}
+                {{ form.email(class="is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.email}}
+            {% endif %}
+        {{ form.password.label }}
+            {% if form.password.errors %}
+                {{ form.password(class="is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.password }}
+            {% endif %}
+        {{ form.confirm_password.label }}
+            {% if form.confirm_password.errors %}
+                {{ form.confirm_password(class="is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.confirm_password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.confirm_password }}
+            {% endif %}
+    </fieldset>
+    <div class="form-footer">
+        {{ form.submit(class='btn-form-submit') }}
+    </div>
+    </form>
+</div>
+
+
+
+
+{% endblock main__content %}
+
+{% block form__footer %}
+    <footer class="footer">
+    {% include 'include_footer.html' %}
+    </footer>
+{% endblock form__footer %}

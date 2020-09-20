@@ -19,7 +19,7 @@
     </div>
 
 {% if band %}
-    {% if band.media_assets.featured_video %}
+    {% if band.media_assets.featured_video.service %} <!-- not null/empty -->
         <div id="video-wrapper">
         {% if band.media_assets.featured_video.service == "youtube"  %}
         <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ band.media_assets.featured_video.vid }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

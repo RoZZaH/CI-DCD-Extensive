@@ -32,7 +32,7 @@ body {
                 grid-template-columns: repeat(8, 1fr);
                 grid-template-areas: 
                                     "head head head head head head head head"
-                                    ". main main main main sidebar sidebar ."
+                                    ". main main main main main main ."
                                     "foot foot foot foot foot foot foot foot";
             }
     width: 100%;
@@ -303,19 +303,57 @@ header.header--branding > nav > .logo {
 
 
 main {
-    grid-area: main / main / main / sidebar;
+    // grid-area: main / main / main / sidebar;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    grid-gap: 1em;
+    
+    // grid-gap: 1em;
+    grid-area: main;
+    // @media (min-width: 600px){
+    //   grid-template-rows: auto 1fr auto;
+    //   grid-template-areas:
+    //           "main-header main-header main-header-main main-header"
+    //           "main-content main-content main-content main-content"
+    //           "main-footer main-footer main-footer main-footer";
+    //   //grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    // }
+    border: 2px solid red;
 }
-
 .header--main,
-.content-block,
+// .content-block,
+#main__content,
 .search-params,
 .footer--main {
   grid-column: 1 / -1;
 }
 
+#main__content {
+  display: grid;
+}
+
+.content-block--cards {
+  display: grid;
+  grid-gap: 1.5em 1em;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+
+
+
+.header--main {
+  grid-row: 1;
+  background-color: pink;
+  margin-bottom: 2em;
+}
+
+.footer--main {
+  margin-top: 2em;
+  grid-row: 3;
+  background-color: pink;
+}
+
+.content-block {
+  border: 1px solid red;
+}
 
 .full-page{
   background-color: rgba(255, 254, 241, 0.8);
@@ -337,17 +375,17 @@ main {
 }
 
 
-main.has-sidebar {
-  grid-area: main;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: auto;
+// main.has-sidebar {
+//   grid-area: main;
+//   grid-template-rows: auto 1fr;
+//   grid-template-columns: auto;
+//   background-color: rgba(255, 254, 241, 0.8);
+// }
 
-}
-
-aside {
-  grid-area: sidebar;
-  background-color: rgba(255, 254, 241, 0.8);
-}
+// aside {
+//   grid-area: sidebar;
+//   background-color: rgba(255, 254, 241, 0.8);
+// }
 
 .footer {
     grid-column: 1 / -1;

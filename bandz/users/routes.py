@@ -1,4 +1,4 @@
-import os, secrets, re
+import csv, os, secrets, re, json
 from datetime import datetime
 from PIL import Image # Pillow
 #from resizeimage import resizeimage
@@ -6,16 +6,105 @@ from flask import (Blueprint, flash, current_app, jsonify,
     redirect, render_template, request, Response,
     url_for)
 from flask_bcrypt import generate_password_hash, check_password_hash
-from bandz.models.entities import User, Towns, Band #Venue, Tour, TourDate
+from bandz import app
+from bandz.models.entities import User, Towns, Band, Phone, Contact, Email, Phone, BandMember, Assets#Venue, Tour, TourDate
 from bandz.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm)
 from flask_login import current_user, login_required, login_user, logout_user
 
 user = Blueprint('user', __name__) # import_name , usually the current module
 
+
+
+def setup_towns():
+    resource_path = os.path.join(app.root_path, 'setup')
+    with open(os.path.join(resource_path, 'towns.json')) as f:
+        file_data = json.load(f)
+    townz = []
+    for town in file_data:
+            townz.append(Towns(**town))
+    Towns.objects.insert(townz)
+    return True
+
+
+def setup_bands():
+    pass
+
+
+@user.route('/setup', methods=("GET", "POST"))
+def initial_setup():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data).decode("utf-8")
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password) #bcrypt hashed_pw
+        user.save() #db.session.add(user), db.session.commit()
+        flash(f"Account created for {form.username.data} - Now Adding Bands! You'll be redirected shortly.", "success") #tuple (msg,cat)
+        uid = user.id
+        setup_towns()
+        resource_path = os.path.join(app.root_path, 'setup')
+        with open(os.path.join(resource_path, 'band.json')) as f:
+            file_data = json.load(f)
+        bandz = []
+        for band in file_data:
+            if 'date_created' in band.keys():
+                date_created = datetime.strptime(band.pop('date_created'), "%Y-%m-%dT%H:%M:%S") 
+            else:
+                date_created = datetime.utcnow
+            bandz.append(Band(**band, created_by = uid, date_created=date_created ))
+        bands = Band.objects.insert(bandz)
+        return jsonify(bands)
+
+        
+        # assets = Assets(
+        #         featured_image = "default_band.jpg",
+        #         featured_video = {"service": "youtube", "vid": "cDo6Lgylsjg"}
+        #         )
+        # contact = Contact(
+        #         contact_name = "Keith Cullen",
+        #         contact_title = "M.D. Setanta Records"
+        #         )
+        # contact.contact_numbers = Phone(
+        #         mobile = bool(0),
+        #         number = "+35316078894"
+        #         )
+        # contact.contact_emails = Email(
+        #         email_title = "Bookings",
+        #         email_address = "kcullen@setantarecords.com"
+        #         )
+        # members = [
+        #         { "musician": "Dave Couse", "instruments": "vocals" },
+        #         { "musician": "Fergal Bunbury", "instruments": "guitar"},
+        #         { "musician": "Martin Healy", "instruments": "bass" },
+        #         { "musician": "Dermot Wylie", "instruments": "drums"}
+        #         ]
+        # band = Band(
+        #             band_name = "A House",
+        #             catalogue_name =  "A-House",
+        #             genres = ["indie", "rock"],
+        #             hometown = {"town": "Dublin City", "county": "Dublin"},
+        #             description = "Intelligent Indie Rock from Dublin",
+        #             strapline = "critical acclaim without commerical concern",
+        #             profile = "The first single from I Am The Greatest helped both sales and appeal. 'Endless Art', a shopping list litany of deceased cultural icons, is one of the best Irish rock singles of all time. A simple idea executed with style and intelligence, Dave Couse is aware that the song could become a creative albatross around the band's collective neck. \"It depends on whether we allow it to be. I don't think A House are like that. Our feeling is that 'Endless Art' is one good song, so why not have a few more?\"There are a hundred deadbeat Irish rock wannabees for every A-House, who have just released their fifth and best album No More Apologies. Alan Corr met guitarist Fergal Bunbury and vocalist Dave Couse to talk begrudgery, failure and good songwriting. Every time A House release a record (which is refreshingly often) three things happen. First, the Irish rock media is divided down the middle between those who dismiss them as whinging failures and those who proclaim them a national institution who've made consistently great music. Second, at least 30,000 people go out and buy the new album. Third, and most important, the band themselves get on with recording the next one.",
+        #             band_members = [BandMember(**member) for member in members],
+        #             media_assets = assets,
+        #             contact_details = contact,
+        #             created_by = uid,
+        #             solo = bool(0)
+        #         )
+        # band.save()
+        return redirect(url_for("user.login"))
+    if len(list(Band.objects())) == 0:
+        return render_template("setup.html", form=form, sidebar=0)
+    else:
+        print("Inital Setup Completed Already")
+        return redirect(url_for("public.results"))
+
+
+
+
 @user.route("/register", methods=("GET", "POST"))
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("public.home"))
+        return redirect(url_for("public.results"))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data).decode("utf-8")
@@ -26,10 +115,13 @@ def register():
     return render_template("register.html", title="Register", form=form, sidebar=0)
 
 
+
+
+
 @user.route("/login", methods=("GET","POST"))
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("public.home"))
+        return redirect(url_for("public.results"))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(email=form.email.data).first()

@@ -10,16 +10,20 @@
 <nav class="pages__pagelinks">
 {% include "include_breadcrumbs.html" %}
     <ul class="pages__pagelinks__left--alphabet">
-        {% for beta in alphabet %}
-        <li><a class="btn {{ 'btn--pagelink--current' if beta == letter }}" href="/a-z/{{beta}}?page=1">{{ beta }}</a></li>
-        {% endfor %}
+        {% for beta in alphabet %}      
+        <li><a class="btn {{ 'btn--pagelink--current' if beta == letter }}" href="/a-z/{{beta}}?page=1">{{ '#' if beta == "_" else beta}}</a></li>
+       {% endfor %}
     </ul>
 {% if closest_letters %}
 <h1 class="headline--alphabet">No Bands <small>starting with</small> {{ letter|upper }}!</h1>
 {% else %}
-<h1 class="headline--alphabet">Bands <small>starting with</small> {{ letter|upper }}<br><span class="headline--strapline">in alphabetical order</span></h1>
+
+<h1 class="headline--alphabet">Bands <small>starting with{{ ' a' if letter == "_" else ''}}</small> {{'Number or $ymbol' if letter == "_" else letter|upper }}
+  <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
+</h1>
+{# <h1 class="headline--alphabet">Bands <small>starting with</small> {{'#' if letter == "_" else letter|upper }}<br><span class="headline--strapline">in alphabetical order</span></h1> #}
+{{ render_pages_nav(bands, 'public.a2z', letter) }}
 {% endif %}
-{# {{ render_pages_nav(bands, 'public.a2z', letter) }} #}
 </nav>
 </div>
 {% else %}
@@ -35,14 +39,13 @@
 <!-- CONTENT -->
 {% block main__content %}
 
+<div class="content-block--cards">
 {% if closest_letters %}
-<div class="content-block center">
 <p>The closest alphabetical listings are start at:</p>
 <span class="wide"><p><span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[0] }}?page=1">&laquo; {{closest_letters[0]|upper }}</a></span> and 
 <span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[1] }}?page=1">{{ closest_letters[1]|upper }} &raquo;</a></span></p></span>
 <p>Does your Band start with <b>{{ letter|upper }}</b> ?</p>
 <p><a href="{{ url_for('user.register') }}">Sign up</a> today and add your band profile.</p>
-</div>
 {% else %}
 
 
@@ -76,6 +79,7 @@
 </div>
 {% endfor %}
 {% endif %}
+</div>
 {# {% for dict_item in request.args %} #}
 <div class="search-params">
 <hr>
@@ -93,20 +97,20 @@
 <footer class="footer--main pages">
 {% if not closest_letters %}
     {% if bands.pages > 1 %}
+        <div class="wrapper__alphabet wrapper__alphabet--bottom">
         <nav class="pages__pagelinks">
         {% if alphabet %}
         {{ render_pages_nav(bands, 'public.a2z', letter) }}
-        <div class="wrapper__alphabet wrapper__alphabet--bottom">
         <ul class="pages__pagelinks__left--alphabet">
             {% for beta in alphabet %}
             <li><a class="btn {{ 'btn--pagelink--current' if beta == letter }}" href="{{ url_for('public.a2z', letter=beta, page=1 ) }}">{{ beta }}</a></li>
             {% endfor %}
         </ul>
-        </div>
         {% else %}
         {{ render_pages_nav(bands, 'public.results', None, search) }}
         {% endif %}
         </nav>
+        </div>
     {% endif %}
 {% endif %}
 </footer>

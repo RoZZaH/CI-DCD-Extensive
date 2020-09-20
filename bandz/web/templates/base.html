@@ -45,7 +45,9 @@
         {% endif %}
     {% endwith %}
     {% block main__header %}{% endblock main__header %}
+    <div id="main__content">
     {% block main__content %}{% endblock main__content %}
+    </div>
     {% block main__footer %}{% endblock main__footer %}
     </main>
     {% if sidebar %}

@@ -4,9 +4,11 @@ from bandz.models.db import db # can't import from actx circular import
 from flask_login import UserMixin # methods required by login_manager
 from bson.objectid import ObjectId
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.objects(id=user_id).first() or None
+
 
 class Towns(db.Document):
     towns = db.ListField(db.StringField(max_length=50, required=True))

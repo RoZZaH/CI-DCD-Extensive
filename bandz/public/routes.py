@@ -74,7 +74,7 @@ def view_alpha_dlc(*args, **kwargs):
         print(alpha)
         print(bname)
         if bname:
-            return [{ 'text': 'A-Z', 'url': url_for('public.a2z')}, {'text': alpha.upper() }, {text: bname.title()}]
+            return [{ 'text': 'A-Z', 'url': url_for('public.a2z')}, {'text': alpha.upper() }, {'text': bname.title()}]
         else:
             return [{ 'text': 'A-Z', 'url': url_for('public.a2z')}, {'text': alpha.upper() }]
 
@@ -98,7 +98,7 @@ def closest_letters(alphaset, letter):
 # @register_breadcrumb(public, '.a2z', '', dynamic_list_constructor=view_alpha_dlc)
 def a2z(letter='a', bname=None):
     # find first band - A House
-    alphabet = 'abcdefghijklmnopqrstuvwxyz#' # hastag_etc
+    alphabet = 'abcdefghijklmnopqrstuvwxyz_' # hastag_etc
     page = request.args.get("page", 1, type=int)
     bands = Band.objects(catalogue_name__istartswith=letter).paginate(per_page=5, page=page, search=search)
     if bands.total > 0:
@@ -128,7 +128,6 @@ def by_genre():
     pipeline = [{ "$unwind": "$genres"}, {"$group": {"_id": "$genres", "no_of_bands_per_genre": { "$sum": 1}}} ]
     genres = list(Band.objects.aggregate(pipeline))
     return render_template("genres.html", genres=genres, fullpage=True)
-
 
 
 @public.route('/', methods=('GET', 'POST'))
@@ -192,7 +191,12 @@ def results():
         bands_total = bands.total
         return render_template("bands_list.html", bands=bands, search=search, count=count, bands_total=bands_total)
     else:
-        return "no query string received", 200
+        #if len(list(Band.objects())) == 0:
+        return redirect(url_for("user.initial_setup"))
+        # else:
+        #     return "no query string received", 200
+    
+
 
 
 
