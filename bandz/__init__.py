@@ -8,7 +8,7 @@ from flask_breadcrumbs import Breadcrumbs
 
 from flask_nav.elements import Navbar, Subgroup, View
 from bandz.utils.assets import bundles
-from bandz.utils.gns import nav, topbar, initialise_nav
+from bandz.utils.gns import nav, initialise_nav #topbar
 from bandz.models.db import initialise_db
 
 

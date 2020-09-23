@@ -1,0 +1,51 @@
+#footer { display: contents; }
+#lns--bottom { grid-area: lnsb; }
+
+#page-footer {
+    background-color: rgb(21, 32, 26);
+    color: $text-secondary;
+    grid-area: foot;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(1em,1fr) minmax(260px, 500px) minmax(1em,1.1fr);
+    grid-template-areas: 
+                ". social ."
+                ". mission-statement .";
+    @media (max-width: 599px){
+      font-size: 0.8rem;
+    }
+    @media (min-width: 600px){
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-areas: 
+                ". mission-statement mission-statement mission-statement mission-statement social social ."
+    }   
+            
+}
+
+.mission-statement {
+    grid-area: mission-statement;
+}
+
+.social-list {
+  @include flexrowlinks;
+    margin: 1em 0 0;
+    grid-area: social;
+    justify-content: space-around;
+    font-size: 2rem;
+    text-decoration: none;
+    @media (max-width: 599px){
+      font-size: 1.25rem;
+    }
+}
+
+.social-list a:link,
+.social-list a:visited {
+  color: $text-secondary;
+}
+
+
+.social-list a:hover,
+.social-list a:focus,
+ {
+  color: $text-muted;
+}

@@ -1,39 +1,8 @@
 {% extends "base.html" %}
-{% from "_render_pages_nav.html" import render_pages_nav %}
 <!-- MAIN HEADER -->
 {% block main__header %}
 <header class="header--main">
-
-
-{% if alphabet %}
-<div class="wrapper__alphabet wrapper__alphabet--top">
-<nav class="pages__pagelinks">
-{% include "include_breadcrumbs.html" %}
-    <ul class="pages__pagelinks__left--alphabet">
-        {% for beta in alphabet %}      
-        <li><a class="btn {{ 'btn--pagelink--current' if beta == letter }}" href="/a-z/{{beta}}?page=1">{{ '#' if beta == "_" else beta}}</a></li>
-       {% endfor %}
-    </ul>
-{% if closest_letters %}
-<h1 class="headline--alphabet">No Bands <small>starting with</small> {{ letter|upper }}!</h1>
-{% else %}
-
-<h1 class="headline--alphabet">Bands <small>starting with{{ ' a' if letter == "_" else ''}}</small> {{'Number or $ymbol' if letter == "_" else letter|upper }}
-  <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
-</h1>
-{# <h1 class="headline--alphabet">Bands <small>starting with</small> {{'#' if letter == "_" else letter|upper }}<br><span class="headline--strapline">in alphabetical order</span></h1> #}
-{{ render_pages_nav(bands, 'public.a2z', letter) }}
-{% endif %}
-</nav>
-</div>
-{% else %}
-{% include "include_breadcrumbs.html" %}
-<h1 class="headline headline--solo">Bands Listing</h1>
-<nav class="pages__pagelinks pages__pagelinks--below">
-{{ render_pages_nav(bands, 'public.results', None, search) }}
-</nav>
-{% endif %}
-
+<h3>Main Heading</h3>
 </header>
 {% endblock main__header %}
 <!-- CONTENT -->
@@ -94,24 +63,4 @@
 {% endblock main__content %}
 <!-- MAIN FOOTER -->
 {% block main__footer %}
-<footer class="footer--main pages">
-{% if not closest_letters %}
-    {% if bands.pages > 1 %}
-        <div class="wrapper__alphabet wrapper__alphabet--bottom">
-        <nav class="pages__pagelinks">
-        {% if alphabet %}
-        {{ render_pages_nav(bands, 'public.a2z', letter) }}
-        <ul class="pages__pagelinks__left--alphabet">
-            {% for beta in alphabet %}
-            <li><a class="btn {{ 'btn--pagelink--current' if beta == letter }}" href="{{ url_for('public.a2z', letter=beta, page=1 ) }}">{{ beta }}</a></li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        {{ render_pages_nav(bands, 'public.results', None, search) }}
-        {% endif %}
-        </nav>
-        </div>
-    {% endif %}
-{% endif %}
-</footer>
 {% endblock main__footer %}

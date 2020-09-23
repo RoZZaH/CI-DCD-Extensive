@@ -20,24 +20,39 @@ html, body {
 
 body {
     display: grid;
-    grid-template-rows: auto 0 1fr auto auto;
+    grid-template-rows: auto 0 auto 1fr auto auto;
     grid-template-columns: minmax(1em,1fr) minmax(260px, 500px) minmax(1em,1.1fr);
-    grid-template-areas: "head head head"
-                         "head head head"
-                         ". main ."
-                         ". sidebar ."
+    grid-template-areas: "gns gns gns"
+                         "gns gns gns"
+                         ". lns ."
+                         ". main ." //  ". sidebar ."
+                         ". lnsb ."
                          "foot foot foot";
-            @media (min-width: 600px){
-                grid-template-rows: auto 1fr auto;
-                grid-template-columns: repeat(8, 1fr);
-                grid-template-areas: 
-                                    "head head head head head head head head"
-                                    ". main main main main main main ."
-                                    "foot foot foot foot foot foot foot foot";
-            }
-    width: 100%;
-    min-height: 100vh;
     @media (min-width: 600px){
+      background-image:
+      linear-gradient(175deg, rgba(121, 121, 121, 0.6) 36%, rgba(0, 66, 48, .65) 100%),
+      url(../img/bg.jpg);
+      background-size: cover;
+      grid-template-rows: auto auto 1fr auto auto;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-areas: 
+                          "gns gns gns gns gns gns gns gns"
+                          ". lns lns lns lns lns lns ."
+                          ". main main main main main main ."
+                          ". lnsb lnsb lnsb lnsb lnsb lnsb ."
+                          "foot foot foot foot foot foot foot foot";      
+      }
+          
+}
+
+
+
+#main__wrapper {
+  grid-column: 1/-1;
+  width: 100%;
+  min-height: 100vh;
+  display: grid;
+  @media (min-width: 600px){
     background-image:
     linear-gradient(175deg, rgba(121, 121, 121, 0.6) 36%, rgba(0, 66, 48, .65) 100%),
     url(../img/bg.jpg);
@@ -45,267 +60,15 @@ body {
   }
 }
 
-header.header--branding {
-    background: linear-gradient(to bottom,
-    rgba(19,19,19,1) 33%, 
-    rgb(10, 45, 5) 87%);
-    grid-area: head;
-    display: grid;
-    grid: inherit;
-    // grid-template-columns: minmax(1em,1fr) minmax(260px, 500px) minmax(1em,1.1fr);
-    grid-template-columns: subgrid;
-    @media (min-width: 600px){
-        display: contents;
-    }
-}
-
-
-header.header--branding > nav {
-    display: grid;
-    grid-column: 2 / -2;
-    @media (min-width: 600px){
-        display: contents;
-    }
-}
-
-
-header.header--branding > nav > .logo {
-    display: flex;
-    justify-content: space-between;
-    @media (min-width: 600px){
-        display: none;
-    }   
-}
-
-
-.nav-wrapper {
-    position: relative;
-    height: 0;
-    @media (min-width: 600px){ 
-        display: contents;
-        height: auto;
-    }
-}
-
-
-
-.mobile-nav {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 9999;
-  height: auto;
-  text-align: right;
-  width: auto;
-  background: linear-gradient(to bottom,
-  rgb(7, 58, 1) 40%,
-  rgb(18, 83, 10) 100%);
-  padding: 0;
-  list-style: none;
-  margin: 0;
-  padding-bottom: 10px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-
-
-@media (min-width: 600px){ 
-      .mobile-nav {
-        position: relative;
-        background: linear-gradient(to bottom,
-         rgba(19,19,19,1) 0%, 
-         rgba(19,19,19,1) 33%, 
-         rgb(10, 45, 5) 87%, 
-         rgb(4, 29, 1) 100%);
-        grid-column: 1/-1;
-        display: grid;
-        width: 100%;
-        padding: 0;
-        border: 0;
-        border-radius: 0;
-        grid-template-columns: repeat(8, 1fr);
-        grid-template-areas:
-        ". . . . manage settings logout ."
-        ". logo logo . bands  .  .   ."
-        ". logo logo . . . .     ."
-        ". bandz bandz . . search search ."
-        ". az az genre genre loc loc  ."
-      }
-
-      li.subNav,
-      li.subNav ul{
-        display: contents;
-        text-align: center;
-      }
-    
-
-    li.home {
-        grid-area: logo;
-    }
-
-    li.home a {
-      color: transparent !important;
-      background: url("../img/bandz.svg") no-repeat top center;
-      background-size: contain;
-      display: block;
-      width: auto;
-      height: 80px;
-    }
-
-    li.home.active  {
-      background-color: none !important;
-    }
-    
-    li#bands.subNav > a {
-      display: none;
-    }
-  
-    li#bands.subNav li {
-      padding: 3px;
-      margin-left: 0;
-      line-height: 2em;
-      background: rgb(0, 66, 48);
-      border-bottom: 3px solid transparent;
-    }
-  
-    li#bands.subNav li.active,
-    li#bands.subNav li:hover,
-    li#bands.subNav li:focus {
-      // border-width: 0; 
-      border-bottom: 3px solid;
-      border-image-source: linear-gradient(
-        to right,
-        rgba(255,255,255,0) 25%,
-        $accent 25%,
-        $accent 75%,
-        rgba(255,255,255,0) 75%,
-      );
-      border-image-slice: 10%;
-    }
-    li#bands.subNav li.active a:link,
-    li#bands.subNav li.active a:visited {
-      color: $accent;
-    }
-    
-
-    li#bands.subNav::before {
-      content: "";
-      grid-row: 5;
-      grid-column: 1 ;
-      @include navbar-gradient;
-    }
-  
-    li#bands.subNav li:nth-child(1) {
-      grid-area: az
-    }
-  
-    li#bands.subNav li:nth-child(2) {
-      grid-area: genre
-    }
-  
-    li#bands.subNav li:nth-child(3) {
-      grid-area: loc;
-    }
-  
-    li#bands.subNav::after {
-      content: "";
-      grid-row: 5;
-      grid-column: -2 ;
-      @include navbar-gradient;
-    }
-  
-    li#manage.subNav > a {
-      grid-area: manage
-    }
-  
-    li#manage.subNav li:nth-child(1) {
-      grid-area: bands
-    }
-  
-    
-    li.logout,
-    li.sign-in {
-      grid-area: logout;
-    }
-    
-    li.settings,
-    li.register {
-      grid-area: settings;
-    }
-    
-    li.search {
-      grid-area: search;
-    }
-    
-    li.search a {
-      line-height: 2em;
-      color: white !important;
-      display: inline-block;
-      background: url("../img/search-solid.svg");
-      filter: brightness(0.6);
-      background-repeat: no-repeat;
-      background-position: center right;
-      background-size: 2em 2em;
-      padding-right: 2.25em !important;
-    }
-
-    li.search a:hover,
-    li.search a:focus {
-      filter: brightness(1)
-    }
-    
-    li#manage,
-    li.logout,
-    li.sign-in,
-    li.settings,
-    li.register {
-      font-size: 0.8rem;
-    }
-    
-    li.bands a:hover, 
-    li.bands a:focus,
-    li.logout a:hover,
-    li.logout a:focus,
-    li.sign-in a:hover,
-    li.sign-in a:focus,
-    li.settings a:hover,
-    li.settings a:focus,
-    li.register a:hover,
-    li.register a:focus{
-      // padding: 4px;
-      color: white;
-      border-width: 0;
-      border-bottom: 3px solid;
-      border-image-slice: 1;
-      border-image-source: 
-      linear-gradient(to left, $accent, $accent);
-    }
-
-    li.bands.active,
-    li.logout.active,
-    li.sign-in.active,
-    li.settings.active,
-    li.register.active,
-    li.search.active {
-      // padding: 4px;
-      border-width: 0;
-      border-bottom: 3px solid;
-      border-image-slice: 1;
-      border-image-source: 
-      linear-gradient(to left, $accent, $accent);
-    }
-  
-  
-  }
-
-
-
 
 main {
     // grid-area: main / main / main / sidebar;
-    display: grid;
-    
+    /* shorthand for 
+      grid-row-start: main;
+      grid-row-end: main;
+      grid-column-start: main;
+      grid-column-end: sidebar;
+      */
     // grid-gap: 1em;
     grid-area: main;
     // @media (min-width: 600px){
@@ -316,8 +79,9 @@ main {
     //           "main-footer main-footer main-footer main-footer";
     //   //grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     // }
-    border: 2px solid red;
+    border: 2px solid yellow;
 }
+
 .header--main,
 // .content-block,
 #main__content,
@@ -335,8 +99,6 @@ main {
   grid-gap: 1.5em 1em;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
-
-
 
 
 .header--main {
@@ -375,6 +137,10 @@ main {
 }
 
 
+.lns--bottom {
+  grid-area: lnsb;
+}
+
 // main.has-sidebar {
 //   grid-area: main;
 //   grid-template-rows: auto 1fr;
@@ -386,59 +152,6 @@ main {
 //   grid-area: sidebar;
 //   background-color: rgba(255, 254, 241, 0.8);
 // }
-
-.footer {
-    grid-column: 1 / -1;
-    display: grid;
-    background-color: rgb(21, 32, 26);
-    color: $text-secondary;
-    grid-template-columns: minmax(1em,1fr) minmax(260px, 500px) minmax(1em,1.1fr);
-    grid-template-areas: 
-                ". social ."
-                ". footer-main .";
-    @media (max-width: 599px){
-      font-size: 0.8rem;
-    }
-    @media (min-width: 600px){
-        grid-template-columns: repeat(8, 1fr);
-        grid-template-areas: 
-                ". footer-main footer-main footer-main footer-main social social ."
-    }   
-            
-}
-
-.footer-main {
-    grid-area: footer-main;
-}
-
-.social-list {
-  @include flexrowlinks;
-    margin: 1em 0 0;
-    grid-area: social;
-    justify-content: space-around;
-    font-size: 2rem;
-    text-decoration: none;
-    @media (max-width: 599px){
-      font-size: 1.25rem;
-    }
-}
-
-.social-list a:link,
-.social-list a:visited {
-  color: $text-secondary;
-}
-
-
-.social-list a:hover,
-.social-list a:focus,
- {
-  color: $text-muted;
-}
-
-/* ============
-      FOOTER 
-   ============ */
-
 
 
 #del-modal {

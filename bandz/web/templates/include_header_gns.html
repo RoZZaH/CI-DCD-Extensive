@@ -1,0 +1,14 @@
+<nav id="main-menu">
+    <div id="mob-logo">
+    <a id="mob-logo--home" href="{{ url_for('public.results') }}">Bandz</a>
+    <label for="mtoggle">&#9776;</label>
+    </div>
+    <input type="checkbox" id="mtoggle">
+    <div id="gns-wrapper">
+    {%- if current_user.is_authenticated -%}
+        {{ nav.mob_in.render(renderer='just_li') }}
+    {% else %}
+        {{ nav.mob_out.render(renderer='just_li') }}
+    {% endif %}
+    </div>
+</nav>

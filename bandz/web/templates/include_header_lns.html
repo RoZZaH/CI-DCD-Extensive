@@ -1,0 +1,36 @@
+<div id="lns--top">
+{% if alphabet %}
+    {# <div class="wrapper__alphabet wrapper__alphabet--top"> #}
+        {% include "include_breadcrumbs.html" %}
+        <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
+            <ul>
+                {% for beta in alphabet %}      
+                <li><a class="btn {{ 'btn--pagelink--current' if beta == letter }}" href="/a-z/{{beta}}?page=1">{{ '#' if beta == "_" else beta}}</a></li>
+            {% endfor %}
+            </ul>
+        </nav>
+        {% if closest_letters %}
+            <h1 class="headline--alphabet">No Bands <small>starting with</small> {{ letter|upper }}!</h1>
+        {% else %}
+        <section aria-label="paged results links">
+        <!-- section -->
+            <h1 class="headline--alphabet">Bands <small>starting with{{ ' a' if letter == "_" else ''}}</small> {{'Number or $ymbol' if letter == "_" else letter|upper }}
+            <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
+            </h1>
+            <nav class="pagelinks">
+            {{ render_pages_nav(bands, 'public.a2z', letter) }}
+            </nav>
+        {% endif %}
+        </section>
+    {# </div> #}
+{% else %}
+    {% include "include_breadcrumbs.html" %}
+    <nav class="pagelinks">
+    {# <h1 class="headline headline--solo">Bands Listing</h1> #}
+    {% if bands %}
+    {{ render_pages_nav(bands, 'public.results', None, search) }}
+    {% endif %}
+    </nav>
+{% endif %}
+</div>
+{# if route = http://localhost:5000/manage/bands style #}
