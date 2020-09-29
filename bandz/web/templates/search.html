@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block main__content %}
 <form method="GET" action="{{ url_for('public.results')}}" >
 {# render_field #}
     <div id="search">
@@ -42,7 +42,7 @@
 <button type="submit">Search</button>
 </form>
 
-{% endblock content %}
+{% endblock main__content %}
 
 {% block javascript %}
 <script src="{{ url_for('static_js', filename='search.js') }}"></script>

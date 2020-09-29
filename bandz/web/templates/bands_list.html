@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 <!-- MAIN HEADER -->
 {% block main__header %}
-<header class="header--main">
-<h3>Main Heading</h3>
-</header>
 {% endblock main__header %}
 <!-- CONTENT -->
 {% block main__content %}
@@ -48,17 +45,6 @@
 </div>
 {% endfor %}
 {% endif %}
-</div>
-{# {% for dict_item in request.args %} #}
-<div class="search-params">
-<hr>
-<h3>{{ count }}</h3>
-   {% for key, value in request.args.items() %}
-      <h1>Key: {{key}}</h1>
-      <h2>Value: {{value}}</h2>
-   {% endfor %}
-
-{{ search }}
 </div>
 {% endblock main__content %}
 <!-- MAIN FOOTER -->

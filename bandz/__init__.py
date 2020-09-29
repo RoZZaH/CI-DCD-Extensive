@@ -3,16 +3,12 @@ from flask import Flask, send_from_directory
 from flask_assets import Environment, Bundle
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from flask_breadcrumbs import Breadcrumbs
-#from flask_breadcrumbs import current_breadcrumbs
-
+from flask_breadcrumbs import Breadcrumbs  #from flask_breadcrumbs import current_breadcrumbs
 from flask_nav.elements import Navbar, Subgroup, View
 from bandz.utils.assets import bundles
-from bandz.utils.gns import nav, initialise_nav #topbar
+from bandz.utils.mongoengine_jsonencoder import MongoEngineJSONEncoder # Overcome Objectionable ObjectIds
+from bandz.utils.gns import nav, initialise_nav
 from bandz.models.db import initialise_db
-
-
-# from bandz.public.routes import topbar
 
 
 app = Flask(__name__,
@@ -21,7 +17,7 @@ app = Flask(__name__,
             template_folder='web/templates')
 
 
-
+app.json_encoder = MongoEngineJSONEncoder
 
 # ENVs
 app.config["SECRET_KEY"] = "73a2e9f7248e6fc95140bbea471c49d6"
@@ -90,9 +86,9 @@ from bandz.api.routes import api
 from bandz.public.routes import public
 from bandz.users.routes import user
 from bandz.manage.routes import manage
+Breadcrumbs(app=app)
 app.register_blueprint(api)
 app.register_blueprint(public)
 app.register_blueprint(manage)
 app.register_blueprint(user)
-Breadcrumbs(app=app)
 # nav.register_element('secondary', sns)

@@ -1,22 +1,9 @@
-<nav aria-label="Breadcrumbs" class="breadcrumbs {{ 'breadcrumbs--alphabet' if letter and not band }}">
+{% if display_breadcrumbs %}
+<nav aria-label="Breadcrumbs" class="breadcrumbs">
 <ol>
-{% if letter %}
-<li><a href="{{ url_for('public.results') }}">Bands</a></li>
-<li><a href="{{ referrer }}">A-Z</a></li>
-    {% if not band %}
-        <li><b>{{ letter|upper }}</b></li>
-    {% else %}
-        <li><a href="{{ referrer }}">{{ beta or 'a'|upper }}</a></li>
-        <li><b>{{ band.band_name }}</b></li>
-    {% endif %}
-{% else %}
-    {% for breadcrumb in breadcrumbs %}
-        {% if not loop.last %}
-            <li><a href="{{ referrer }}">{{ breadcrumb.text }}</a></li>
-        {% else %}
-            <li>{{ breadcrumb.text }}</li><!-- aria-current -->
-        {% endif %}
-    {% endfor %}
-{% endif %}
+{% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.url }}">{{ '<span aria-label="symbol">$ymbol</span>'|safe if breadcrumb.text == "1" else breadcrumb.text }}</a></li>
+{% endfor %}
 </ol>
 </nav>
+{% endif %}

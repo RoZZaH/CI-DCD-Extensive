@@ -20,7 +20,7 @@
             {% if letter %}
             <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="{{ url_for(endpoint, letter=letter, page=page_num)   }}">{{ page_num }}</a></li> 
             {% elif search %}
-            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="/?{{ search+page_num|string }}">{{ page_num }}</a></li> 
+            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="/?{{ search~page_num }}">{{ page_num }}</a></li> 
             {% else %}
             <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="{{ url_for(endpoint, page=page_num)   }}">{{ page_num }}</a></li> 
             {% endif %}
@@ -34,7 +34,7 @@
     {% if letter %}
     <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, letter=letter, page=pagination.next_num) }} ">next&raquo;</a></li>
     {% elif search %}
-    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="/?{{ search+pagination.next_num|string }}">next&raquo;</a></li>
+    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="/?{{ search~pagination.next_num }}">next&raquo;</a></li>
     {% else %}
     <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, page = pagination.next_num) }} ">next&raquo;</a></li>
     {% endif %}

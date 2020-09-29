@@ -21,7 +21,7 @@ default_breadcrumb_root(manage, '.public')
 
 @manage.route("/")
 @manage.route("/bands")
-@register_breadcrumb(manage, '.', 'Manage My Bands')
+# @register_breadcrumb(manage, '.', 'Manage My Bands')
 def manage_bands_home(bname=None):
     user = User.objects(id=current_user.id).first()
     page = request.args.get("page", 1, type=int)

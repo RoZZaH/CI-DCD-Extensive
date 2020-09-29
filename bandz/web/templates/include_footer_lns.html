@@ -1,24 +1,25 @@
-    {% if not closest_letters %}
-        {% if bands and bands.pages > 1 %}
-            {# <div class="wrapper__alphabet wrapper__alphabet--bottom"> #}
-            {% if alphabet %}
+{% from "_render_pages_nav.html" import render_pages_nav %}
+{% if not closest_letters %}
+    {% if bands and bands.pages > 1 %}
+        <div id="lns--bottom">
+        {% if alphabet %}
+        <nav class="pagelinks">
+        {{ render_pages_nav(bands, 'public.a2z', letter) }}
+        </nav>
+        <nav class="pagelinks pagelinks--letters">
+            <ul>
+                {% for beta in alphabet %}
+                <li><a class="btn {{ 'btn--pagelink--current' if beta == letter }}" href="{{ url_for('public.a2z', letter=beta, page=1 ) }}">{{ '#' if beta == "1" else beta}}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+        {% else %}
+            {% if bands %}
             <nav class="pagelinks">
-            {{ render_pages_nav(bands, 'public.a2z', letter) }}
+            {{ render_pages_nav(bands, 'public.results', None, search) }}
             </nav>
-            <nav class="pagelinks pagelinks--letters">
-                <ul>
-                    {% for beta in alphabet %}
-                    <li><a class="btn {{ 'btn--pagelink--current' if beta == letter }}" href="{{ url_for('public.a2z', letter=beta, page=1 ) }}">{{ '#' if beta == "_" else beta}}</a></li>
-                    {% endfor %}
-                </ul>
-            </nav>
-            {% else %}
-                {% if bands %}
-                <nav class="pagelinks">
-                {{ render_pages_nav(bands, 'public.results', None, search) }}
-                </nav>
-                {% endif %}
             {% endif %}
-            {# </div> #}
         {% endif %}
+        </div>
     {% endif %}
+{% endif %}

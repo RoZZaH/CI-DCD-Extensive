@@ -62,7 +62,10 @@ height: 2em !important;
 
 
       <input type="tel" id="phone">
-
+    {% for k,v in bands.items() %}
+      {{ k }}
+      {{ v }}
+    {% endfor %}
     </div>
             <div class="sidebar">
             <p>sidebar</p>

@@ -80,7 +80,7 @@ class Band(db.DynamicDocument):
 
 
     def __repr__(self):
-        return f"Band('{self.bandname}', '{self.date_posted}')"
+        return f"Band('{self.band_name}', '{self.date_created}')"
 
 
 

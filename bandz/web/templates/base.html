@@ -1,4 +1,3 @@
-{% from "_render_pages_nav.html" import render_pages_nav %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,27 +31,17 @@
 {% endwith %}
 <!-- /HEADER -->
 </header>
-{# <div id="main__wrapper"> #}
 <main class="{{ 'full-page' if fullpage }} {{ 'has-sidebar' if sidebar }} {{ 'auth' if current_user.is_authenticated  }}">
 {% block main__header %}{% endblock main__header %}
 {% block main__content %}{% endblock main__content %}
+{% block sidebar %}{% endblock sidebar %}
 {% block main__footer %}{% endblock main__footer %}
 <!-- / MAIN -->
 </main>
-{# </div> #}
-{# {% if sidebar %}
-<aside class="sidebar">
-{% block sidebar %}{% endblock sidebar %}
-</aside>
-{% endif %} #}
 <footer id="footer">
-    <!-- includes LNS -->
-    <div id="lns--bottom">
+    <!-- LNS BOTTOM -->
     {% include 'include_footer_lns.html' %}
-    </div>
-    <div id="page-footer">
     {% include 'include_footer_end.html' %}
-    </div>
     <!-- /FOOTER -->
 </footer>
 <!-- JS -->

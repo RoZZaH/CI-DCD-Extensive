@@ -2,6 +2,7 @@ import csv, os, secrets, re, json
 from datetime import datetime
 from PIL import Image # Pillow
 #from resizeimage import resizeimage
+from flask_breadcrumbs import Breadcrumbs, default_breadcrumb_root, register_breadcrumb
 from flask import (Blueprint, flash, current_app, jsonify,
     redirect, render_template, request, Response,
     url_for)
@@ -12,9 +13,9 @@ from bandz.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm)
 from flask_login import current_user, login_required, login_user, logout_user
 
 user = Blueprint('user', __name__) # import_name , usually the current module
+# default_breadcrumb_root(user, '.public')
 
-
-
+@user.route('/setup_towns')
 def setup_towns():
     resource_path = os.path.join(app.root_path, 'setup')
     with open(os.path.join(resource_path, 'towns.json')) as f:
@@ -25,6 +26,7 @@ def setup_towns():
     Towns.objects.insert(townz)
     return True
 
+#ugly error
 
 def setup_bands():
     pass
@@ -53,44 +55,7 @@ def initial_setup():
         bands = Band.objects.insert(bandz)
         return jsonify(bands)
 
-        
-        # assets = Assets(
-        #         featured_image = "default_band.jpg",
-        #         featured_video = {"service": "youtube", "vid": "cDo6Lgylsjg"}
-        #         )
-        # contact = Contact(
-        #         contact_name = "Keith Cullen",
-        #         contact_title = "M.D. Setanta Records"
-        #         )
-        # contact.contact_numbers = Phone(
-        #         mobile = bool(0),
-        #         number = "+35316078894"
-        #         )
-        # contact.contact_emails = Email(
-        #         email_title = "Bookings",
-        #         email_address = "kcullen@setantarecords.com"
-        #         )
-        # members = [
-        #         { "musician": "Dave Couse", "instruments": "vocals" },
-        #         { "musician": "Fergal Bunbury", "instruments": "guitar"},
-        #         { "musician": "Martin Healy", "instruments": "bass" },
-        #         { "musician": "Dermot Wylie", "instruments": "drums"}
-        #         ]
-        # band = Band(
-        #             band_name = "A House",
-        #             catalogue_name =  "A-House",
-        #             genres = ["indie", "rock"],
-        #             hometown = {"town": "Dublin City", "county": "Dublin"},
-        #             description = "Intelligent Indie Rock from Dublin",
-        #             strapline = "critical acclaim without commerical concern",
-        #             profile = "The first single from I Am The Greatest helped both sales and appeal. 'Endless Art', a shopping list litany of deceased cultural icons, is one of the best Irish rock singles of all time. A simple idea executed with style and intelligence, Dave Couse is aware that the song could become a creative albatross around the band's collective neck. \"It depends on whether we allow it to be. I don't think A House are like that. Our feeling is that 'Endless Art' is one good song, so why not have a few more?\"There are a hundred deadbeat Irish rock wannabees for every A-House, who have just released their fifth and best album No More Apologies. Alan Corr met guitarist Fergal Bunbury and vocalist Dave Couse to talk begrudgery, failure and good songwriting. Every time A House release a record (which is refreshingly often) three things happen. First, the Irish rock media is divided down the middle between those who dismiss them as whinging failures and those who proclaim them a national institution who've made consistently great music. Second, at least 30,000 people go out and buy the new album. Third, and most important, the band themselves get on with recording the next one.",
-        #             band_members = [BandMember(**member) for member in members],
-        #             media_assets = assets,
-        #             contact_details = contact,
-        #             created_by = uid,
-        #             solo = bool(0)
-        #         )
-        # band.save()
+   
         return redirect(url_for("user.login"))
     if len(list(Band.objects())) == 0:
         return render_template("setup.html", form=form, sidebar=0)
@@ -102,6 +67,7 @@ def initial_setup():
 
 
 @user.route("/register", methods=("GET", "POST"))
+#@register_breadcrumb(user, '.register', 'Register')
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("public.results"))
@@ -119,6 +85,7 @@ def register():
 
 
 @user.route("/login", methods=("GET","POST"))
+@register_breadcrumb(user, '.login', 'Login')
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("public.results"))
