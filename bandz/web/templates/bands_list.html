@@ -16,7 +16,7 @@
 
 
 {% for band in (bands.items if bands.items else bands) %} {# mongoengine queryset objects or pymong cursor (aggregations) #}
-<div class="card {{ 'centerize-card' if bands_total == 1}}">
+<div class="card {{ 'centerize-card' if bands_total|int <= 1|int }}">
     <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image if band.media_assets else 'band_profile_pics/defaultband.jpg' ) }})">
     <a href="{{ url_for('public.band_detail', bname=band.band_name, letter=letter if letter)}}"></a>
     </div>
@@ -27,18 +27,18 @@
         <p>{{ band.profile|truncate(80, False) }}</p>
         <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
         <ul class="genre-tags">
-            {% for genre in band.genres[0:4] %}
+            {%- for genre in band.genres[0:4] %}
             <li>{{ genre }}</li>
-            {% endfor %}
+            {%- endfor %}
         </ul>
         <div class="card-footer">
             <ul>
                 <li><a href="{{ url_for('public.band_detail', bname=band.band_name, letter=letter if letter )}}" class="btn btn-subform add">More Info</a></li>
-            {% if current_user.is_authenticated %} {# and OWNS bands = session ? #}
+            {%- if current_user.is_authenticated -%} {# and OWNS bands = session ? #}
                 <li class="edit"><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add">Edit</a></li>
-            {% else %}
+            {%- else -%}
 
-            {% endif %}
+            {%- endif %}
             </ul>
         </div>
     </div>

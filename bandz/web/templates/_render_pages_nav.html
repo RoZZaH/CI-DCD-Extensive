@@ -1,47 +1,25 @@
 {# Macro for creating navigation links #}
-{% macro render_pages_nav(pagination, endpoint, letter, search) %}
+{% macro render_pages_nav(pagination_object, endpoint, kwargs) %}
 <ul>
-{% if pagination.has_prev %}
-    {% if letter %}
-    <li class="btn btn--pagelink prev-page"><a href="{{ url_for(endpoint, letter = letter, page = pagination.prev_num) }} ">&laquo;prev</a></li>
-    {% elif search %}
-    <li class="btn btn--pagelink prev-page"><a href="/?{{ search+pagination.prev_num|string }}">&laquo;prev</a></li>
-    {% else %}
-    <li class="btn btn--pagelink prev-page"><a href="{{ url_for(endpoint, page = pagination.prev_num) }} ">&laquo;prev</a></li>
-    {% endif %}
-{% else %}
-<li class="prev-page"></li>
-{% endif %}
-
-{% if pagination.pages > 1 %}
-    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-
-        {% if page_num %}
-            {% if letter %}
-            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="{{ url_for(endpoint, letter=letter, page=page_num)   }}">{{ page_num }}</a></li> 
-            {% elif search %}
-            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="/?{{ search~page_num }}">{{ page_num }}</a></li> 
-            {% else %}
-            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination.page == page_num }}" href="{{ url_for(endpoint, page=page_num)   }}">{{ page_num }}</a></li> 
-            {% endif %}
-        {% else %}
+{%- if pagination_object.has_prev -%}
+    <li class="btn btn--pagelink prev-page"><a href="{{ url_for(endpoint, letter=kwargs['letter'], genre=kwargs['genre'], page=pagination_object.prev_num) }}">&laquo;prev</a></li>
+{%- else -%} 
+<li class="prev-page ghost">&laquo;prev</li>
+{%- endif -%} 
+{%- if pagination_object.pages > 1 -%}
+    {% for page_num in pagination_object.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {%- if page_num -%}
+            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination_object.page == page_num }}" href="{{ url_for(endpoint, letter=kwargs['letter'], genre=kwargs['genre'], page=page_num|int ) }}">{{ page_num }}</a></li>
+        {%- else -%}
             ...
-        {% endif %}
-    {% endfor %}
-{% endif %}
-
-{% if pagination.has_next %}
-    {% if letter %}
-    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, letter=letter, page=pagination.next_num) }} ">next&raquo;</a></li>
-    {% elif search %}
-    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="/?{{ search~pagination.next_num }}">next&raquo;</a></li>
-    {% else %}
-    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination.has_prev }}"><a href="{{ url_for(endpoint, page = pagination.next_num) }} ">next&raquo;</a></li>
-    {% endif %}
-{% else %}
-<li class="next-page"></li>
-{% endif %}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endif -%}
+{%- if pagination_object.has_next -%}
+    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination_object.has_prev }}"><a  href="{{ url_for(endpoint, letter=kwargs['letter'], genre=kwargs['genre'], page=pagination_object.next_num|int) }}">next&raquo;</a></li>
+{%- else -%}
+<li class="next-page ghost">next&raquo;</li>
+{%- endif -%} 
 </ul>
-
 {% endmacro %}
 

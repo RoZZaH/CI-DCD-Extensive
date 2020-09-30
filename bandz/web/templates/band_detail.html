@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "base_no_lnsb.html" %}
 {% block main__content %}
+<artile class="band-detail">
+
 <header class="header--main">
-{% include "include_breadcrumbs.html" %}
-</header>
-<div class="content-block">
-    <div class="header--mgt">
+ <div class="header--mgt">
         <div class="headlines">
             <h6 class="headline--eyebrow">{{ band.description }}</h6><!-- newpaper terms leadin -->
             <h1 class="headline">{{ band.band_name }}</h1>
@@ -17,6 +16,9 @@
     {% endif %}
     <!-- /header--mgt -->
     </div>
+</header>
+<div class="content-block">
+   
 
 {% if band %}
     {% if band.media_assets.featured_video.service %} <!-- not null/empty -->
@@ -33,11 +35,10 @@
 <h2 class="headline--profile">Profile</h2>
 <p>{{ band.profile }}</p>
 </div>
-{% endblock main__content %}
 
 <!-- band details -->
 {% block sidebar %}
-<dl>
+<dl class="details">
     <dt class="colon-after">Hometown</dt>
         <dd>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</dd>
     <dt class="colon-after" id="tags">Genres</dt>
@@ -61,7 +62,7 @@
         <dd>{{ member.musician }} &mdash; {{ member.instruments }}</dd>
         {% endfor %}
 </dl>
-<dl>
+<dl class="enquiries">
     <dt>{{ band.contact_details.contact_generic_title }}</dt>
         {% if band.contact_details.contact_name %}
         <dd>{{ band.contact_details.contact_name }}, {{ band.contact_details.contact_title }}</dd>
@@ -74,8 +75,8 @@
         {% endif %}
 </dl>
 {% endblock sidebar %}
-
-
+</article>
+{% endblock main__content %}
 
 
 

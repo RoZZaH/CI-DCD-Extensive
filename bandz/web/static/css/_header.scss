@@ -134,6 +134,11 @@
     #mtoggle:checked + #gns-wrapper #gns {
       display: block;
     }
+
+
+
+
+
   
 }
 
@@ -351,6 +356,7 @@
   }
 
 
+
 #lns--top { 
   grid-area: lns; 
   background-color: $lns-bg; 
@@ -358,7 +364,30 @@
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   margin-bottom: .75em;
-
+  @media only screen and (max-width: 599px){
+    grid-area: lns;
+    display: grid;
+    // justify-content: space-between;
+    // align-items: baseline;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    margin: 0;
+    padding: 2px;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    grid-template-areas: 
+              "breadcrumbs pagenums"
+              "alphabet alphabet"
+  }
+  @media (max-width: 374px){
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+              "breadcrumbs"
+              "alphabet"
+              "pagenums"
+  }
 }
 
 #lns--bottom {
@@ -377,12 +406,20 @@
   justify-self: flex-start;
   margin-bottom: .25em;
   padding: .25em;
-  // border-bottom: 1px solid rgb(214, 214, 214);
+  @media only screen and (max-width: 599px){
+    width: auto;
+    margin-bottom: 0;
+    padding: .2em;
+  }
 }
 
 .breadcrumbs ol:before {
   content: 'You are here: ';
   white-space: pre;
+    @media only screen and (max-width: 599px){
+      content: '';
+      white-space: pre;
+    }
 }
 
 .breadcrumbs ol {
@@ -390,6 +427,10 @@
   margin: 0;
   padding-left: 1em;
   display: flex;
+  @media only screen and (max-width: 599px){
+    font-size: 0.7rem;
+    padding: 0;
+  }
 }
 
 .breadcrumbs li {
@@ -401,6 +442,10 @@
 .breadcrumbs li:after {
   content: ' > ';
   white-space: pre;
+  @media only screen and (max-width: 359px){
+    content: '> ';
+    white-space: pre;
+  }
 }
 
 .breadcrumbs li:last-of-type:after {
@@ -414,6 +459,13 @@
 }
 
 /* Search Results */
+/* NB: + ADJ Sibling vs > Child 
+ *  Ref: https://www.htmldog.com/references/css/selectors/
+ * */
+.breadcrumbs + .paged-results{
+  border-top: 1px solid rgb(236, 236, 236);
+}
+
 .paged-results {
   margin: 0 1em;
   padding: .5em 0;
@@ -425,52 +477,68 @@
 .paged-results h4 {
   font-weight: normal;
 }
-.paged-results h4+p {
-  margin: 0;
+.paged-results > h4+p { 
+  margin-top: 0;
+}
+.paged-results > p {
+  margin-top: 0;
 }
 
 /* Paging Links */
-.breadcrumbs + .paged-results,
-.breadcrumbs + .pagelinks {
-  border-top: 1px solid rgb(236, 236, 236);
+
+.pagelinks--letters ul {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style: none;
+  justify-content: center;
+  margin: 0 auto;
+  padding: .5em 0 .25em;
+  @media only screen and (max-width: 374px){
+    align-self: center;
+  }
 }
 
-.pagelinks {
-  margin: 0 .5em;
-  padding: .5em 0 .25em;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  grid-column: 1 / -1;
+.pagelinks--letters-home {
+  justify-content: space-between;
+}
+
+.pagelinks li {
+  list-style: none;
 }
 
 .pagelinks--below {
   margin-top: .75em;
 }
 
+.pagelinks--pagenums {
+  margin: 0 1em;
+}
 
-.pagelinks > ul {
+.pagelinks--pagenums > ul {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   list-style: none;
   justify-content: center;
   margin: 0 0 .25em 0;
   padding: 0;
+  // flex-basis: 100%;
 }
 
-.pagelinks >  li {
+// .pagelinks--pagenums .prev-page {
+//   justify-self: flex-start;
+// }
+
+.pagelinks--pagenums li{
   list-style: none;
-  margin: 0;
 }
 
-.pagelinks:not(.pagelinks--letters) li:first-child{
-  margin-left: 0;
-  margin-right: auto;
-  justify-self: flex-start;
+
+.pagelinks--pagenums li:nth-child(2){
+  margin-left: auto;
 }
 
-.pagelinks li.next-page {
+.pagelinks--pagenums li.next-page {
   margin-left: auto;
   justify-self: flex-end;
 }
@@ -537,11 +605,11 @@
 
 .pagelinks--letters li {
   background: linear-gradient(to bottom,
-   rgb(180,180,180) 0%, rgb(179, 179, 179) 50%,
+   rgb(180,180,180) 0%, rgb(180, 180, 180) 50%,
    $lns-bg 50%, $lns-bg 100%);
 }
 
-.pagelinks--letters li.btn--pagelink--current {
+.pagelinks--letters li.btn--pagelink--current a{
   font-weight: bold;
   border: 1px solid $text-main;
   background: linear-gradient(to bottom,
@@ -549,7 +617,7 @@
   rgb(247, 242, 200) 50%, rgb(247, 242, 200) 100%);
 }
 
-.pagelinks--letters a{
+.pagelinks--letters li a{
   color: $text-main;
   display: grid;
   text-align: center;
@@ -560,19 +628,86 @@
   border: 2px solid transparent;
 }
 
+
 .pagelinks--letters li.btn--pagelink--current a{
   color: $text-main;
 }
 
-.pagelinks--letters a span {
+.pagelinks--letters li a span {
   display: inline-block;
   padding: .25em .5em;
-  
 }
 
 .pagelinks--letters a span.ltr {
 }
 .pagelinks--letters a span.nbr {
   font-size: 0.8rem;
+}
+
+.pagelinks--letters-home {
+  justify-content: space-evenly;
+}
+
+.pagelinks--letters-home li a{
+  color: $text-main;
+  background: $lns-bg;
+  text-decoration: none;
+  display: inline-block;
+  padding: .2em .325em;
+  border: 2px solid transparent;
+}
+
+.pagelinks--letters-home li a:hover,
+.pagelinks--letters-home li a:focus {
+  background: rgb(247, 242, 200);
+  border: 2px solid rgb(231, 200, 20);
+}
+
+
+.pagelinks--letters-home li a span.nbr {
+  display:none;
+}
+
+#lns--bottom .pagelinks--letters-home {
+  margin-bottom: 1.5em;
+}
+
+@media only screen and (max-width: 599px){
+  .headline--alphabet, .prev-page, .next-page,
+  .pagelinks--letters a span.nbr {
+    display:none;
+  }
+  .paged-results-info {
+    display: contents;
+  }
+  .pagelinks--pagenums{
+    font-size: 0.8rem;
+    grid-area: pagenums;
+  }
+  .pagelinks--letters {
+    grid-area: alphabet;
+    font-size: 0.7rem;
+  }
+  .pagelinks--letters li {
+    background: $lns-bg;
+  }
+  .pagelinks--letters li a {
+    grid-template-rows: 1fr;
+  }
+  .pagelinks--letters li.btn--pagelink--current a{
+    background: rgb(236, 230, 160);
+    border: 1px solid $text-main;
+  }
+
+  .pagelinks--letters li a:hover,
+  .pagelinks--letters li a:focus {
+    background: rgb(247, 242, 200);
+    border: 2px solid rgb(231, 200, 20);
+  }
+
+
+
+
+
 
 }

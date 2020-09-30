@@ -19,7 +19,6 @@
 <body>
 <header id="navigation">
 {% include "include_header_gns.html" %}
-{% include "include_header_lns.html" %}
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
@@ -33,15 +32,13 @@
 </header>
 <main class="{{ 'full-page' if fullpage }} {{ 'has-sidebar' if sidebar }} {{ 'auth' if current_user.is_authenticated  }}">
 {% block main__header %}{% endblock main__header %}
-{% block main__content %}meep
+{% block main__content %}{% endblock main__content %}
 {% block sidebar %}{% endblock sidebar %}
-{% endblock main__content %}
 {% block main__footer %}{% endblock main__footer %}
 <!-- / MAIN -->
 </main>
 <footer id="footer">
-    <!-- LNS BOTTOM -->
-    {% include 'include_footer_lns.html' %}
+    <!-- LNS BOTTOM NONE -->
     {% include 'include_footer_end.html' %}
     <!-- /FOOTER -->
 </footer>

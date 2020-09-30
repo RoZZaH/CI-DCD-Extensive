@@ -19,6 +19,7 @@ html, body {
 }
 
 body {
+    background-color: rgba(0, 66, 48, 1);
     display: grid;
     grid-template-rows: auto 0 auto 1fr auto auto;
     grid-template-columns: minmax(1em,1fr) minmax(260px, 500px) minmax(1em,1.1fr);
@@ -38,7 +39,7 @@ body {
       grid-template-areas: 
                           "gns gns gns gns gns gns gns gns"
                           ". lns lns lns lns lns lns ."
-                          ". main main main main main main ."
+                          ". main main main main sidebar sidebar ."
                           ". lnsb lnsb lnsb lnsb lnsb lnsb ."
                           "foot foot foot foot foot foot foot foot";      
       }
@@ -48,43 +49,84 @@ body {
 
 
 main {
-    grid-area: main;
-    border: 2px solid yellow;
+    display: contents;
     min-height: 100%;
+    @media (min-width: 600px){
+      background-color: transparent;
+      padding: 1em;
+    }
 }
 
-.header--main,
-.search-params,
+main.has-sidebar {
+    grid-area: main;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto;
+    background-color: rgba(255, 254, 241, 0.8);
+  }
+  
+  aside {
+    grid-area: sidebar;
+    background-color: rgba(255, 254, 241, 0.8);
+  }
+
+.band-detail {
+  display: grid;
+  grid-column: main / sidebar;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-columns: minmax(1em,1fr) 8fr minmax(200px, 400px) minmax(1em,1fr);
+  grid-template-areas: 
+                '. main__header main__header .'
+                '. main__content band__details .'
+                '. contact__details band__details .'
+                '. main__footer main__footer .';
+  background-color: $body-bg;
+}
+
+dl.details {
+  grid-area: band__details;
+  @media (min-width: 600px){
+    margin-top: 0;
+  }
+}
+
+dl.enquiries {
+  grid-area: contact__details;
+}
+
+.header--main {
+  grid-area: main__header;
+  margin-top: 1.65em;
+}
+
 .footer--main {
-  grid-column: 1 / -1;
+  grid-area: main__footer;
 }
 
+
+.content-block {
+  grid-area: main__content;
+}
 
 .content-block--cards {
+  grid-column: main / sidebar;
   display: grid;
   grid-gap: 1.5em 1em;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 
-.header--main {
-  grid-row: 1;
-  background-color: initial;
-  margin-bottom: 2em;
-}
-
-.footer--main {
-  margin-top: 2em;
-  grid-row: 3;
-  background-color: initial;
-}
-
-.content-block {
-  border: 1px solid red;
-}
 
 .full-page{
-  background-color: rgba(255, 254, 241, 0.8);
+  display: grid;
+  grid-column: main / sidebar;
+  grid-template-areas: 
+                'main__header'
+                'main__content'
+                'main__footer';
+  background-color: $body-bg;
+  @media (min-width: 600px){
+    background-color: rgba(255, 254, 241, 0.8);
+  }
 }
 
 
@@ -102,22 +144,14 @@ main {
   color:darkgreen;
 }
 
+.no-lnsb {
+  margin-bottom: 3em;
+}
 
 .lns--bottom {
   grid-area: lnsb;
 }
 
-// main.has-sidebar {
-//   grid-area: main;
-//   grid-template-rows: auto 1fr;
-//   grid-template-columns: auto;
-//   background-color: rgba(255, 254, 241, 0.8);
-// }
-
-// aside {
-//   grid-area: sidebar;
-//   background-color: rgba(255, 254, 241, 0.8);
-// }
 
 
 #del-modal {
@@ -178,4 +212,11 @@ main {
   @media (min-width: 600px){
   width: 400px;
   }
+}
+
+.spacer-3em {
+  grid-area: lnsb;
+  display: block;
+  height: 3em;
+  background: transparent;
 }

@@ -14,6 +14,17 @@ class View(_View):
         self.endpoint = endpoint
         self.parent = parent
         self.url_for_kwargs = kwargs
+    
+    @property
+    def active(self):
+        if (request.path[:8] == self.get_url()):
+            return True
+        elif(request.path[:5] == self.get_url()):
+            return True
+        elif(request.path[:9] == self.get_url()):
+            return True
+        return False
+
 
 
 class SuperGroup(NavigationItem):
@@ -22,16 +33,19 @@ class SuperGroup(NavigationItem):
         self.items = items
 
 
-class Alpha(_View):
-    def __init__(self, text, endpoint, parent=None, **kwargs):
-        self.text = text
-        self.endpoint = endpoint
-        self.parent = parent
-        self.url_for_kwargs = kwargs
+class Alpha(View):
+    pass
+    # def __init__(self, text, endpoint, parent=None, **kwargs):
+    #     self.text = text
+    #     self.endpoint = endpoint
+    #     self.parent = parent
+    #     self.url_for_kwargs = kwargs
 
-    @property
-    def active(self):
-        return request.path[:5] == self.get_url()
+    # @property
+    # def active(self):
+    #     return request.path[:5] == self.get_url()
+
+
 
 
 mobile_first_in = Navbar('title',

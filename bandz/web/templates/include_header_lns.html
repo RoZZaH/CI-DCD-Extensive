@@ -1,67 +1,70 @@
 {% from "_render_pages_nav.html" import render_pages_nav %}
+{% from "_render_pages_nav_search.html" import search_results_pages_nav %}
 <div id="lns--top">
-{% if request.path[:5] == "/a-z/" %}
-        {% include "include_breadcrumbs.html" %}
-        <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
-            <ul>
-                {% for beta in alphabet %}      
-                <li><a class="btn {{ 'btn--pagelink--current' if beta == letter}}" href="/a-z/{{beta}}">{{ '#' if beta == "1" else beta }}</a></li>
-                {% endfor %}
-            </ul>
-        </nav>
-        {% if closest_letters %}
-            <h1 class="headline--alphabet">No Bands <small>starting with</small> {{ letter|upper }}!</h1>
-        {% else %}
-        <section aria-label="paged results links">
-        <!-- section -->
-            <h1 class="headline--alphabet">Bands <small>starting with{{ ' a' if letter == "_" else ''}}</small> {{'Number or $ymbol' if letter == "1" else letter|upper }}
-            <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
-            </h1>
-            <nav class="pagelinks"> <!-- next letter -->
-            {{ render_pages_nav(bands, 'public.a2z', letter) }}
-            </nav>
-        {% endif %}
-        </section>
-{% elif request.path[:8] == "/genres/" %}
-{% set genre = request.view_args['genre'] %}
 {% include "include_breadcrumbs.html" %}
-{{ letter }}
-{# {{ request.view_args['letter'] }} #}
-{{ genre }}
-    {% if bands %}
+{{ search_terms }}
+{% if alphabet %}
+    {% if search_terms or request.path[:8] == "/genres/" %}
         <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
             <ul>{%- for beta in alphabet.keys() -%}
-                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="{{ '/genres/'~genre~'/'~beta   }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {% if request.path[:8] == "/genres/"  %}
+                {% set genre = request.view_args['genre'] %}
+                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="{{ url_for('public.get_by_genre', genre=genre, letter=beta) }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {% else %}
+                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/?{{search~'&letter='~beta~'&page=1'}}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {% endif %}
+                {%- endfor -%}</ul>
+        </nav>
+    {% else %}
+        <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.path == '/' and not search_terms }}" aria-label="letters of the alphabet">
+            <ul>{%- for beta in alphabet.keys() -%}
+                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/a-z/{{ beta }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
                 {%- endfor -%}</ul>
         </nav>
     {% endif %}
-{% else %}
-    {% include "include_breadcrumbs.html" %}
-    {% if bands %}
-        <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
-            <ul>
-                {% for beta in alphabet %}     
-                <li><a class="btn {{ 'btn--pagelink--current' if beta == letter}}" href="{{ '/?'~search~'&letter='~beta~'&page=1'  if search else '/a-z/'~beta~'?page=1' }}">{{ '#' if beta == "1" else beta }}</a></li>
-                {% endfor %}
-            </ul>
+{% endif %}
+{% if request.path[:5] == "/a-z/" %}
+    {% if closest_letters %}
+        <h1 class="headline--alphabet">No Bands <small>starting with</small> {{ letter|upper }}!</h1>
+    {% else %}
+    <!-- section | display contents on section for mobile-->
+    <section class="paged-results-info" aria-label="paged results links">
+        <h1 class="headline--alphabet">Bands <small>starting with{{ ' a' if letter == "_" else ''}}</small> {{'Number or $ymbol' if letter == "1" else letter|upper }}
+        <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
+        </h1>
+        <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
+        {{ render_pages_nav(bands, 'public.a2z', { 'letter': letter }) }}
         </nav>
-        {% if search_terms %}
+    </section>
+    {% endif %}
+{% elif request.view_args['genre'] %}
+{% set genre = request.view_args['genre'] %}
+    <section class="paged-results-info" aria-label="paged results links">
+            <h1 class="headline--alphabet">{{genre|title}} bands <small>starting with{{ ' a' if letter == "_" else ''}}</small> {{'Number or $ymbol' if letter == "1" else letter|upper }}
+            <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
+            </h1>
+        <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
+        {{ render_pages_nav(bands, 'public.get_by_genre', { 'genre' : genre, 'letter' : letter }) }}
+        </nav>
+    </section>
+{% else %}
+    {% if bands and search_terms -%}
         <section aria-label="paged results" class="paged-results">
-        <p>{{ 'Page ' + request.args['page']|string + ' of ' + count|string + ', '  if count > 1 }}
-            {%- if search_terms  -%}
-                {%- if count > 1 -%}
-                showing <a href="{{url_for('public.search')}}">search results</a> for&nbsp;
-                {%- endif -%}
-                {{ search_terms|safe }}</p>
-            {%- endif -%}
+        <p>
+        {%- if count > 1 %}
+            Page {{ request.args['page']|string }} of {{ count|string }} <a href="{{url_for('public.search')}}">search results</a> for the <b>{{ bands_total }}</b> {{ search_terms|safe }}</p>
+        {% else %}
+            There are <b>{{ bands_total }}</b> {{ search_terms|safe }}
+        </p>
+        {% endif -%}
         <small class="debug">{{ search }}</small>
         </section>
-        {% endif %}
-        <nav class="pagelinks">
-        {# <h1 class="headline headline--solo">Bands Listing</h1> #}
-        {{ render_pages_nav(bands, 'public.results', None, search) }}
+        {% if count > 1 %}
+        <nav class="pagelinks pagelinks--pagenums">
+        {{ search_results_pages_nav(bands, search, letter) }}
         </nav>
-    {% endif %}
+        {% endif %}
+    {%- endif -%}
 {% endif %}
 </div>
 {# if route = http://localhost:5000/manage/bands style #}

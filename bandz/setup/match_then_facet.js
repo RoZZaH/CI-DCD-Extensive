@@ -5,7 +5,8 @@ db.getCollection("band").aggregate(
 		// Stage 1
 		{
 			$match: {
-			'genres': {$in: ['blues', 'electronic', 'indie']},
+			'genres': {$in: ['blues', 'electronic']},
+			'catalogue_name' : { "$regex": "^O"},
 			'hometown.county' : {$in: ['Clare', 'Cork', 'Kerry', 'Limerick', 'Tipperary', 'Waterford']}
 			}
 		},
@@ -21,9 +22,9 @@ db.getCollection("band").aggregate(
 			     ],
 			    "bands_by_letter": [
 			        { $match: {
-						    // enter query here
-						    "catalogue_name": { $regex: /^M/},
-						}
+			                // enter query here
+			                "catalogue_name": { $regex: /^M/},
+			            }
 			        } 
 			        
 			 ],
