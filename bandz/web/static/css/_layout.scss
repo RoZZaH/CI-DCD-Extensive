@@ -39,7 +39,7 @@ body {
       grid-template-areas: 
                           "gns gns gns gns gns gns gns gns"
                           ". lns lns lns lns lns lns ."
-                          ". main main main main sidebar sidebar ."
+                          ". main main main main main main ."
                           ". lnsb lnsb lnsb lnsb lnsb lnsb ."
                           "foot foot foot foot foot foot foot foot";      
       }
@@ -49,36 +49,38 @@ body {
 
 
 main {
-    display: contents;
+    grid-column: main;
     min-height: 100%;
+    display: grid;
+    // background-color: transparent;
+    grid-template-areas: 
+                'main__header'
+                'main__content'
+                'main__footer';
     @media (min-width: 600px){
-      background-color: transparent;
-      padding: 1em;
     }
 }
 
-main.has-sidebar {
-    grid-area: main;
-    grid-template-rows: auto 1fr;
-    grid-template-columns: auto;
-    background-color: rgba(255, 254, 241, 0.8);
-  }
-  
-  aside {
-    grid-area: sidebar;
-    background-color: rgba(255, 254, 241, 0.8);
-  }
 
 .band-detail {
   display: grid;
-  grid-column: main / sidebar;
-  grid-template-rows: auto 1fr auto auto;
-  grid-template-columns: minmax(1em,1fr) 8fr minmax(200px, 400px) minmax(1em,1fr);
+  grid-area: main;
+  grid-template-columns: minmax(1em,1fr) auto minmax(1em,1fr);
   grid-template-areas: 
-                '. main__header main__header .'
-                '. main__content band__details .'
-                '. contact__details band__details .'
-                '. main__footer main__footer .';
+            '. main__header .'
+            '. main__content .'
+            ' .band__details .'
+            '. contact__details .'
+            '. main__footer .';
+  @media (min-width: 600px){
+        grid-template-rows: auto 1fr auto auto;
+        grid-template-columns: minmax(1em,1fr) 8fr minmax(200px, 400px) minmax(1em,1fr);
+        grid-template-areas: 
+                      '. main__header main__header .'
+                      '. main__content band__details .'
+                      '. contact__details band__details .'
+                      '. main__footer main__footer .';
+        }
   background-color: $body-bg;
 }
 
@@ -86,6 +88,7 @@ dl.details {
   grid-area: band__details;
   @media (min-width: 600px){
     margin-top: 0;
+    margin-left: 3em;
   }
 }
 
@@ -108,21 +111,30 @@ dl.enquiries {
 }
 
 .content-block--cards {
-  grid-column: main / sidebar;
   display: grid;
   grid-gap: 1.5em 1em;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  border: 2px solid red;
+}
+
+.sign-in-up {
+  @media (min-width: 600px){
+      margin: 0 auto;
+      max-width: 400px;
+  }
+}
+
+.floating-info {
+  background: $body-bg;
+  border-radius: 4px;
+  margin: 1em auto;
+  padding: .5em 1.25em;
+  width: max-content;
+  height: max-content;
 }
 
 
-
 .full-page{
-  display: grid;
-  grid-column: main / sidebar;
-  grid-template-areas: 
-                'main__header'
-                'main__content'
-                'main__footer';
   background-color: $body-bg;
   @media (min-width: 600px){
     background-color: rgba(255, 254, 241, 0.8);
@@ -142,10 +154,6 @@ dl.enquiries {
 .wide .btn:hover {
   font-weight: 700;
   color:darkgreen;
-}
-
-.no-lnsb {
-  margin-bottom: 3em;
 }
 
 .lns--bottom {

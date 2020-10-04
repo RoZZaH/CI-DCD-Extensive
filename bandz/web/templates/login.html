@@ -1,13 +1,12 @@
-{% extends "base.html" %}
+{% extends "base_no_lnsb.html" %}
 {% from "_render_grid_field.html" import render_field %}
 
 {% block main__header %}
-{% include 'include_breadcrumbs.html' %}
 {% endblock main__header %}
 
 {% block main__content %}
 <div class="content-block">
-    <form method="POST" action="">
+    <form method="POST" action="" class="sign-in-up">
     {{ form.hidden_tag() }}
     <div class="form-header">
     <h3>Sign In</h3>
@@ -23,16 +22,7 @@
     </div>
     </form>
 </div>
-<div class="content-block center">
+<div class="footer--main centered floating-info">
     <small>Don't have an Account? <a href="{{ url_for('user.register') }}">Sign Up Today</a></small>
 </div>
-
-
-
 {% endblock main__content %}
-
-{% block form__footer %}
-<footer class="footer">
-{% include 'include_footer.html' %}
-</footer>
-{% endblock form__footer %}

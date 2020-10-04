@@ -593,10 +593,7 @@
   border: 1px solid transparent;
 }
 
-.pagelinks--letters a:hover,
-.pagelinks--letters a:focus {
-  border: 2px solid rgb(231, 200, 20);
-}
+
 
 .pagelinks--letters {
   margin: 0;
@@ -604,12 +601,15 @@
 }
 
 .pagelinks--letters li {
+  display: inline-block;
   background: linear-gradient(to bottom,
    rgb(180,180,180) 0%, rgb(180, 180, 180) 50%,
    $lns-bg 50%, $lns-bg 100%);
 }
 
-.pagelinks--letters li.btn--pagelink--current a{
+.pagelinks--letters a:hover,
+.pagelinks--letters a:focus,
+.pagelinks--letters .btn--pagelink--current a{
   font-weight: bold;
   border: 1px solid $text-main;
   background: linear-gradient(to bottom,
@@ -617,7 +617,7 @@
   rgb(247, 242, 200) 50%, rgb(247, 242, 200) 100%);
 }
 
-.pagelinks--letters li a{
+.pagelinks--letters a{
   color: $text-main;
   display: grid;
   text-align: center;
@@ -625,15 +625,17 @@
   text-decoration: none;
   grid-gap: 0;
   grid-template-rows: 1fr 1fr;
+  grid-auto-flow: row;
   border: 2px solid transparent;
 }
 
-
-.pagelinks--letters li.btn--pagelink--current a{
-  color: $text-main;
+.pagelinks--letters a:hover,
+.pagelinks--letters a:focus {
+  border: 2px solid $gold;
 }
 
-.pagelinks--letters li a span {
+
+.pagelinks--letters a span {
   display: inline-block;
   padding: .25em .5em;
 }
@@ -652,20 +654,21 @@
   color: $text-main;
   background: $lns-bg;
   text-decoration: none;
-  display: inline-block;
   padding: .2em .325em;
   border: 2px solid transparent;
 }
 
-.pagelinks--letters-home li a:hover,
-.pagelinks--letters-home li a:focus {
+
+.pagelinks--letters-home a:hover,
+.pagelinks--letters-home a:focus {
+  grid-template-rows: 1fr;
   background: rgb(247, 242, 200);
-  border: 2px solid rgb(231, 200, 20);
 }
 
-
-.pagelinks--letters-home li a span.nbr {
-  display:none;
+.pagelinks--letters-home a:hover .nbr,
+.pagelinks--letters-home a:focus .nbr,
+.pagelinks--letters-home a .nbr{
+  display: none;
 }
 
 #lns--bottom .pagelinks--letters-home {
@@ -673,10 +676,10 @@
 }
 
 @media only screen and (max-width: 599px){
-  .headline--alphabet, .prev-page, .next-page,
-  .pagelinks--letters a span.nbr {
+  .headline--alphabet, .prev-page, .next-page {
     display:none;
   }
+  
   .paged-results-info {
     display: contents;
   }
@@ -686,24 +689,145 @@
   }
   .pagelinks--letters {
     grid-area: alphabet;
-    font-size: 0.7rem;
   }
   .pagelinks--letters li {
+    padding: 0;
     background: $lns-bg;
-  }
-  .pagelinks--letters li a {
-    grid-template-rows: 1fr;
-  }
-  .pagelinks--letters li.btn--pagelink--current a{
-    background: rgb(236, 230, 160);
-    border: 1px solid $text-main;
+    border: 0;
   }
 
-  .pagelinks--letters li a:hover,
-  .pagelinks--letters li a:focus {
-    background: rgb(247, 242, 200);
-    border: 2px solid rgb(231, 200, 20);
+
+  
+  .pagelinks--letters,
+  .pagelinks--letters li.btn--pagelink--current {
+    background: transparent;
   }
+
+  .pagelinks--letters .btn--pagelink--current li a,
+  .pagelinks--letters .btn--pagelink--current a,
+  .pagelinks--letters a {
+    padding: 0 !important;
+    background: transparent;
+    font-weight: normal;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    // grid-template-columns: 1fr;
+    // grid-template-rows:  1fr;
+    border: 0;
+  }
+
+  .pagelinks--letters a:hover,
+  .pagelinks--letters a:focus {
+    // background: transparent;
+    // border: 0;
+  }
+
+  .pagelinks--letters a span {
+    // grid-column:  1;
+    // grid-row: 1;
+    display: inline-block;
+    border: 1px solid transparent;   
+    padding: .2em 0 .2em .35em;
+  }
+
+
+  .pagelinks--letters a span.ltr {
+    font-size: 0.85rem;
+    font-weight: normal;
+
+  }
+  
+
+    // @media (hover: hover) and (pointer: fine) {
+    /* hover for mobile
+     * ref: https://medium.com/@mezoistvan/finally-a-css-only-solution-to-hover-on-touchscreens-c498af39c31c */
+     .pagelinks--letters a {
+        // grid-template-columns: 1fr 0;
+     }
+      .pagelinks--letters a:hover span.ltr, 
+      .pagelinks--letters a:focus span.ltr{
+        // visibility: hidden;
+      }
+    
+      .pagelinks--letters a span.nbr {
+        width: 0px;
+        overflow: hidden;
+        // grid-column: 2;
+        // visibility: hidden;
+      }
+
+      .pagelinks--letters .btn--pagelink--current a span.ltr {
+        border: 1px solid $text-main;
+      }
+
+      .pagelinks--letters .btn--pagelink--current a span.ltr,
+      .pagelinks--letters a:hover span.ltr, 
+      .pagelinks--letters a:focus span.ltr,
+      .pagelinks--letters a:hover span.nbr, 
+      .pagelinks--letters a:focus span.nbr{
+        width: auto;
+        font-size: 0.85rem;
+        // visibility: visible;
+        overflow: visible;
+        background: $letter-selected-lowres;
+        font-weight: bold;
+        padding-right: .35em;
+        // padding: .2em .3em;
+        // border: 1px solid $gold;
+        // align-self: baseline;
+      }
+
+      .pagelinks--letters .btn--pagelink--current a:hover span.ltr,
+      .pagelinks--letters .btn--pagelink--current a:focus span.ltr {
+        border: 2px solid $text-main;
+        border-right: 0;
+      }
+      .pagelinks--letters .btn--pagelink--current a:hover span.nbr,
+      .pagelinks--letters .btn--pagelink--current a:hover span.nbr {
+        border: 2px solid $text-main;
+        border-left: 0;
+      }
+
+      .pagelinks--letters a:hover span.ltr:after, 
+      .pagelinks--letters a:focus span.ltr:after {
+        content: ' :'
+      }
+
+    // }
+      // @media (hover: hover) and (pointer: coarse) {
+      //   .pagelinks a {
+      //     grid-template-columns: 1fr 1fr;
+      //   }
+      //   .pagelinks--letters a:hover span.ltr, 
+      //   .pagelinks--letters a:focus span.ltr{
+      //     //visibility: hidden;
+      //     // overflow: hidden;
+      //   }
+      
+      //   .pagelinks a span.nbr {
+      //     grid-column: 2;
+      //     //visibility: hidden;
+      //     //overflow: hidden;
+      //   }
+  
+      //   .pagelinks--letters .btn--pagelink--current a span.ltr,
+      //   .pagelinks--letters a:hover span.nbr, 
+      //   .pagelinks--letters a:focus span.nbr{
+      //     font-size: 0.85rem;
+      //     //visibility: visible;
+      //     overflow: visible;
+      //     background: $letter-selected-lowres;
+      //     font-weight: bold;
+      //     padding: .2em .3em;
+      //     border: 1px solid $gold;
+      //     align-self: baseline;
+      //   }
+
+    // }
+
+
+  
 
 
 

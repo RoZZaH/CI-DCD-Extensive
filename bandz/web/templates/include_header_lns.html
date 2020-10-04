@@ -2,7 +2,8 @@
 {% from "_render_pages_nav_search.html" import search_results_pages_nav %}
 <div id="lns--top">
 {% include "include_breadcrumbs.html" %}
-{{ search_terms }}
+{{ search_terms|safe }}
+Alpha {{ alphabet if alphabet }}
 {% if alphabet %}
     {% if search_terms or request.path[:8] == "/genres/" %}
         <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
@@ -29,7 +30,7 @@
     {% else %}
     <!-- section | display contents on section for mobile-->
     <section class="paged-results-info" aria-label="paged results links">
-        <h1 class="headline--alphabet">Bands <small>starting with{{ ' a' if letter == "_" else ''}}</small> {{'Number or $ymbol' if letter == "1" else letter|upper }}
+        <h1 class="headline--alphabet">Bands <small>starting with{{ ' a</small> Number or $ymbol'|safe if letter == "_" else '</small> '|safe~letter|upper }}
         <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
         </h1>
         <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
@@ -40,7 +41,7 @@
 {% elif request.view_args['genre'] %}
 {% set genre = request.view_args['genre'] %}
     <section class="paged-results-info" aria-label="paged results links">
-            <h1 class="headline--alphabet">{{genre|title}} bands <small>starting with{{ ' a' if letter == "_" else ''}}</small> {{'Number or $ymbol' if letter == "1" else letter|upper }}
+            <h1 class="headline--alphabet">{{genre|title}} bands <small>starting with{{ ' a</small> Number or $ymbol'|safe if letter == "_" else '</small> '|safe~letter|upper }}
             <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
             </h1>
         <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->

@@ -13,7 +13,7 @@ from bandz.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm)
 from flask_login import current_user, login_required, login_user, logout_user
 
 user = Blueprint('user', __name__) # import_name , usually the current module
-# default_breadcrumb_root(user, '.public')
+default_breadcrumb_root(user, '.')
 
 @user.route('/setup_towns')
 def setup_towns():
@@ -58,7 +58,7 @@ def initial_setup():
    
         return redirect(url_for("user.login"))
     if len(list(Band.objects())) == 0:
-        return render_template("setup.html", form=form, sidebar=0)
+        return render_template("setup.html", form=form, fullpage=True)
     else:
         print("Inital Setup Completed Already")
         return redirect(url_for("public.results"))
@@ -67,7 +67,7 @@ def initial_setup():
 
 
 @user.route("/register", methods=("GET", "POST"))
-#@register_breadcrumb(user, '.register', 'Register')
+@register_breadcrumb(user, '.register', 'Register')
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("public.results"))
@@ -78,7 +78,7 @@ def register():
         user.save() #db.session.add(user), db.session.commit()
         flash(f"Account created for {form.username.data}! You are now able to log in.", "success") #tuple (msg,cat)
         return redirect(url_for("user.login"))
-    return render_template("register.html", title="Register", form=form, sidebar=0)
+    return render_template("register.html", title="Register", form=form, display_breadcrumbs=True)
 
 
 
@@ -98,7 +98,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for("manage.manage_bands_home"))
         else:
             flash(f"Login Unsuccessful. Please check email and password", "danger")
-    return render_template("login.html", form=form)
+    return render_template("login.html", form=form, display_breadcrumbs=True)
 
 
 @user.route("/logout")

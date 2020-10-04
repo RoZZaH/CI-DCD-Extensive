@@ -343,17 +343,17 @@ ul.unique-band-yes-no.no li {
     background: $alert-danger-bg;
 }
 
-.content-block {
+form .content-block {
     display: flex;
     flex-direction: column;
 }
 
-.content-block.center {
+form .content-block.center {
     margin: 0 0 3em;
     align-items: center;
 }
 
-.content-block.center p {
+form .content-block.center p {
     font-size: 1.25rem;
     text-align: center;
 }
@@ -480,16 +480,21 @@ ul.no {
 
 
 form {
-    margin: 1em auto;
+    //margin: 1em auto;
     padding: 1em;
     grid-column: 1 / -1;
+    grid-area: main__content;
     display: grid;
     grid-auto-rows: auto;
     grid-template-columns: 1fr;
     background-color: $lns-bg;
     grid-gap: 0 1em;
-    border-radius: 5px;
+    border-bottom-left-radius: 5px;
     border-bottom-right-radius: 12px;
+    @media (min-width: 600px){
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
     max-width: 60ch;
 }
 
@@ -518,10 +523,6 @@ ul.invalid-feedback{
     border-radius: 3px;
 }
 
-// .field input,
-// .field select {
-//     grid-column: -2;
-// }
 
 .label-text:after {
     content: ' : '

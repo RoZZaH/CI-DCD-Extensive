@@ -14,29 +14,35 @@
         <nav class="pagelinks pagelinks--pagenums">
         {{ search_results_pages_nav(bands, search, letter) }}
         </nav>
+        {% if alphabet %}
         <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.path == '/' and not search_terms }}" aria-label="letters of the alphabet">
             <ul>{%- for beta in alphabet.keys() -%}
                 <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/?{{search~'&letter='~beta~'&page=1'}}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
                 {%- endfor -%}</ul>
         </nav>
+        {% endif %}
 {% elif bands and request.path[:5] == "/a-z/" %}
         <nav class="pagelinks--pagenums">
         {{ render_pages_nav(bands, 'public.a2z', { 'letter': letter }) }}
         </nav>
+        {% if alphabet %}
         <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
             <ul>{%- for beta in alphabet.keys() -%}
                 <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/a-z/{{ beta }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
                 {%- endfor -%}</ul>
         </nav>
+        {% endif %}
 {% elif bands and request.path[:8] == "/genres/" %}
         <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
         {{ render_pages_nav(bands, 'public.get_by_genre', { 'genre' : genre, 'letter' : letter }) }}
         </nav>
+        {% if alphabet %}
         <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.path == '/' and not search_terms }}" aria-label="letters of the alphabet">
             <ul>{%- for beta in alphabet.keys() -%}
                 <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/a-z/{{ beta }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
                 {%- endfor -%}</ul>
         </nav>
+        {% endif %}
 {% else %}       
 {% endif %}
 </div>
