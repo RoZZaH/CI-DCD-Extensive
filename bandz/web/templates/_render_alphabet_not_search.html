@@ -1,7 +1,0 @@
-{% macro render_alphabet_not_search(endpoint) %}
-<nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
-    <ul>{%- for beta in alphabet.keys() -%}
-        <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/{{endpoint}}/{{ beta }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
-        {%- endfor -%}</ul>
-</nav>
-{% endmacro %}

@@ -1,0 +1,40 @@
+
+<div class="content-block--cards">
+{% if closest_letters %}
+<p>The closest alphabetical listings are start at:</p>
+<span class="wide"><p><span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[0] }}?page=1">&laquo; {{closest_letters[0]|upper }}</a></span> and 
+<span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[1] }}?page=1">{{ closest_letters[1]|upper }} &raquo;</a></span></p></span>
+<p>Does your Band start with <b>{{ letter|upper }}</b> ?</p>
+<p><a href="{{ url_for('user.register') }}">Sign up</a> today and add your band profile.</p>
+{% else %}
+{% for band in (bands.items if bands.items else bands) %} {# mongoengine queryset objects or pymong cursor (aggregations) #}
+<div class="card {{ 'centerize-card' if bands_total|int <= 1|int }}">
+    <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image if band.media_assets else 'band_profile_pics/defaultband.jpg' ) }})">
+    <a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter )}}"></a>
+    </div>
+    <div class="card-content">
+        <p class="headline-eyebrow">{{ band.description }}</p>    
+        <h2 class="headline"><a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter)}}">{{ band.band_name }}</a></h2>
+        <p class="headline--strapline">{{ band.strapline }}</p>
+        <p>{{ band.profile|truncate(80, False) }}</p>
+        <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
+        <ul class="genre-tags">
+            {%- for genre in band.genres[0:4] %}
+            <li>{{ genre }}</li>
+            {%- endfor %}
+        </ul>
+        <div class="card-footer">
+            <ul>
+                <li><a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter )}}" class="btn btn-subform add">More Info</a></li>
+            {%- if current_user.is_authenticated -%} {# and OWNS bands = session ? #}
+                <li class="edit"><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add">Edit</a></li>
+            {%- else -%}
+
+            {%- endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endif %}

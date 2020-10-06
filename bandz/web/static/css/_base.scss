@@ -229,14 +229,24 @@ dd.featured-img {
   color: $text-secondary;
 }
 
+.white-text {
+  color: $white !important;
+}
+
 .mt-1 {
   margin-top: 1em;
 }
 
 .debug {
   border: 1px solid pink;
+  word-wrap:break-word;
+  width: auto;
+  overflow: hidden;
 }
 
+.rounded-circle {
+  border-radius: 50%;
+}
 
 .colon-after:after  {
   content: ' : ';

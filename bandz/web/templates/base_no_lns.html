@@ -18,7 +18,10 @@
 </head>
 <body>
 <header id="navigation">
+<!-- GNS -->
 {% include "include_header_gns.html" %}
+<!--  LNS None -->
+<!-- FLASH MSG -->
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}

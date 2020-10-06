@@ -7,6 +7,13 @@
     position: relative; // positioning context;
 }
 
+.auth > form {
+    @media (max-width: 599px){
+        font-size: .8rem;
+        grid-column: 1/-1;
+        padding: 0;
+    }
+}
 
 
 #band-details {
@@ -54,14 +61,23 @@ fieldset > legend {
 
 fieldset input:not([type="radio"]):not([type="checkbox"]):not(#media_assets-featured_image),
 fieldset textarea {
-    height: 1.75em;
-    width: 100%;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    border-top: none;
-    border-bottom: 1px solid #DDD;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
-    padding: .25em .5em;
+    font-size: 0.8rem;
+    height: auto;
+    @media (min-width: 600px) {
+        font-size: 1rem;
+        height: 1.75em;
+        width: 100%;
+        border-radius: 3px;
+        border: 1px solid transparent;
+        border-top: none;
+        border-bottom: 1px solid #DDD;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
+        padding: .25em .5em;
+    }
+}
+
+textarea#profile {
+    min-height: 200px;
 }
 
 .fieldset > label,

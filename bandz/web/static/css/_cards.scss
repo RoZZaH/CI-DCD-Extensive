@@ -65,3 +65,39 @@
 .card-footer li.edit {
     margin-left: auto;
 }
+
+.manage--bands {
+    .card {
+        margin-top: 1em;
+        padding: 1em;
+        flex-direction: row;
+        @media(max-width: 375px) {
+            flex-direction: column;    
+        }
+    }
+    .card-img {
+        width: 200px;
+        height: 200px;
+        @media(max-width: 375px) {
+            margin: 0 auto;
+            background-position: center top;
+            background-size: cover;
+        }
+    }
+    .card-content {
+        margin-left: 2em;
+        @media(max-width: 375px) {
+            font-size: .8rem;
+            margin-left: .5em;
+        }
+    }
+    .card-content > ul {
+        list-style: square;
+        @media(max-width: 375px) {
+            font-size: .8rem;
+        }
+        @media (min-width: 600px){
+            min-height: 90px;
+        }
+    }
+}    

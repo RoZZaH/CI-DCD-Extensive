@@ -1,48 +1,9 @@
 
 
-
-/*
-.wrapper__alphabet {
-  background-color: rgb(196, 196, 196);
-  grid-column: 2 / -2;
+.btn {
+  box-shadow: none;
+  border-radius: 3px;
 }
-
-.wrapper__alphabet--top {
-  padding: 4px 4px 0;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  margin-bottom: .75em;
-}
-
-.wrapper__alphabet--bottom {
-  padding: 0 4px 4px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  margin-top: 0.75em;
-} */
-
-// .pages__pagelinks li:first-child {
-//   margin-left: auto;
-
-
-.pagelinks li:first-child {
-  margin-left: auto;
-}
-
-
-.pagelinks--letters li:first-child {
-  margin-left: 0;
-}
-
-
-.pagelinks li:first-child.prev-page {
-  margin-left: 0;
-  margin-right: auto;
-  justify-self: flex-start;
-}
-
-
-
 
 .btn-subform{
   font-size: 0.95rem;
@@ -50,7 +11,6 @@
   color: white;
   text-decoration: none;
   text-decoration: none;
-  border-radius: 3px;
   border: none;
 }
 
@@ -62,13 +22,18 @@
 }
 
 .add{
-  background: mediumseagreen;
+  background: mediumseagreen !important;
+}
+
+.header--mgt .add {
+  position: relative;
+  top: -.25em;
 }
 
 .remove {
   justify-self: end; 
   grid-column: 2;
-  background: tomato;
+  background: tomato !important;
 }
 
 .leaderboard {

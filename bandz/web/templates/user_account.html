@@ -1,13 +1,24 @@
-{% extends "base.html" %}
+{% extends "base_no_lnsb.html" %}
+{% block header__lns %}
+<div id="lns--top">
+    {% include "include_breadcrumbs.html" %}
+</div>
+{% endblock header__lns %}
+
+{% block main__header %}
+<div class="user-settings">
+<header class="header--main">
+ <div class="header--mgt">
+        <div class="headlines">
+            <h1 class="headline">Account Settings for <span class="highlight">{{ current_user.username }}</span></h1>
+            <h4 class="headline--strapline">{{ current_user.email }}</h4>
+        </div>
+ </div>
+</header>
+{% endblock main__header %}
 {% block main__content %}
-<h1>Account Settings for <span class="highlight">{{ current_user.username }}</span></h1>
-<div class="content-block">
     <div class="media">
         <img class="rounded-circle account-img" src="{{ image_file }}">
-        <div class="media-body">
-            <h2 class="account-heading">{{ current_user.username }}</h2>
-            <p class="text-secondary">{{ current_user.email }}</p>
-        </div>
     </div>
     <!-- form change account settings -->
     <form method="POST" action="" enctype="multipart/form-data"><!-- allow file upload -->
@@ -47,7 +58,10 @@
                     </div>
                 {% endif %}
         </fieldset>
-            {{ form.submit(class="btn btn-outline-info") }}
+                    {{ form.submit(class="btn btn-outline-info") }}
     </form>
+<!-- /.user-settings -->
 </div>
 {% endblock main__content %}
+{% block main__footer %}
+{% endblock main__footer %}

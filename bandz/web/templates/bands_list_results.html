@@ -1,0 +1,57 @@
+{% from "_render_pages_nav_search.html" import search_results_pages_nav %}
+{% extends "base.html" %}
+<!-- HEADER LNS -->
+{% block header__lns %}
+<div id="lns--top">
+    {% include "include_breadcrumbs.html" %}
+    <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
+        <ul>{%- for beta in alphabet.keys() -%}
+            <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/search/results/?{{search~'&letter='~beta~'&page=1'}}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+            {%- endfor -%}</ul>
+    </nav>
+    <section aria-label="paged results" class="paged-results">
+    {% if bands and search_terms -%}
+        <p>
+        {%- if count > 1 %}
+            Page {{ request.args['page']|string }} of {{ count|string }} <a href="{{url_for('public.search')}}">search results</a> for the <b>{{ bands_total }}</b> {{ search_terms|safe }}</p>
+        {% else %}
+            There are <b>{{ bands_total }}</b> {{ search_terms|safe }}
+        </p>
+        {% endif -%}
+        {# <p><small class="debug">{{ search }}</small></p> #}
+        </section>
+        {% if count > 1 %}
+        <nav class="pagelinks pagelinks--pagenums">
+        {{ search_results_pages_nav(bands, search, letter) }}
+        </nav>
+        {% endif %}
+    {% else %}
+        <p><b>No Results Found, sorry!</b></p>
+    {%- endif -%}
+    </section>
+</div>
+{% endblock header__lns %}
+
+<!-- MAIN HEADER -->
+{% block main__header %}{% endblock main__header %}
+<!-- CONTENT -->
+{% block main__content %}
+        {% include "include_bands_list_cards.html" %}
+{% endblock main__content %}
+<!-- MAIN FOOTER -->
+{% block main__footer %}{% endblock main__footer %}
+<!-- FOOTER LNSBottom -->
+{% block footer__lnsb %}
+<div id="lns--bottom">
+    <nav class="pagelinks pagelinks--pagenums">
+        {{ search_results_pages_nav(bands, search, letter) }}
+    </nav>
+    {% if alphabet %}
+    <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.path == '/' and not search_terms }}" aria-label="letters of the alphabet">
+        <ul>{%- for beta in alphabet.keys() -%}
+            <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/search/results/?{{search~'&letter='~beta~'&page=1'}}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+            {%- endfor -%}</ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock footer__lnsb %}

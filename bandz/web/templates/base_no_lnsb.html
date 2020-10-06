@@ -18,8 +18,11 @@
 </head>
 <body>
 <header id="navigation">
+<!-- GNS -->
 {% include "include_header_gns.html" %}
-{% include "include_header_lns.html" %}
+<!--  LNS -->
+{% block header__lns %}{% endblock header__lns %}
+<!-- FLASH MSG -->
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
@@ -31,14 +34,14 @@
 {% endwith %}
 <!-- /HEADER -->
 </header>
-<main class="no-lnsb {{ 'full-page' if fullpage }} {{ 'has-sidebar' if sidebar }} {{ 'auth' if current_user.is_authenticated  }}">
+<main class="no-lnsb {{ 'full-page' if fullpage }} {{ 'has-sidebar' if sidebar }} {{ 'auth' if current_user.is_authenticated  }} {{ 'genres-listing' if request.path[:8] == '/genres/' else '' }}">
 {% block main__header %}{% endblock main__header %}
 {% block main__content %}{% endblock main__content %}
 {% block sidebar %}{% endblock sidebar %}
 {% block main__footer %}{% endblock main__footer %}
 <!-- / MAIN -->
 </main>
-<hr class="spacer-3em">
+<div class="spacer-3em"></div>
 <footer id="footer">
     <!-- LNS BOTTOM NONE -->
     {% include 'include_footer_end.html' %}

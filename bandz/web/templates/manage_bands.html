@@ -1,33 +1,39 @@
+{# {% from "_render_manage_pages_nav.html" import render_pages_nav %} #}
+{% from "_render_pages_nav.html" import render_pages_nav %}
 {% extends "base.html" %}
-{% block main__content %}
+{% block header__lns %}
+<div id="lns--top">
+    {% include "include_breadcrumbs.html" %}
+    <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.view_args['band_view'] == 'recent'|string or request.view_args['band_view'] is undefined }}" aria-label="letters of the alphabet">
+            <ul>{%- for beta in alphabet.keys() -%}
+                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/manage/bands/alpha/{{ beta }}/"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {%- endfor -%}</ul>
+    </nav>
+    <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
+        {{ render_pages_nav(bands, 'manage.manage_bands_home', kwargs={"letter":'', "genre":'', "band_view": 'recent' if request.view_args['band_view'] == 'recent'|string or request.view_args['band_view'] is undefined else 'alpha'}) }}
+    </nav>
+</div>
+{% endblock header__lns %}
+{% block main__header %}
 <header class="header--main">
-{# {% include "include_breadcrumbs.html" %} #}
-{# {% if bands.pages > 1 %}
-<nav class="pages__pagelinks"><ul>
-{% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-    {% if page_num %}
-    <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if bands.page == page_num }}" href="{{ url_for('manage.manage_bands_home', page=page_num)}}">{{ page_num }}</a></li>
-    {% else %}
-    ...
-    {% endif %}
-{% endfor %}
-</ul></nav>
-{% endif %} #}
-<div class="header--mgt">
-<div class="headlines">
-<h1>Manage Bands</h1>
-</div>
-<a class="btn btn-subform add" href="{{ url_for('manage.add_band') }}">Add New Band</a>
-</div>
+    <div class="header--mgt">
+        <div class="headlines">
+            <h1 class="white-text">Manage Bands</h1>
+        </div>
+        <a class="btn btn-subform add" href="{{ url_for('manage.add_band') }}">Add New Band</a>
+    </div>
 </header>
+{% endblock main__header %}
+
+{% block main__content %}
+<div class="manage--bands">
 {% for band in bands.items %}
-{# {{ nav.mysite_navigation.render() }} #}
 <div class="card">
     <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }})">
-        <a href="{{ url_for('public.band_detail', bname=band.band_name, letter=None)}}"></a>
+        <a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter)}}"></a>
     </div>
     <div class="card-content">
-        <h2 class="card-title"><a href="{{ url_for('public.band_detail', bname=band.band_name, letter=None ) }}">{{ band.band_name }}</a></h2> {#  {{ band._cls }} #}
+        <h2 class="card-title"><a href="{{ url_for('public.band_detail', bname=band.band_name , catalog_letter=band.catalog_letter ) }}">{{ band.band_name }}</a></h2> {#  {{ band._cls }} #}
         <p class="card-body">{{ band.description }}</p>    
         <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
         <ul>
@@ -37,26 +43,22 @@
         </ul>
         <div class="card-footer">
             <ul>
-                <li><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add edit">Edit</a></li>
+                <li><a href="{{ url_for('manage.update_band_profile', bname=band.band_name, band_view='alpha' if 'band_view' in request.args and request.args['band_view'] != 'recent' else 'recent' , catalog_letter=band.catalogue_name[0] ) }}" class="btn btn-subform add edit">Edit</a></li>
             </ul>
         </div>
     </div>
 </div>
 {% endfor %}
-<footer class="footer--main pages">
-{% if bands.pages > 1 %}
-<nav class="pages__pagelinks"><ul>
-{% for page_num in bands.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-    {% if page_num %}
-    <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if bands.page == page_num }}" href="{{ url_for('manage.manage_bands_home', page=page_num)}}">{{ page_num }}</a></li>
-    {% else %}
-    ...
-    {% endif %}
-{% endfor %}
-</ul></nav>
-{% endif %}
-</footer>
+</div>
 {% endblock main__content %}
+
+{% block footer__lnsb %}
+<div id="lns--bottom">
+    <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
+        {{ render_pages_nav(bands, 'manage.manage_bands_home', kwargs={"letter":'', "genre":''}) }}
+    </nav>
+</div>
+{% endblock footer__lnsb %}
 
 {% block javascript %}
 <script>

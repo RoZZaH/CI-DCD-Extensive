@@ -49,18 +49,18 @@ class Alpha(View):
 
 
 mobile_first_in = Navbar('title',
-    View('Home', 'public.results'),
+    View('Home', 'public.home'),
     SuperGroup(
-    View('Bands', 'public.results'),
+    View('Bands', 'public.home'),
     items=(
         Alpha('Bands A-Z', 'public.a2z', 'bands'),
         View('Bands by Location', 'public.by_location', 'bands'),
         View('Bands by Genre', 'public.by_genre', 'bands') )
     ),
     SuperGroup(
-    View('Manage', 'manage.redirector'),
+    View('Manage', 'manage.mhome'),
     items=(
-        View('Bands', 'manage.manage_bands_home', 'manage'), )
+        View('Bands', 'manage.mhome', 'manage'), )
     ),
     View('Search', 'public.search'),
     View('Settings', 'user.account'),
@@ -69,9 +69,9 @@ mobile_first_in = Navbar('title',
 
 
 mobile_first_out = Navbar('title',
-    View('Home', 'public.results'),
+    View('Home', 'public.home'),
     SuperGroup(
-    View('Bands', 'public.results'),
+    View('Bands', 'public.home'),
     items=(
         Alpha('Bands A-Z', 'public.a2z', 'bands'),
         View('Bands by Location', 'public.by_location', 'bands'),

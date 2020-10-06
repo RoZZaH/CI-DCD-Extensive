@@ -10,41 +10,23 @@ from bandz.utils.mongoengine_jsonencoder import MongoEngineJSONEncoder # Overcom
 from bandz.utils.gns import nav, initialise_nav
 from bandz.models.db import initialise_db
 
-
 app = Flask(__name__,
             static_url_path='', 
+
             static_folder='web/static',
             template_folder='web/templates')
 
-
 app.json_encoder = MongoEngineJSONEncoder
 
-# ENVs
-app.config["SECRET_KEY"] = "73a2e9f7248e6fc95140bbea471c49d6"
+os.sys.path.append('../')
+if app.config["ENV"] == "production":
+    app.config.from_object("config.ProductionConfig")
+else:
+    app.config.from_object("config.DevelopmentConfig")
 
-app.config["MONGODB_SETTINGS"] = {
-    "db" : "bandx",
-    "host": "mongodb://localhost/bandx"
-}
-# app.config.from_pyfile('the-config.cfg')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-
-# app.url_map.strict_slashes = False
-
-# @app.before_request
-# def clear_trailing():
-#     from flask import redirect, request
-
-#     rp = request.path 
-#     if rp != '/' and rp.endswith('/'):
-#         return redirect(rp[:-1])
-
-
-# custom endpoints
-# app.add_url_rule('/css/<path:filename>',
-#                  endpoint='css',
-#                  view_func=app.send_static_file)
+PICTURES_FOLDER = app.config['PICTURES_FOLDER']
 
 js_folder = os.path.join(app.static_folder, 'js')
 
@@ -53,25 +35,20 @@ def static_js(filename):
     return send_from_directory(js_folder, filename)
 
 css_folder = os.path.join(app.static_folder, 'css')
-
 @app.route('/css/<path:filename>')
 def static_css(filename):
     return send_from_directory(css_folder, filename)
 
 img_folder = os.path.join(app.static_folder, 'img')
-
 @app.route('/img/<path:filename>')
 def static_img(filename):
     return send_from_directory(img_folder, filename)
 
-pictures_folder = os.path.join(app.root_path, "media")
-
+pictures_folder = os.path.join(app.root_path, PICTURES_FOLDER)
 @app.route('/media/<path:filename>')
 def static_media(filename):
     return send_from_directory(pictures_folder, filename)
 
-
-# nav.register_element('top', topbar)
 
 assets = Environment(app)
 assets.register(bundles)
@@ -91,4 +68,3 @@ app.register_blueprint(api)
 app.register_blueprint(public)
 app.register_blueprint(manage)
 app.register_blueprint(user)
-# nav.register_element('secondary', sns)

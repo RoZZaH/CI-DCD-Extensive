@@ -5,32 +5,109 @@ from flask import (Blueprint, flash, current_app, jsonify,
     redirect, render_template, request, Response,
     session, url_for)
 from flask_breadcrumbs import Breadcrumbs, default_breadcrumb_root, register_breadcrumb
-
 from flask_login import current_user, login_required, login_user, logout_user
-
+from flask_mongoengine.pagination import Pagination
+from mongoengine.errors import NotUniqueError
+import phonenumbers
+# bandz modules
 from bandz.models.entities import Band, Towns, User, Phone, Contact, Links, Email, BandMember, Assets
 from bandz.manage.forms import CreateUpdateBandForm, CreateBandForm1, CreateBandForm2, CreateBandForm3, CreateBandForm4
 from bandz.utils.gns import nav
 from bandz.api.routes import list_genres
 from bandz.utils.helpers import *
-from mongoengine.errors import NotUniqueError
-import phonenumbers
 
+# MANAGE const
 manage = Blueprint('manage', __name__, url_prefix='/manage') # import_name , usually the current module
 default_breadcrumb_root(manage, '.public')
+PER_PAGE = 10
+ALPHABET = 'abcdefghijklmnopqrstuvwxyz1'
 
 @manage.route("/")
-@manage.route("/bands")
-# @register_breadcrumb(manage, '.', 'Manage My Bands')
-def manage_bands_home(bname=None):
+@manage.route("/bands/")
+@register_breadcrumb(manage, '.', 'Manage My Bands')
+def mhome():
+    page = request.args.get("page", 1, type=int)
+    user = User.objects(id=current_user.id).first()
+    bands = Band.objects(created_by=user).order_by('-date_updated', '-date_created').paginate(per_page=PER_PAGE, page=page)
+    alphabet = { key:0 for key in ALPHABET }
+    return render_template("manage_bands.html", bands=bands, display_breadcrumbs=True, alphabet=alphabet)
+    
+
+def view_preview_dlc(*args, **kwargs):
+    if 'band_view' in request.args :
+        return [{'text': request.referrer}, {'text': 'test'}]
+    if request.referrer == request.url_root or request.referrer ==  None:
+        return [{'text': 'Manage My Bands'}]
+    if request.referrer != request.url_root:
+        referrer = request.referrer.replace(request.url_root,'')
+        referrer = referrer.split("/",5) if len(referrer) > 0 else ['managehome']
+        band_view = 'recent' if referrer[2] == 'recent' or '' else 'alpha'
+        print(referrer)
+        print(band_view)
+        catalog_letter = request.args.get('catalog_letter') if 'catalog_letter' in request.args else 'a'
+        bname = request.view_args['bname'] if 'bname' in request.view_args else None
+        if referrer[0] == 'managehome':
+            return [{'text': 'Manage My Bands'}]
+        if bname == None:
+            if band_view and band_view == 'alpha' and catalog_letter:
+                return [
+                    { 'text': 'Manage My Bands',  'url': url_for('.mhome')},
+                    { 'text': 'alphabetically', 'url': url_for('.manage_bands_home', band_view=band_view, letter='a') }, 
+                    {'text': catalog_letter.upper(), 'url': url_for('.manage_bands_home', band_view=band_view, letter=catalog_letter) },
+                    ]
+        else:
+            if band_view and band_view == 'alpha' and catalog_letter:
+                return [{ 'text': 'Manage My Bands',  'url': url_for('.mhome')},
+                        { 'text': 'alphabetically', 'url': url_for('.manage_bands_home', band_view=band_view, letter='a') }, 
+                        {'text': catalog_letter.upper(), 'url': url_for('.manage_bands_home', band_view=band_view, letter=catalog_letter) },
+                        { 'text': bname.title()}]
+            if band_view and band_view == 'recent' and bname != None:
+                return [{ 'text': band_view.title(), 'url': url_for('.manage_bands_home', band_view=band_view) }]
+    
+
+
+@manage.route("/bands/<path:band_view>")
+@manage.route("/bands/<path:band_view>/<string:letter>/")
+@register_breadcrumb(manage, '.', 'Manage My Bands2', dynamic_list_constructor=view_preview_dlc)
+@login_required
+def manage_bands_home(band_view='recent', letter='a', bname='A House'):
+    letter = '_' if letter == '1' else letter
     user = User.objects(id=current_user.id).first()
     page = request.args.get("page", 1, type=int)
-    bands = Band.objects(created_by=user).order_by('-date_created').paginate(per_page=9, page=page)
-    return render_template("manage_bands.html", bands=bands, sidebar=False)
 
-@manage.route("/bands/")
-def redirector():
-    return redirect(url_for("manage.manage_bands_home"))
+    if band_view == 'recent':
+        bands = Band.objects(created_by=user).order_by('-date_updated', '-date_created').paginate(per_page=PER_PAGE, page=page)
+        alphabet = { key:0 for key in ALPHABET }
+        return render_template("manage_bands.html", bands=bands, display_breadcrumbs=True, alphabet=alphabet)
+    else:
+        pipeline = [{"$match": { "created_by": user.id } },
+                {
+                    "$facet": {
+                        "numbers_by_letter": [ {"$group": { "_id": { "$substr": [ "$catalogue_name", 0, 1]}, 
+                                                            "number_of_bands": { "$sum": 1 }}} ],
+                        "bands_by_letter": [{ "$match": { "catalogue_name": { "$regex": f"^{str(letter.upper())}" } } },
+                                            { "$project": {"_id": 1, "band_name": 1, "catalogue_name": 1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "catalog_letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]}}}}, 
+                                            { "$sort": { "catalogue_name": 1 }}]
+                    }
+                }] 
+        result = list(Band.objects.aggregate(pipeline))[0]
+        bands_by_letter = Pagination(result["bands_by_letter"], int(page), 12)
+        _alphabet = 'abcdefghijklmnopqrstuvwxyz_'
+        alphabet = { obj["_id"].lower():int(obj["number_of_bands"]) for obj in result["numbers_by_letter"] }
+        alphabet = { key:alphabet.setdefault(key, 0) for key in _alphabet }
+        alphabet['1'] = alphabet.pop('_') #swap out for letter links 1 == '#' === '_'
+        count = bands_by_letter.pages
+        if bands_by_letter.total > 0:
+            bands_total = bands_by_letter.total
+            #bands = Band.objects(created_by=user).order_by('-catalogue_name').paginate(per_page=PER_PAGE, page=page)
+            return render_template("manage_bands.html", bands=bands_by_letter, bands_total=bands_total, count=count, display_breadcrumbs=True, alphabet=alphabet)
+        else:
+            return 'no bands created' #redirect
+
+
+# @manage.route("/bands/")
+# def redirector():
+#     return redirect(url_for("manage.manage_bands_home"))
 
 
 def get_video_service_and_id(url):
@@ -46,14 +123,11 @@ def get_video_service_and_id(url):
     return video
 
 
-
-
-@manage.route('/bands/checkband')
-def checkband():
-    form = CreateBandForm1()
-    genres = list_genres()
-    return render_template('manage_new_stage1_band_check.html', form=form, genrelist=genres) #form_legend = form_legend, title=title or form_legend, step=step, )
-
+# @manage.route('/bands/checkband')
+# def checkband():
+#     form = CreateBandForm1()
+#     genres = list_genres()
+#     return render_template('manage_new_stage1_band_check.html', form=form, genrelist=genres) #form_legend = form_legend, title=title or form_legend, step=step, )
 
 
 @manage.route('/bands/new/', defaults={'stage': 1}, methods=("GET","POST"))
@@ -162,13 +236,160 @@ def add_band(stage):
             band.save()
             band_id = band.id
             # user.update(push__posts=post) remember to add band to user
-            #return redirect(url_for('manage.manage_bands_home'))
             band = Band.objects(id=band_id).first()
             return render_template("band_detail.html", band=band)
         else:
             stage = 4
             return render_template("manage_new_stage4_band_contact.html", form=form, stage=stage, bname=session["band"]["band_name"])
 
+
+
+
+@manage.route("/band")
+@manage.route("/band/<string:bname>/")
+# @register_breadcrumb(manage, '.', '', dynamic_list_constructor=view_band_dlc)
+@register_breadcrumb(manage, '.preview_band', 'Band Preview')
+@login_required
+def preview_band(bname=None):
+    if bname == None:
+        return redirect(url_for('manage.manage_bands_home', band_view='alpha'))
+    band = Band.objects(band_name=bname).first()
+    image_file = url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image)
+    return render_template("band_detail.html", band=band, image_file=image_file, display_breadcrumbs=True)
+
+
+def view_update_dlc(*args, **kwargs):
+    return [{'text': 'Update'}]
+
+
+@manage.route("/band/<string:bname>/edit", methods=('GET', 'POST'))
+@register_breadcrumb(manage, '.update_band_profile', '', dynamic_list_constructor=view_update_dlc) 
+@login_required
+def update_band_profile(bname):
+    # flask-login uses a proxy that doesn't play nice with mongoengine
+    # so current_user must be cast as user 
+    user = User.objects(id=current_user.id).first()
+    band = Band.objects(band_name=bname).first()
+    if band.created_by.id != current_user.id:
+        abort(403)
+    form = CreateUpdateBandForm()
+    if form.validate_on_submit():
+        if form.media_assets.featured_image.data:
+            picture_file = save_picture(form.media_assets.featured_image.data, band=True)
+            band.media_assets.featured_image = picture_file
+        if form.media_assets.featured_video.data:
+           band.media_assets.featured_video = get_video_service_and_id(form.media_assets.featured_video.data)
+        contact = Contact()
+        contact.contact_name = form.contact_details.contact_name.data
+        contact.contact_title = form.contact_details.contact_title.data
+        contact.contact_generic_title = form.contact_details.contact_generic_title.data
+        phone = phonenumbers.parse(form.contact_details.contact_numbers.phone.data, form.contact_details.contact_numbers.region.data)
+        new_phone = Phone(
+                mobile = bool(form.contact_details.contact_numbers.mobile.data),
+                number = phonenumbers.format_number(phone, phonenumbers.PhoneNumberFormat.E164)
+        )
+        contact.contact_numbers = new_phone
+        new_email = Email(
+            email_title = form.contact_details.contact_emails.email_title.data,
+            email_address = form.contact_details.contact_emails.email_address.data
+        )
+        contact.contact_emails = new_email
+        weblinks = Links()
+        weblinks.enquiries = form.enquiries_url.data
+        band.solo = bool(form.solo.data)
+        band.band_name= form.band_name.data
+        band.catalogue_name = de_article(form.band_name.data)
+        band.date_updated = datetime.utcnow
+        band.description = form.description.data
+        band.genres.clear()
+        genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]
+        band.genres = list(filter(None, set(genrelist)))
+        band.hometown= {"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data}
+        band.profile = form.profile.data
+        band.strapline = form.strapline.data
+        band.contact_details = contact
+        band.links = weblinks
+        band.band_members.clear()
+        for member in form.members.data:
+            new_member = BandMember()
+            new_member.musician = member["musician"]
+            new_member.instruments = member["instruments"]
+            band.band_members.append(new_member)
+        band.save()
+        flash("Band details updated!", "success")
+        return redirect(url_for('manage.manage_bands_home', toggle='recent'))
+    elif request.method == "GET":
+        form.solo.data = False if band.solo else True
+        form.band_name.data = band.band_name
+        form.description.data = band.description
+        form.strapline.data = band.strapline
+        form.profile.data = band.profile
+        form.contact_details.contact_name.data = band.contact_details.contact_name
+        form.contact_details.contact_title.data = band.contact_details.contact_title
+        form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
+        form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
+        form.contact_details.contact_numbers.mobile.data = band.contact_details.contact_numbers.mobile
+        form.contact_details.contact_numbers.region.data = "None"
+        form.contact_details.contact_numbers.phone.data = band.contact_details.contact_numbers.number
+        form.contact_details.contact_emails.email_title.data = band.contact_details.contact_emails.email_title
+        form.contact_details.contact_emails.email_address.data = band.contact_details.contact_emails.email_address
+        form.media_assets.featured_video.data = (("https://www.youtube.com/watch?v=" if band.media_assets.featured_video["service"] == "youtube" else "https://www.vimeo.com/"  )   +band.media_assets.featured_video["vid"]) if band.media_assets.featured_video else None
+        form.genres.data = ",".join(map(str,band.genres))
+        form.enquiries_url.data = band.links.enquiries
+    selected_county = band.hometown["county"] if band.hometown["county"] is not None else "Antrim"
+    selected_town = band.hometown["town"] if band.hometown["town"] is not None else "none"
+    genres = list_genres()
+    form_legend="Edit Band Profile"
+    return render_template("manage_band_update_form.html", form=form, genrelist=genres, form_legend="Edit Band Profile",
+                            selected_county=selected_county, selected_town=selected_town, band=band, display_breadcrumbs=True)
+
+
+@manage.route("/band/<string:bname>/delete", methods=("GET", "POST"))
+@login_required
+def delete_band(bname):
+    band = Band.objects(band_name=bname).first() 
+    if band.created_by.id != current_user.id:
+        abort(403)
+    band.delete()
+    flash("Band has been deleted!", "success")
+    return redirect(url_for("manage.manage_bands_home", toggle='alphabetical'))
+
+
+'''
+def view_band_dlc(*args, **kwargs):
+    if request.view_args:
+        bname = ''
+        bname = request.view_args['bname']
+    # user = User.query.get(user_id)
+    # return [{ 'text': 'Manage My Bands', 'url': url_for('manage.manage_bands_home')}, {'text': bname, 'url': url_for('manage.preview_band', bname=bname) }]
+        return [{ 'text': 'Manage My Bands', 'url': url_for('manage.manage_bands_home')}, {'text': bname }]
+    else:
+        return []
+
+
+
+{
+  "band_name": "A Band 2", 
+  "contact_details-contact_emails-email_address": "live@live.ie", 
+  "contact_details-contact_emails-email_title": "", 
+  "contact_details-contact_name": "", 
+  "contact_details-contact_numbers-mobile": "True", 
+  "contact_details-contact_numbers-number": "", 
+  "contact_details-contact_title": "", 
+  "created_by": "", 
+  "csrf_token": "IjRjNTczOTEwNDYzODNiM2NiNWJlZjBiNDUzY2Q1ZmY5NWM3OTZiMjQi.XyGfrA.F1ACf3oApNNFfFh4eyl2UWxa3h0", 
+  "description": "a", 
+  "enquiries_url": "", 
+  "genre": "", 
+  "hometown-origin_county": "Antrim", 
+  "hometown-origin_town": "Aghagallon", 
+  "media_assets-featured_video": "", 
+  "members-0-instruments": "", 
+  "members-0-musician": "", 
+  "profile": "a", 
+  "strapline": "", 
+  "submit": "Save"
+}
 
 
 
@@ -286,139 +507,6 @@ def add_band2():
 
 
 
-@manage.route("/band/<string:bname>/")
-# @register_breadcrumb(manage, '.', '', dynamic_list_constructor=view_band_dlc)
-def preview_band(bname):
-    band = Band.objects(band_name=bname).first()
-    image_file = url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image)
-    return render_template("band_detail.html", band=band, image_file=image_file)
 
-
-@manage.route("/band/<string:bname>/edit", methods=('GET', 'POST'))
-# @login_required
-def update_band_profile(bname):
-    # flask-login uses a proxy that doesn't play nice with mongoengine
-    # so current_user must be cast as user 
-    user = User.objects(id=current_user.id).first()
-    band = Band.objects(band_name=bname).first()
-    if band.created_by.id != current_user.id:
-        abort(403)
-    form = CreateUpdateBandForm()
-    if form.validate_on_submit():
-        if form.media_assets.featured_image.data:
-            picture_file = save_picture(form.media_assets.featured_image.data, band=True)
-            band.media_assets.featured_image = picture_file
-        if form.media_assets.featured_video.data:
-           band.media_assets.featured_video = get_video_service_and_id(form.media_assets.featured_video.data)
-        contact = Contact()
-        contact.contact_name = form.contact_details.contact_name.data
-        contact.contact_title = form.contact_details.contact_title.data
-        contact.contact_generic_title = form.contact_details.contact_generic_title.data
-        phone = phonenumbers.parse(form.contact_details.contact_numbers.phone.data, form.contact_details.contact_numbers.region.data)
-        new_phone = Phone(
-                mobile = bool(form.contact_details.contact_numbers.mobile.data),
-                number = phonenumbers.format_number(phone, phonenumbers.PhoneNumberFormat.E164)
-        )
-        contact.contact_numbers = new_phone
-        new_email = Email(
-            email_title = form.contact_details.contact_emails.email_title.data,
-            email_address = form.contact_details.contact_emails.email_address.data
-        )
-        contact.contact_emails = new_email
-        weblinks = Links()
-        weblinks.enquiries = form.enquiries_url.data
-        band.band_name= form.band_name.data
-        band.catalogue_name = de_article(form.band_name.data)
-        band.description = form.description.data
-        band.genres.clear()
-        genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]
-        band.genres = list(filter(None, set(genrelist)))
-        band.hometown= {"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data}
-        band.profile = form.profile.data
-        band.strapline = form.strapline.data
-        band.contact_details = contact
-        band.links = weblinks
-        band.band_members.clear()
-        for member in form.members.data:
-            new_member = BandMember()
-            new_member.musician = member["musician"]
-            new_member.instruments = member["instruments"]
-            band.band_members.append(new_member)
-        band.save()
-        flash("Band details updated!", "success")
-        return redirect(url_for('manage.manage_bands_home'))
-    elif request.method == "GET":
-        form.band_name.data = band.band_name
-        form.description.data = band.description
-        form.strapline.data = band.strapline
-        form.profile.data = band.profile
-        form.contact_details.contact_name.data = band.contact_details.contact_name
-        form.contact_details.contact_title.data = band.contact_details.contact_title
-        form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
-        form.contact_details.contact_generic_title.data = band.contact_details.contact_generic_title
-        form.contact_details.contact_numbers.mobile.data = band.contact_details.contact_numbers.mobile
-        form.contact_details.contact_numbers.region.data = "None"
-        form.contact_details.contact_numbers.phone.data = band.contact_details.contact_numbers.number
-        form.contact_details.contact_emails.email_title.data = band.contact_details.contact_emails.email_title
-        form.contact_details.contact_emails.email_address.data = band.contact_details.contact_emails.email_address
-        form.media_assets.featured_video.data = (("https://www.youtube.com/watch?v=" if band.media_assets.featured_video["service"] == "youtube" else "https://www.vimeo.com/"  )   +band.media_assets.featured_video["vid"]) if band.media_assets.featured_video else None
-        form.genres.data = ",".join(map(str,band.genres))
-        form.enquiries_url.data = band.links.enquiries
-    selected_county = band.hometown["county"] if band.hometown["county"] is not None else "Antrim"
-    selected_town = band.hometown["town"] if band.hometown["town"] is not None else "none"
-    genres = list_genres()
-    form_legend="Edit Band Profile"
-    return render_template("manage_band_update_form.html", form=form, genrelist=genres, form_legend="Edit Band Profile",
-                            selected_county=selected_county, selected_town=selected_town, band=band)
-
-
-@manage.route("/band/<string:bname>/delete", methods=["POST"])
-# @login_required
-def delete_band(bname):
-    band = Band.objects(band_name=bname).first() 
-    if band.created_by.id != current_user.id:
-        abort(403)
-    band.delete()
-    flash("Band has been deleted!", "success")
-    return redirect(url_for("manage.manage_bands_home"))
-
-
-'''
-
-
-def view_band_dlc(*args, **kwargs):
-    if request.view_args:
-        bname = ''
-        bname = request.view_args['bname']
-    # user = User.query.get(user_id)
-    # return [{ 'text': 'Manage My Bands', 'url': url_for('manage.manage_bands_home')}, {'text': bname, 'url': url_for('manage.preview_band', bname=bname) }]
-        return [{ 'text': 'Manage My Bands', 'url': url_for('manage.manage_bands_home')}, {'text': bname }]
-    else:
-        return []
-
-
-
-{
-  "band_name": "A Band 2", 
-  "contact_details-contact_emails-email_address": "live@live.ie", 
-  "contact_details-contact_emails-email_title": "", 
-  "contact_details-contact_name": "", 
-  "contact_details-contact_numbers-mobile": "True", 
-  "contact_details-contact_numbers-number": "", 
-  "contact_details-contact_title": "", 
-  "created_by": "", 
-  "csrf_token": "IjRjNTczOTEwNDYzODNiM2NiNWJlZjBiNDUzY2Q1ZmY5NWM3OTZiMjQi.XyGfrA.F1ACf3oApNNFfFh4eyl2UWxa3h0", 
-  "description": "a", 
-  "enquiries_url": "", 
-  "genre": "", 
-  "hometown-origin_county": "Antrim", 
-  "hometown-origin_town": "Aghagallon", 
-  "media_assets-featured_video": "", 
-  "members-0-instruments": "", 
-  "members-0-musician": "", 
-  "profile": "a", 
-  "strapline": "", 
-  "submit": "Save"
-}
 
 '''

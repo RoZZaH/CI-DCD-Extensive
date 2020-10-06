@@ -1,8 +1,13 @@
-{% extends "base.html" %}
-
 {% from "_render_field.html" import render_field %}
+{% extends "base_no_lnsb.html" %}
 
-{% block content %}
+{% block header__lns %}
+<dic id="lns--top">
+{% include "include_breadcrumbs.html" %}
+</div>
+{% endblock header__lns %}
+
+{% block main__header %}
 <header class="main__header">
 <div class="header--mgt">
 <h1>{{ title }}</h1>
@@ -11,6 +16,9 @@
 {% endif %}
 </div>
 </header>
+
+{% endblock main__header %}
+{% block main__content %}
     <form method="POST" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist.genres|safe }}" >
             {{ form.hidden_tag() }}
         <fieldset class="l-one-third" style="">
@@ -31,6 +39,10 @@
         </fieldset>
         <fieldset class="r-two-thirds">
             <legend>Band Details</legend>
+            <ul id="solo">
+                <li><input id="solo-0" name="solo" type="radio" value=0 {{ 'checked=checked' if form.solo.data==false else ''}} > <label for="solo-0">Band</label></li>
+                <li><input id="solo-1" name="solo" type="radio" value=1 {{ 'checked=checked' if form.solo.data==true else ''}} > <label for="solo-1">Solo Artist</label></li>
+            </ul>
             {{ render_field(form.band_name) }}
             {{ render_field(form.description) }}
             {{ render_field(form.strapline) }}
@@ -51,7 +63,11 @@
                 {{ form.hometown.origin_county }}
             {{ form.hometown.origin_town.label }}
                 {{ form.hometown.origin_town }}
-            {{ render_field(form.profile) }}
+            <label for="profile">Profile</label>
+            <textarea id="profile" name="profile" placeholder="Brief Bio/History, band origins and direction" required rows="7">
+            {{- form.profile.data -}}
+            </textarea>
+        
             </fieldset>
         <fieldset class="half" data-formlet="member">
             <legend>Band Members</legend>
@@ -135,7 +151,7 @@
     </form>
 </div>
 
-{% endblock content %}
+{% endblock main__content %}
 
 
 {% block javascript %}

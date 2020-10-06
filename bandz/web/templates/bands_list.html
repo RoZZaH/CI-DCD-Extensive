@@ -1,53 +1,84 @@
+{% from "_render_pages_nav.html" import render_pages_nav %}
 {% extends "base.html" %}
+<!-- HEADER LNS -->
+{% block header__lns %}
+<div id="lns--top">
+{% include "include_breadcrumbs.html" %}
+    {% if request.path[:8] == "/genres/" %}
+        <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
+            <ul>{%- for beta in alphabet.keys() -%}
+                {% set genre = request.view_args['genre'] %}
+                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="{{ url_for('public.get_by_genre', genre=genre, letter=beta) }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {%- endfor -%}</ul>
+        </nav>
+        <section class="paged-results-info" aria-label="paged results links">
+            <h1 class="headline--alphabet">{{genre|title}} bands <small>starting with{{ ' a</small> Number or $ymbol'|safe if letter == "_" else '</small> '|safe~letter|upper }}
+            <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
+            </h1>
+        <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
+        {{ render_pages_nav(bands, 'public.get_by_genre', { 'genre' : request.view_args['genre'], 'letter' : letter }) }}
+        </nav>
+        </section>
+    {% elif request.path[:5] == "/a-z/" %}
+        <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.path == '/' and not search_terms }}" aria-label="letters of the alphabet">
+            <ul>{%- for beta in alphabet.keys() -%}
+                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/a-z/{{ beta }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {%- endfor -%}</ul>
+        </nav>
+        {% if closest_letters %}
+        <h1 class="headline--alphabet">No Bands <small>starting with</small> {{ letter|upper }}!</h1>
+        {% else %}
+        <!-- section | display contents on section for mobile-->
+        <section class="paged-results-info" aria-label="paged results links">
+            <h1 class="headline--alphabet">Bands <small>starting with{{ ' a</small> Number or $ymbol'|safe if letter == "_" else '</small> '|safe~letter|upper }}
+            <br><span class="headline--strapline">{{ 'in alphabetical order' if letter != "_" else '&nbsp;'|safe }}</span>
+            </h1>
+            <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
+            {{ render_pages_nav(bands, 'public.a2z', { 'letter': letter }) }}
+            </nav>
+        </section>
+        {% endif %}
+    {% else %}
+    <p> some different route to a-z || genre</p>
+    {% endif %}
+</div>
+{% endblock header__lns %}
+
 <!-- MAIN HEADER -->
-{% block main__header %}
-{% endblock main__header %}
+{% block main__header %}{% endblock main__header %}
 <!-- CONTENT -->
 {% block main__content %}
-
-<div class="content-block--cards">
-{% if closest_letters %}
-<p>The closest alphabetical listings are start at:</p>
-<span class="wide"><p><span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[0] }}?page=1">&laquo; {{closest_letters[0]|upper }}</a></span> and 
-<span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[1] }}?page=1">{{ closest_letters[1]|upper }} &raquo;</a></span></p></span>
-<p>Does your Band start with <b>{{ letter|upper }}</b> ?</p>
-<p><a href="{{ url_for('user.register') }}">Sign up</a> today and add your band profile.</p>
-{% else %}
-
-
-{% for band in (bands.items if bands.items else bands) %} {# mongoengine queryset objects or pymong cursor (aggregations) #}
-<div class="card {{ 'centerize-card' if bands_total|int <= 1|int }}">
-    <p class="debug">{{ band.catalog_letter }}</p>
-    <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image if band.media_assets else 'band_profile_pics/defaultband.jpg' ) }})">
-    <a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter )}}"></a>
-    </div>
-    <div class="card-content">
-        <p class="headline-eyebrow">{{ band.description }}</p>    
-        <h2 class="headline"><a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter)}}">{{ band.band_name }}</a></h2>
-        <p class="headline--strapline">{{ band.strapline }}</p>
-        <p>{{ band.profile|truncate(80, False) }}</p>
-        <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
-        <ul class="genre-tags">
-            {%- for genre in band.genres[0:4] %}
-            <li>{{ genre }}</li>
-            {%- endfor %}
-        </ul>
-        <div class="card-footer">
-            <ul>
-                <li><a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter )}}" class="btn btn-subform add">More Info</a></li>
-            {%- if current_user.is_authenticated -%} {# and OWNS bands = session ? #}
-                <li class="edit"><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add">Edit</a></li>
-            {%- else -%}
-
-            {%- endif %}
-            </ul>
-        </div>
-    </div>
-</div>
-{% endfor %}
-{% endif %}
-</div>
+        {% include 'include_bands_list_cards.html' %}
 {% endblock main__content %}
 <!-- MAIN FOOTER -->
-{% block main__footer %}
-{% endblock main__footer %}
+{% block main__footer %}{% endblock main__footer %}
+<!-- FOOTER LNSBottom -->
+{% block footer__lnsb %}
+<div id="lns--bottom">
+{% if bands and request.path[:5] == "/a-z/" %}
+        <nav class="pagelinks--pagenums">
+        {{ render_pages_nav(bands, 'public.a2z', { 'letter': letter }) }}
+        </nav>
+        {% if alphabet %}
+        <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
+            <ul>{%- for beta in alphabet.keys() -%}
+                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/a-z/{{ beta }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {%- endfor -%}</ul>
+        </nav>
+        {% endif %}
+{% elif bands and request.path[:8] == "/genres/" %}
+        <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
+        {{ render_pages_nav(bands, 'public.get_by_genre', { 'genre' : genre, 'letter' : letter }) }}
+        </nav>
+        {% if alphabet %}
+        <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.path == '/' and not search_terms }}" aria-label="letters of the alphabet">
+            <ul>{%- for beta in alphabet.keys() -%}
+                {% set genre = request.view_args['genre'] %}
+                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="{{ url_for('public.get_by_genre', genre=genre, letter=beta) }}"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {%- endfor -%}</ul>
+        </nav>
+        {% endif %}
+{% else %}       
+{% endif %}
+</div>
+{% endblock footer__lnsb %}

@@ -2,21 +2,21 @@
 {% macro search_results_pages_nav(pagination_object, search_string, letter='a') %}
 <ul>
 {%- if pagination_object.has_prev -%}
-<li><a class="btn btn--pagelink prev-page" href="/?{{ search_string~'&letter='~letter~'&page='~pagination_object.prev_num }}">&laquo;prev</a></li> 
+<li><a class="btn btn--pagelink prev-page" href="/search/results/?{{ search_string~'&letter='~letter~'&page='~pagination_object.prev_num }}">&laquo;prev</a></li> 
 {%- else -%} 
 <li class="prev-page ghost">&laquo;prev</li>
 {%- endif -%} 
 {%- if pagination_object.pages > 1 -%}
     {% for page_num in pagination_object.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
         {%- if page_num -%}
-            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination_object.page == page_num }}" href="/?{{ search_string~'&letter='~letter~'&page='~page_num }}">{{ page_num }}</a></li>
+            <li><a class="btn btn--pagelink {{ 'btn--pagelink--current' if pagination_object.page == page_num }}" href="/search/results/?{{ search_string~'&letter='~letter~'&page='~page_num }}">{{ page_num }}</a></li>
         {%- else -%}
             ...
         {%- endif -%}
     {%- endfor -%}
 {%- endif -%}
 {%- if pagination_object.has_next -%}
-    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination_object.has_prev }}"><a  href="/?{{ search_string~'&letter='~letter~'&page='~pagination_object.next_num }}">next&raquo;</a></li>
+    <li class="btn btn--pagelink next-page {{ 'next-page--less' if not pagination_object.has_prev }}"><a  href="/search/results/?{{ search_string~'&letter='~letter~'&page='~pagination_object.next_num }}">next&raquo;</a></li>
 {%- else -%}
 <li class="next-page ghost">next&raquo;</li>
 {%- endif -%} 

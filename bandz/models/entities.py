@@ -57,6 +57,7 @@ class BandMember(db.EmbeddedDocument):
 class Band(db.DynamicDocument):
     created_by = db.ReferenceField('User') 
     date_created = db.DateTimeField(required=True, default=datetime.utcnow)
+    date_updated = db.DateTimeField(default=datetime.utcnow)
     band_name = db.StringField(unique=True, max_length=120, required=True)
     catalogue_name = db.StringField(max_length=120, required=True)
     solo = db.BooleanField(default=0)
