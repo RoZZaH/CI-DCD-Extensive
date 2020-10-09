@@ -1,20 +1,43 @@
 
-<div class="content-block--cards">
+<div class="{{ 'content-block full-page' if closest_letters else 'content-block--cards' }}">
 {% if closest_letters %}
-<p>The closest alphabetical listings are start at:</p>
-<span class="wide"><p><span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[0] }}?page=1">&laquo; {{closest_letters[0]|upper }}</a></span> and 
-<span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[1] }}?page=1">{{ closest_letters[1]|upper }} &raquo;</a></span></p></span>
-<p>Does your Band start with <b>{{ letter|upper }}</b> ?</p>
-<p><a href="{{ url_for('user.register') }}">Sign up</a> today and add your band profile.</p>
+<div id="closest-letters">
+    <p>The closest results start at:</p>
+    {% if request.path[:5] == "/a-z/" %}
+    <span class="wide"><p>
+    <span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[0] }}?page=1">&laquo; {{closest_letters[0]|upper }}</a></span>
+    &nbsp;and&nbsp; 
+    <span class="btn btn--pagelink"><a href="/a-z/{{ closest_letters[1] }}?page=1">{{ closest_letters[1]|upper }} &raquo;</a></span></p></span>
+    {% elif request.path[:8] == "/genres/" %}
+    {% set genre = request.view_args['genre'] %}
+    <span class="wide"><p><span class="btn btn--pagelink"><a href="{{ url_for('public.get_by_genre', genre=genre, letter=closest_letters[0], page=1) }}">&laquo; {{closest_letters[0]|upper }}</a></span> and 
+    <span class="btn btn--pagelink"><a href="{{ url_for('public.get_by_genre', genre=genre, letter=closest_letters[1], page=1) }}">{{ closest_letters[1]|upper }} &raquo;</a></span></p></span>
+    {% else %}
+    <span class="wide"><p>
+    {# {{ request.args.get('letter') }}
+    {{ request.args.get('letter') is defined }}
+    {{ request.args.get('letter') is none }}
+    {{ request.args.get('letter') is not none }} #}
+    {% if (closest_letters[0]|lower == 'a' and (request.args.get('letter') is not none and request.args.get('letter')|lower != 'a')) or (closest_letters[0] != request.args.get('letter') and request.args.get('letter') is not none) %}
+    <span class="btn btn--pagelink"><a href="{{ '/search/results?'~search~'&letter='~closest_letters[0]~'&page=1' }}">&laquo; {{closest_letters[0]|upper }}</a></span>
+    &nbsp;and&nbsp; 
+    {% endif %}
+    {% if closest_letters[0]|int != request.args.get('letter')|lower  %}
+    <span class="btn btn--pagelink"><a href="{{ '/search/results?'~search~'&letter='~closest_letters[1]~'&page=1' }}">{{ closest_letters[1]|upper }} &raquo;</a></span></p></span>
+    {% endif %}
+    <p>Does your Band start with <b>{{ letter|upper }}</b> ?</p>
+    <p><a href="{{ url_for('user.register') }}">Sign up</a> today and add your band profile.</p>
+    {% endif %}
+</div>
 {% else %}
 {% for band in (bands.items if bands.items else bands) %} {# mongoengine queryset objects or pymong cursor (aggregations) #}
 <div class="card {{ 'centerize-card' if bands_total|int <= 1|int }}">
     <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image if band.media_assets else 'band_profile_pics/defaultband.jpg' ) }})">
-    <a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter )}}"></a>
+    <a href="{{ url_for('public.band_detail', bname=band.band_name, letter=band.letter )}}"></a>
     </div>
     <div class="card-content">
         <p class="headline-eyebrow">{{ band.description }}</p>    
-        <h2 class="headline"><a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter)}}">{{ band.band_name }}</a></h2>
+        <h2 class="headline"><a href="{{ url_for('public.band_detail', bname=band.band_name, letter=band.letter)}}">{{ band.band_name }}</a></h2>
         <p class="headline--strapline">{{ band.strapline }}</p>
         <p>{{ band.profile|truncate(80, False) }}</p>
         <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
@@ -25,9 +48,10 @@
         </ul>
         <div class="card-footer">
             <ul>
-                <li><a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter )}}" class="btn btn-subform add">More Info</a></li>
+                <li><a href="{{ url_for('public.band_detail', bname=band.band_name, letter=band.letter )}}" class="btn btn-subform add">More Info</a></li>
             {%- if current_user.is_authenticated -%} {# and OWNS bands = session ? #}
-                <li class="edit"><a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add">Edit</a></li>
+            {% set band_view = 'recent' if (request.view_args['band_view'] is undefined or request.view_args['band_view'] == 'recent') else 'alpha' %}
+                <li class="edit"><a href="{{ url_for('manage.update_band_profile', bname=band.band_name, letter=band.letter, band_view=band_view ) }}" class="btn btn-subform add">Edit</a></li>
             {%- else -%}
 
             {%- endif %}

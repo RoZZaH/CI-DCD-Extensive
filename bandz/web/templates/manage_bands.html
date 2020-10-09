@@ -3,15 +3,36 @@
 {% extends "base.html" %}
 {% block header__lns %}
 <div id="lns--top">
-    {% include "include_breadcrumbs.html" %}
-    <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.view_args['band_view'] == 'recent'|string or request.view_args['band_view'] is undefined }}" aria-label="letters of the alphabet">
-            <ul>{%- for beta in alphabet.keys() -%}
-                <li class="{{ 'btn--pagelink--current' if beta == letter}}"><a href="/manage/bands/alpha/{{ beta }}/"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
-                {%- endfor -%}</ul>
+{% include "include_breadcrumbs.html" %}
+{% if request.view_args['band_view'] == 'recent'|string or request.view_args['band_view'] is undefined %}
+    <h1 class="headline--alphabet">Recently Edited Bands</h1>
+<!-- paging first -->
+    <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
+        {% set band_view = 'recent' if (request.view_args['band_view'] is undefined or request.view_args['band_view'] == 'recent') else 'alpha' %}
+        {% set letter = request.view_args['letter'] if 'letter' in request.view_args else 'a' %}
+        {{ render_pages_nav(bands, 'manage.manage_bands_home', kwargs={"letter": letter , "genre":'', 'band_view': band_view }) }}
+    </nav>
+    <hr class="hr--breadcrumbs">
+    <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.view_args['band_view'] == 'recent'|string or request.view_args['band_view'] is undefined }} {{ 'manage-home' if request.path[:8] == '/manage/' }} " aria-label="letters of the alphabet">
+        <ul>{% for beta in alphabet.keys() -%}
+            <li class=""><a href="/manage/bands/alpha/{{ beta }}/"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+            {%- endfor %}
+        </ul>
+    </nav>
+{% else %}
+    <nav class="pagelinks pagelinks--letters {{ 'pagelinks--letters-home' if request.view_args['band_view'] == 'recent'|string or request.view_args['band_view'] is undefined }} {{ 'manage-home' if request.path[:8] == '/manage/' }}" aria-label="letters of the alphabet">
+            <ul>{% for beta in alphabet.keys() -%}
+                {% set letter = request.view_args['letter'] if request.view_args['letter'] is defined  %}
+                <li class="{{ 'btn--pagelink--current' if beta == letter }}"><a href="/manage/bands/alpha/{{ beta }}/"><span class="ltr">{{ '#' if beta == "1" else beta }}</span><span class="nbr">{{alphabet[beta]}}</span></a></li> 
+                {%- endfor %}
+            </ul>
     </nav>
     <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
-        {{ render_pages_nav(bands, 'manage.manage_bands_home', kwargs={"letter":'', "genre":'', "band_view": 'recent' if request.view_args['band_view'] == 'recent'|string or request.view_args['band_view'] is undefined else 'alpha'}) }}
+        {% set band_view = 'recent' if (request.view_args['band_view'] is undefined or request.view_args['band_view'] == 'recent') else 'alpha' %}
+        {% set letter = request.view_args['letter'] if 'letter' in request.view_args else 'a' %}
+        {{ render_pages_nav(bands, 'manage.manage_bands_home', kwargs={"letter": letter , "genre":'', 'band_view': band_view }) }}
     </nav>
+{% endif %}
 </div>
 {% endblock header__lns %}
 {% block main__header %}
@@ -28,12 +49,13 @@
 {% block main__content %}
 <div class="manage--bands">
 {% for band in bands.items %}
+{% set band_view = 'recent' if (request.view_args['band_view'] is undefined or request.view_args['band_view'] == 'recent') else 'alpha' %}
 <div class="card">
     <div class="card-img" style="background-image: url({{ url_for('static_media', filename='band_profile_pics/'+band.media_assets.featured_image) }})">
-        <a href="{{ url_for('public.band_detail', bname=band.band_name, catalog_letter=band.catalog_letter)}}"></a>
+        <a href="{{ url_for('manage.preview_band', band_view=band_view, bname=band.band_name, letter=band.catalogue_name[0]|lower)}}"></a>
     </div>
     <div class="card-content">
-        <h2 class="card-title"><a href="{{ url_for('public.band_detail', bname=band.band_name , catalog_letter=band.catalog_letter ) }}">{{ band.band_name }}</a></h2> {#  {{ band._cls }} #}
+        <h2 class="card-title"><a href="{{ url_for('manage.preview_band', band_view=band_view , bname=band.band_name , letter=band.catalogue_name[0]|lower ) }}">{{ band.band_name }}</a></h2> {#  {{ band._cls }} #}
         <p class="card-body">{{ band.description }}</p>    
         <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
         <ul>
@@ -43,7 +65,7 @@
         </ul>
         <div class="card-footer">
             <ul>
-                <li><a href="{{ url_for('manage.update_band_profile', bname=band.band_name, band_view='alpha' if 'band_view' in request.args and request.args['band_view'] != 'recent' else 'recent' , catalog_letter=band.catalogue_name[0] ) }}" class="btn btn-subform add edit">Edit</a></li>
+                <li><a href="{{ url_for('manage.update_band_profile', bname=band.band_name, letter=band.catalogue_name[0]|lower, band_view=band_view ) }}" class="btn btn-subform add edit">Edit</a></li>
             </ul>
         </div>
     </div>

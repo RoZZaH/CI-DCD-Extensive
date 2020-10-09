@@ -36,14 +36,27 @@
   background: tomato !important;
 }
 
+/* Bands by Location Leaderboard 
+ * Ref Caler Edwards - MultiLevel Dropdown Menu Tutorial
+ * https://www.youtube.com/watch?v=EalgZXjDR2Q
+ */
 .leaderboard {
-list-style: none;
+  list-style: none;
+  width: 100%;
+  margin: 3em 0 7em;
 }
 
-.leaderboard * {
+.leaderboard ul {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.leaderboard li {
   list-style: none;
-  margin-left: 0;
+  padding: .5em 1em;
   padding-left: 0;
+  margin: .5em .75em;
 }
 
 .leaderboard input[type="checkbox"] {
@@ -55,7 +68,17 @@ list-style: none;
 }
 
 .leaderboard-town li {
-  padding-left: .5em;
+  margin-left: 2em;
+  padding-left: .75em;
+}
+
+.leaderboard-town li::before {
+  content: "\25B8";
+  color: $steel-grey;
+  font-weight: bold;
+  display: inline-block;
+  width: 2em; 
+  margin-left: -1.75em;
 }
 
 .leaderboard-county, .leaderboard-town {
@@ -72,4 +95,50 @@ list-style: none;
 .county:checked ~ .leaderboard-town{
   display: block;
 }
+
+.leaderboard input + .arrow {
+  transform: rotate(-90deg);
+  transition: 0.1s;
+}
+
+.leaderboard input:checked + .arrow {
+  transform: rotate(0deg);
+  transition: 0.1s;
+}
+
+.arrow {
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
+  float: left;
+  z-index: 0;
+  margin-left: 1em; 
+  margin-top: 0.2em;
+  margin-right: 1.5em;
+}
+
+.leaderboard label {
+  margin: 0;
+}
+
+.leaderboard label:hover {
+  cursor: pointer;
+  display: inline-block;
+  z-index: 3;
+  position: relative;
+}
+
+.leaderboard-town a {
+  color: $text-secondary;
+  text-decoration: none;
+  border-bottom: 1px dotted $steel-grey;
+}
+
+.leaderboard-town a:hover,
+.leaderboard-town a:focus {
+  color: $text-main;
+  border-bottom: 1px solid $steel-grey;
+}
+
+
 

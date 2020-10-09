@@ -160,6 +160,13 @@ dl.enquiries {
   grid-area: main__content;
 }
 
+#closest-letters {
+  margin: 2em auto;
+  width: 80%;
+  text-align: center;
+  padding: 5em;
+}
+
 .content-block--cards {
   display: grid;
   grid-gap: 1.5em 1em;
@@ -185,13 +192,6 @@ dl.enquiries {
 
 .full-page{
   background-color: $body-bg;
-  // display: grid;
-  // grid-template-rows: auto, 1fr, auto;
-  // grid-template-columns: minmax(1em,1fr) 10fr minmax(1em,1fr);
-  // grid-template-areas: 
-  //                 ' . main__header .'
-  //                 ' . main__content .'
-  //                 ' . main__footer . ';
   @media (min-width: 600px){
     background-color: rgba(255, 254, 241, 0.8);
   }
@@ -252,7 +252,7 @@ dl.enquiries {
 #del-modal {
     display: none;
     position:fixed; 
-    top: calc(50% - 100px); // half of heiidth
+    top: calc(50% - 100px); // half of height
     left: calc(50% - 150px); // half of width
     width: 320px;
     z-index: 1000;
@@ -260,7 +260,6 @@ dl.enquiries {
     border: 6px double red;
     padding: .8em .8em 1em;
     line-height: 1.5em;
-    // position: absolute
 }
 
 #del-modal h4 {

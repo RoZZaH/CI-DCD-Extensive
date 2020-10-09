@@ -30,18 +30,18 @@ PER_PAGE = SAMPLE_SIZE
 
 def band_dlc(*args,**kwargs):
     bname = request.view_args['bname'] if 'bname' in request.view_args else None
-    catalog_letter = request.args.get('catalog_letter') if 'catalog_letter' in request.args else de_article(bname)[0]
+    letter = request.args.get('letter') if 'letter' in request.args else de_article(bname)[0]
     if request.referrer and request.referrer != request.url_root:
         referrer = request.referrer.replace(request.url_root,'') if request.referrer != request.url_root else ''
         referrer = referrer.split("/",2) if len(referrer) > 0 else ['home']
         print(referrer)
         if referrer[0] == 'genres':
-            return [{'text': 'Genre', 'url': url_for('public.by_genre')}, {'text': referrer[1].title(), 'url': url_for('public.get_by_genre', genre=referrer[1].lower(), letter=catalog_letter.lower()) }, {'text': bname, 'url': url_for('public.band_detail', bname=bname, catalog_letter=catalog_letter.lower())}]
+            return [{'text': 'Genre', 'url': url_for('public.by_genre')}, {'text': referrer[1].title(), 'url': url_for('public.get_by_genre', genre=referrer[1].lower(), letter=letter.lower()) }, {'text': bname, 'url': url_for('public.band_detail', bname=bname, letter=letter.lower())}]
         if referrer[0] == 'search':
             return [{'text': 'search results' }]
         if (referrer[0] == 'home' or referrer[0] == 'a-z'):  
-            if bname and catalog_letter:
-                return [{'text': 'A-Z', 'url': url_for('public.a2z') }, { 'text': catalog_letter.upper(), 'url': url_for('public.a2z', letter=catalog_letter.lower()) }, {'text': bname, 'url': url_for('public.band_detail', bname=bname, catalog_letter=catalog_letter.lower())}]
+            if bname and letter:
+                return [{'text': 'A-Z', 'url': url_for('public.a2z') }, { 'text': letter.upper(), 'url': url_for('public.a2z', letter=letter.lower()) }, {'text': bname, 'url': url_for('public.band_detail', bname=bname, letter=letter.lower())}]
             if bname:
                 return [{'text': 'A-Z', 'url': url_for('public.a2z') }, {'text': bname, 'url': url_for('public.band_detail', bname=bname)}]
 
@@ -50,10 +50,10 @@ def band_dlc(*args,**kwargs):
 @public.route("/band/<string:bname>/", methods=('GET', 'POST') )
 @register_breadcrumb(public, '.band_detail', '', dynamic_list_constructor=band_dlc)
 def band_detail(bname=None, letter='a'):
-    catalog_letter = request.args.get("catalog_letter")
+    letter = request.args.get("letter")
     band = Band.objects(band_name=bname).first()
-    if catalog_letter:
-        return render_template("band_detail.html", band=band, catalog_letter=catalog_letter,  display_breadcrumbs=True)
+    if letter:
+        return render_template("band_detail.html", band=band, letter=letter,  display_breadcrumbs=True)
     else:
         return render_template("band_detail.html", band=band, display_breadcrumbs=True)
 
@@ -79,8 +79,12 @@ def closest_letters(alphaset, letter):
         if n < 0:
             neg = n
         else:
+            try:
+                neg 
+            except NameError:
+                neg = 0
             pos = n
-            return (alphabet[pos_letter+neg], alphabet[pos_letter+pos])
+            return (ALPHABET[pos_letter+neg], ALPHABET[pos_letter+pos])
 
 
 @public.route("/a-z/", defaults={'letter': 'a'})
@@ -95,7 +99,7 @@ def a2z(letter, bname=None):
                         "numbers_by_letter": [ {"$group": { "_id": { "$substr": [ "$catalogue_name", 0, 1]}, 
                                                             "number_of_bands": { "$sum": 1 }}} ],
                         "bands_by_letter": [ { "$match": { "catalogue_name": { "$regex": f"^{letter.upper()}" } } },
-                                             { "$project": {"_id": 1, "band_name": 1, "catalogue_name" :1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "catalog_letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]}}}},
+                                             { "$project": {"_id": 1, "band_name": 1, "catalogue_name" :1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]}}}},
                                              { "$sort" : { "catalogue_name": 1}}]
                     }
                 }]
@@ -111,7 +115,7 @@ def a2z(letter, bname=None):
         return render_template("bands_list.html", bands=bands_by_letter, count=count, bands_total=bands_total, display_breadcrumbs=True, alphabet=alphabet, letter=letter)
     else:
         alphaset = [ ltr for ltr in alphabet.keys() if alphabet[ltr] > 0]
-        return render_template("bands_list.html", letters_tup = closest_letters(alphaset, letter), display_breadcrumbs=True, alphabet=alphabet, letter=letter) #closest 
+        return render_template("bands_list.html", closest_letters = closest_letters(alphaset, letter), display_breadcrumbs=True, alphabet=alphabet, letter=letter) #closest 
 
 
 
@@ -147,7 +151,7 @@ def get_by_genre(genre, letter, page):
                         "numbers_by_letter": [ {"$group": { "_id": { "$substr": [ "$catalogue_name", 0, 1]}, 
                                                             "number_of_bands": { "$sum": 1 }}} ],
                         "bands_by_letter": [{ "$match": { "catalogue_name": { "$regex": f"^{str(letter.upper())}" } } },
-                                            { "$project": {"_id": 1, "catalogue_name":1, "band_name": 1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "catalog_letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]}}}},
+                                            { "$project": {"_id": 1, "catalogue_name":1, "band_name": 1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]}}}},
                                             { "$sort" : { "catalogue_name": 1}}
                                             ]
                     }
@@ -170,7 +174,7 @@ def get_by_genre(genre, letter, page):
 @register_breadcrumb(public, '.', 'Bands')
 def home():
     pipeline = [{"$sample": {"size" : SAMPLE_SIZE}},
-                {"$project": {"_id": 1, "band_name": 1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "catalog_letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]} }}}]
+                {"$project": {"_id": 1, "band_name": 1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]} }}}]
     bands = list(Band.objects().aggregate(pipeline))
     bands = Pagination(bands, 1, SAMPLE_SIZE)
     count = bands.pages
@@ -198,6 +202,7 @@ def results():
     filters = {}
     text_query = None
     search = None
+    town = None
     page = request.args.get("page", 1, type=int)
     if request.args:
         text_query = request.args.get("q")
@@ -209,10 +214,19 @@ def results():
         letter = request.args.get("letter") if "letter" in request.args else "a"
         letter = '_' if letter == '1' else letter
         counties = request.args.getlist("counties")
+        print(counties)
         town = request.args.get("town")
         _request_arqs = request.args.to_dict(flat=False)
         _search = { key: _request_arqs[key] for key in _request_arqs if key not in ["page", "letter", "munster", "leinster", "connaght", "ulster"] } #re.sub('\=[0-9]*', '=', search)
         search = urllib.parse.urlencode(_search, doseq=True)
+        
+        # towns
+        if town:
+            search_terms += f"in {town}, County {counties[0]}"
+            bands = Band.objects(hometown__town__iexact=town).paginate(per_page=PER_PAGE, page=page)
+            search_terms = search_terms.replace('bands', 'band') if bands.total == 1 else search_terms
+            return render_template("bands_list_results.html", bands=bands, search=search, count=bands.pages, bands_total=bands.total, search_terms=search_terms)
+        
         # build search_terms text string
         if len(genres) > 0:
             if andor == 'f':
@@ -239,18 +253,13 @@ def results():
                     filters['genres__all']=genres
                 else:
                     filters['genres__in']=genres
-        
+
         if len(counties) > 0:
             if len(counties) == 1:
                     county = counties.pop()
                     filters['hometown__county__iexact'] = county
             else:
                 filters['hometown__county__in'] = counties
-
-        if town is None or len(town) == 0:
-            pass
-        else:
-            filters['hometown__town__iexact'] = town
 
     queryset = Q(**filters) # use _AND or _OR Q Node Combinations
     # print(pipeline)
@@ -261,10 +270,9 @@ def results():
                         "numbers_by_letter": [ {"$group": { "_id": { "$substr": [ "$catalogue_name", 0, 1]}, 
                                                             "number_of_bands": { "$sum": 1 }}} ],
                         "bands_by_letter":   [ { "$project": {"_id": 1, "band_name": 1, "strapline": 1, "hometown": 1,
-                                                              "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "catalog_letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]}}}} ]
+                                                              "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]}}}} ]
                     }}]
         result = list(bands.aggregate(pipeline))[0]
-        print(result)
         bands = Pagination(result["bands_by_letter"], page, 12)
         _alphabet = 'abcdefghijklmnopqrstuvwxyz_'
         alphabet = { obj["_id"].lower():int(obj["number_of_bands"]) for obj in result["numbers_by_letter"] }
@@ -274,7 +282,7 @@ def results():
         if bands.total > 0:
             bands_total = bands.total
             search_terms = search_terms.replace('bands', 'band') if bands_total == 1 else search_terms
-            return render_template("bands_list_results.html", bands=bands, search=search, count=count, bands_total=bands_total, search_terms=search_terms, alphabet=None, letter=letter)
+            return render_template("bands_list_results.html", bands=bands, search=search, count=count, bands_total=bands_total, search_terms=search_terms, letter=letter)
     
     else:
         if not filters: # mobile test, smaller PER_PAGE?
@@ -285,7 +293,7 @@ def results():
                         "numbers_by_letter": [ {"$group": { "_id": { "$substr": [ "$catalogue_name", 0, 1]}, 
                                                             "number_of_bands": { "$sum": 1 }}} ],
                         "bands_by_letter": [{ "$match": { "catalogue_name": { "$regex": f"^{letter.upper()}" } } },
-                                            {"$project": {"_id": 1, "band_name": 1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "catalog_letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]} }}},
+                                            {"$project": {"_id": 1, "band_name": 1, "strapline": 1, "hometown": 1, "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]} }}},
                                             {"$sort": { "catalogue_name": 1 }}]
                         }}]
             result = list(Band.objects.filter(queryset).aggregate(pipeline))[0]
@@ -301,7 +309,9 @@ def results():
                 search_terms += f'; there are {total_bands_in_query} resullts in total - use the alphabet to navigate between them.'
                 return render_template("bands_list_results.html", bands=bands, search=search, count=count, bands_total=bands_total, search_terms=search_terms, alphabet=alphabet, letter=letter)
             else:
-                return 'for zero bands closest'
+                alphaset = [ ltr for ltr in alphabet.keys() if alphabet[ltr] > 0]
+                return render_template("bands_list_results.html", closest_letters=closest_letters(alphaset, letter), search=search, display_breadcrumbs=True, alphabet=alphabet, letter=letter)
+    
 
 
 @public.route('/location')

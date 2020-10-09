@@ -63,7 +63,7 @@ def initial_setup():
 @register_breadcrumb(user, '.register', 'Register')
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("public.home"))
+        return redirect(url_for("manage.mhome"))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data).decode("utf-8")
@@ -78,14 +78,14 @@ def register():
 @register_breadcrumb(user, '.login', 'Login')
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("manage.manage_bands_home"))
+        return redirect(url_for("user.account"))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(email=form.email.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get("next")
-            return redirect(next_page) if next_page else redirect(url_for("manage.manage_bands_home"))
+            return redirect(next_page) if next_page else redirect(url_for("manage.mhome"))
         else:
             flash(f"Login Unsuccessful. Please check email and password", "danger")
     return render_template("login.html", form=form, display_breadcrumbs=True)

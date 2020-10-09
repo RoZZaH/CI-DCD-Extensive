@@ -7,29 +7,32 @@
 {% block main__content %}
 
 <ul class="leaderboard">
-{% for province in provinces %}
-    <li class="{{ province._id|lower }}">
-        <input type="checkbox" id="{{ province._id | lower}}" class="province"><label for="{{ province._id|lower }}">{{province._id}}</label>
+{%- for province in provinces -%}
+    <li class="{{ province._id|lower }} leaderboard-province">
+        <input type="checkbox" id="{{ province._id | lower}}" class="province">
+        <img src="/img/arrow.png" class="arrow">
+        <label for="{{ province._id|lower }}">{{province._id}}</label>
         <ul class="leaderboard-county">
-        {% for county in province.counties|sort(attribute='county') %}
+        {%- for county in province.counties|sort(attribute='county') -%}
         <li>
-            <input type="checkbox" id="{{  county.county  | lower}}" class="county"><label for="{{ county.county  | lower}}">Co. {{ county.county }}</label>
+            <input type="checkbox" id="{{  county.county  | lower}}" class="county">
+            <img src="/img/arrow.png" class="arrow">
+            <label for="{{ county.county  | lower}}">Co. {{ county.county }}</label>
             {% if county.no_of_bands_per_county > 0 %}
-                <a href="/?counties={{ county.county|title }}" class="no_of_bands">&nbsp;<b>{{ county.no_of_bands_per_county|string }}</b></a> <!-- county -->
+                <a href="/search/results/?counties={{ county.county|lower }}" class="no_of_bands">&nbsp;<b>{{ county.no_of_bands_per_county|string }}</b></a> <!-- county -->
             {% else %}
                 &nbsp;<small>{{ county.no_of_bands_per_county|string }}</small>
             {% endif %}
             <ul class="leaderboard-town">
-            {% for countytowns in county.towns %}
-                <li>{{ countytowns.town }} {% if countytowns.no_of_bands > 0 %}| <a href="/?town={{ countytowns.town|title }}" class="no_of_bands">{{ countytowns.no_of_bands|string }}</a>{% endif %}</li>
-
-            {% endfor %}
+            {%- for countytowns in county.towns %}
+                <li>{% if countytowns.no_of_bands > 0 %}<a href="/search/results/?town={{ countytowns.town|title }}&counties={{ county.county }}">{{ countytowns.town }} | <span class="no_of_bands">{{ countytowns.no_of_bands|string }}</span></a>{% else %}{{ countytowns.town }}{% endif %}</li>
+            {% endfor -%}
             </ul>
         </li>
-        {% endfor %}
+        {%- endfor -%}
         </ul>
     </li>
-{% endfor %}
+{%- endfor -%}
 </ul>
 {% endblock main__content %}
 

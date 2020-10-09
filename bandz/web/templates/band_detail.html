@@ -1,7 +1,7 @@
 {% extends "base_no_lnsb.html" %}
 {% block header__lns %}
 <div id="lns--top">
-    {# {% include "include_breadcrumbs.html" %} #}
+    {% include "include_breadcrumbs.html" %}
 </div>
 {% endblock header__lns %}
 {% block main__content %}
@@ -16,7 +16,8 @@
         </div>
     {% if current_user.is_authenticated %} 
         <div class="controls">
-            <a href="{{ url_for('manage.update_band_profile', bname=band.band_name ) }}" class="btn btn-subform add" >Edit Band</a>
+        {% set band_view = 'recent' if (request.view_args['band_view'] is undefined or request.view_args['band_view'] == 'recent') else 'alpha' %}
+            <a href="{{ url_for('manage.update_band_profile', bname=band.band_name, letter=band.catalogue_name[0], band_view=band_view ) }}" class="btn btn-subform add" >Edit Band</a>
         </div>
     {% endif %}
     <!-- /header--mgt -->

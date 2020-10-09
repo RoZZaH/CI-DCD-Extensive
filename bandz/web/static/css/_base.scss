@@ -1,16 +1,15 @@
 * {
     box-sizing: border-box;
-    }
+}
 
 html {
-font-size: 16px;
-font-family: 'Montserrat', sans-serif;
-// font-family: Georgia, serif;
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 body {
-background-color: $body-bg;
-color: $text-main;
+  background-color: $body-bg;
+  color: $text-main;
 }
 
  /* TYPOGRAPHY */
@@ -124,10 +123,16 @@ hr {
 }
 
 .hr--breadcrumbs {
-  height: 1px;
-  color: rgb(181, 181, 181);
-  background: $lns-bg;
-  margin: 0.5em 0;
+  display: none; 
+  @media (min-width: 600px){
+    display: block;
+    height: 1px;
+    color: $text-muted;
+    background: $text-muted;
+    text-align: center;
+    margin: .75em auto;
+    width: 98%;
+  }
 }
 
 
