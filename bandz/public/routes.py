@@ -34,7 +34,7 @@ def band_dlc(*args,**kwargs):
     if request.referrer and request.referrer != request.url_root:
         referrer = request.referrer.replace(request.url_root,'') if request.referrer != request.url_root else ''
         referrer = referrer.split("/",2) if len(referrer) > 0 else ['home']
-        print(referrer)
+        #print(referrer)
         if referrer[0] == 'genres':
             return [{'text': 'Genre', 'url': url_for('public.by_genre')}, {'text': referrer[1].title(), 'url': url_for('public.get_by_genre', genre=referrer[1].lower(), letter=letter.lower()) }, {'text': bname, 'url': url_for('public.band_detail', bname=bname, letter=letter.lower())}]
         if referrer[0] == 'search':
@@ -183,7 +183,7 @@ def home():
         alphabet = { key:0 for key in ALPHABET }
         return render_template("bands_list_home.html", bands=bands, count=count, bands_total=bands_total, display_breadcrumbs=False, alphabet=alphabet)
     else:
-        return redirect(url_for('user.setup'))
+        return redirect(url_for('user.initial_setup'))
 
 
 @public.route('/search', methods=('GET', 'POST'))
@@ -214,7 +214,7 @@ def results():
         letter = request.args.get("letter") if "letter" in request.args else "a"
         letter = '_' if letter == '1' else letter
         counties = request.args.getlist("counties")
-        print(counties)
+        #print(counties)
         town = request.args.get("town")
         _request_arqs = request.args.to_dict(flat=False)
         _search = { key: _request_arqs[key] for key in _request_arqs if key not in ["page", "letter", "munster", "leinster", "connaght", "ulster"] } #re.sub('\=[0-9]*', '=', search)
@@ -346,7 +346,6 @@ def by_location():
                 { "$group": { "_id": "$province", "counties": { "$push": {"county": "$counties", "no_of_bands_per_county": "$no_bands_per_county",  "towns": "$towns"} } }}
     ]
     provinces = Towns.objects.aggregate(pipeline)
-    #return jsonify(list(provinces))
     return render_template("provinces.html", provinces=provinces, fullpage=True, display_breadcrumbs=True)
 
 

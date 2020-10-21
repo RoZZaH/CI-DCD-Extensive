@@ -1,0 +1,66 @@
+[{ 
+    "band_name" : "A House", 
+    "catalogue_name" : "A-House", 
+    "solo" : false, 
+    "profile" : "The first single from I Am The Greatest helped both sales and appeal. 'Endless Art', a shopping list litany of deceased cultural icons, is one of the best Irish rock singles of all time. A simple idea executed with style and intelligence, Dave Couse is aware that the song could become a creative albatross around the band's collective neck. \"It depends on whether we allow it to be. I don't think A House are like that. Our feeling is that 'Endless Art' is one good song, so why not have a few more?\"There are a hundred deadbeat Irish rock wannabees for every A-House, who have just released their fifth and best album No More Apologies. Alan Corr met guitarist Fergal Bunbury and vocalist Dave Couse to talk begrudgery, failure and good songwriting. Every time A House release a record (which is refreshingly often) three things happen. First, the Irish rock media is divided down the middle between those who dismiss them as whinging failures and those who proclaim them a national institution who've made consistently great music. Second, at least 30,000 people go out and buy the new album. Third, and most important, the band themselves get on with recording the next one.", 
+    "description" : "Intelligent Indie Rock from Dublin", 
+    "genres" : [
+        "indie", 
+        "rock"
+    ], 
+    "strapline" : "critical acclaim without commerical concern", 
+    "hometown" : {
+        "town" : "Dublin City", 
+        "county" : "Dublin"
+    }, 
+    "contact_details" : {
+        "contact_name" : "Keith Cullen", 
+        "contact_title" : "M.D. Setanta Records", 
+        "contact_generic_title" : "Enquiries", 
+        "contact_emails" : {
+            "email_title" : "Bookings", 
+            "email_address" : "kcullen@setantarecords.com"
+        }, 
+        "contact_numbers" : {
+            "mobile" : false, 
+            "number" : "+35316078894"
+        }
+    }, 
+    "links" : {
+        "refname" : "Weblinks", 
+        "websites" : {
+
+        }, 
+        "social_media" : {
+
+        }, 
+        "music" : {
+
+        }
+    }, 
+    "media_assets" : {
+        "featured_image" : "defaultband.jpg", 
+        "featured_video" : {
+            "service" : "youtube", 
+            "vid" : "cDo6Lgylsjg"
+        }
+    }, 
+    "band_members" : [
+        {
+            "musician" : "Dave Couse", 
+            "instruments" : "vocals"
+        }, 
+        {
+            "musician" : "Fergal Bunbury", 
+            "instruments" : "guitar"
+        }, 
+        {
+            "musician" : "Martin Healy", 
+            "instruments" : "bass"
+        }, 
+        {
+            "musician" : "Dermot Wylie", 
+            "instruments" : "drums"
+        }
+    ]
+}]

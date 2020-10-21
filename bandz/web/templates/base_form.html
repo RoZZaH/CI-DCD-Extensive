@@ -21,47 +21,35 @@
     {% endassets %}
 </head>
 <body>
-<div id="wrapper" class="debug">
-    <header class="form-grid header--branding">
-    <nav class="main-menu">
-        <div class="logo">
-        <a href="{{ url_for('public.results') }}">B<span>a</span>nd<span>z</span></a>
-        </div>
-        <div class="navigation">
-                {# {{ nav.gns.render(renderer='just_gns') }} #}
-        <!-- a mobile menu toggle -->
-        <label for="mtoggle">&#9776;</label><input type="checkbox" id="mtoggle" style="margin: 0">
-        </div>
-        <div class="mnav">
-        {%- if current_user.is_authenticated -%}
-            {{ nav.mob_in.render(renderer='just_li') }}
-        {% else %}
-            {{ nav.mob_out.render(renderer='just_li') }}
-        {% endif %}
-        </div>
-    </nav>
-    <!-- /HEADER -->
-    </header>
-    <main class="main-grid content-area {{ 'has-sidebar' if sidebar }} {{ 'auth' if current_user.is_authenticated  }}">
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<header id="navigation">
+<!-- GNS -->
+{% include "_include_header_gns.html" %}
+<!--  LNS -->
+{% block header__lns %}{% endblock header__lns %}
+<!-- FLASH MSG -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<!-- /HEADER -->
+</header>
+<main class="main-grid content-area {{ 'form-page' if formpage }} {{ 'auth' if current_user.is_authenticated  }}">
     {% block main__header %}{% endblock main__header %}
     {% block main__content %}{% endblock main__content %}
     {% block main__footer %}{% endblock main__footer %}
-    </main>
-    {% block form__footer %}{% endblock form__footer %}
-   
+</main>
+<div class="spacer-3em"></div>
+<footer id="footer">
+    <!-- LNS BOTTOM NONE -->
+    {% include '_include_footer_end.html' %}
+    <!-- /FOOTER -->
+</footer>
     {% block javascript %}{% endblock javascript %}
     <!-- / MAIN -->
-<!-- / wrapper -->
-</div>
 </body>
 </html>

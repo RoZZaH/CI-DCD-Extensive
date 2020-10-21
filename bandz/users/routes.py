@@ -23,7 +23,7 @@ def setup_towns():
         file_data = json.load(f)
     townz = []
     for town in file_data:
-            townz.append(Towns(**town))
+        townz.append(Towns(**town))
     Towns.objects.insert(townz)
     return True
 
@@ -35,7 +35,7 @@ def initial_setup():
         hashed_password = generate_password_hash(form.password.data).decode("utf-8")
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         user.save()
-        flash(f"Account created for {form.username.data} - Now Adding Bands! You'll be redirected shortly.", "success")
+        flash(f"Account created for {form.username.data} -  Bands Added! You can now log in.", "success")
         uid = user.id
         if not Towns.objects():
             setup_towns()
@@ -50,7 +50,6 @@ def initial_setup():
                 date_created = datetime.utcnow
             bandz.append(Band(**band, created_by = uid, date_created=date_created ))
         bands = Band.objects.insert(bandz)
-        return jsonify(bands)
         return redirect(url_for("user.login"))
     if len(list(Band.objects())) == 0:
         return render_template("setup.html", form=form, fullpage=True)

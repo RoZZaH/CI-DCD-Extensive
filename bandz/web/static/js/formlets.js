@@ -25,12 +25,11 @@ function addForm() {
     case "member" :
     $newForm = ` 
     <div id="member-${newIndex}-form" class="subform" data-index="${newIndex}">
-        <label for="members-${newIndex}-instruments">Instrument(s)</label>
-            <input id="members-${newIndex}-instruments" name="members-${newIndex}-instruments" type="text" value="" placeholder="use commas, between, instruments" >
-        <label for="members-${newIndex}-musician" >Musician's Name</label>
-            <input id="members-${newIndex}-musician" name="members-${newIndex}-musician" type="text">
-        
-        <button type="button" class="remove btn-subform">Remove</button>
+        <label for="members-${newIndex}-musician" ><span class="label-text">Musician's Name</span>
+            <input id="members-${newIndex}-musician" name="members-${newIndex}-musician" type="text"></label>
+        <label for="members-${newIndex}-instruments"><span class="label-text">Instrument(s)</span>
+            <input id="members-${newIndex}-instruments" name="members-${newIndex}-instruments" type="text" value="" placeholder="use commas, between, instruments" ></label>
+        <button type="button" class="remove btn-subform"><span class="btn-text">Remove</span> <i class="fa fa-trash"></i></button>
     </div>
     `
     document.getElementById('subforms-container-member').insertAdjacentHTML("beforeend", $newForm);

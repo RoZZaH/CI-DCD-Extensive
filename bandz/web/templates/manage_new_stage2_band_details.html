@@ -1,93 +1,47 @@
+{% from "_render_label_field.html" import render_field %}
 {% extends "base_form.html" %}
 
-{% from "_render_grid_field.html" import render_field %}
-
-
-{% block main__header %}
-<header class="main__header">
-<div class="header--mgt">
-<h1>{{ title }}</h1>
+{% block header__lns %}
+<div id="lns--top">
+{% set breadcrumbs = [{ 'text': 'Manage Bands', 'url': url_for('.mhome')},
+                      { 'text': 'Add Band', 'url': url_for('.add_band', stage=1) },
+                      { 'text': '1. Check Band Name', 'url': url_for('.add_band', stage=1) },
+                      { 'text': '2. Band Description', 'url': url_for('.add_band', stage=2) }]  %}
+{% include "_include_breadcrumbs.html" %}
 </div>
-</header>
-{% endblock main__header %}
+{% endblock header__lns %}
 
 {% block main__content %}
-
-<form method="POST" action="{{ url_for('manage.add_band', stage=2) }}" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist.genres|safe }}">
-    {% if stage == 2  %}
-
-        {{ form.hidden_tag() }}
+<form method="POST" action="{{ url_for('manage.add_band', stage=2) }}" enctype="multipart/form-data" id="datab" data-genrelist="{{ genrelist.genres|safe }}" class="new-band stage2">
+{{ form.hidden_tag() }}
     <div class="form-header">
-     <h1>{{ bname }}</h1>
+     <h1 class="centered">{{ bname }}</h1>
     </div>
-    {# <fieldset id="band-details">
-        <legend>Band Details</legend> #}
-        {{ render_field(form.description) }}
-        {{ render_field(form.strapline) }}
-    {# </fieldset> #}
-    <fieldset id="genres">
-            <legend>Genres</legend>
-            <ul id="genre-checkbox-wrapper">
-            {% for genre in genrelist|sort %}
-                <li><input id="{{genre}}" type="checkbox" name="genre" value="{{genre}}" {{ 'checked' if genre == "rock"}}><label for="{{genre}}">{{ genre|title }}</label></li>
-            {% endfor %}
-            </ul>
-            <label>Other:</label>
-                <input type="text" name="genre">
+    <div class="form-body">
+    {{ render_field(form.description) }}
+    {{ render_field(form.strapline) }}
+    <fieldset id="genres"><legend>Genres</legend>
+    {{ form.genres()|safe }}
+    {{ render_field(form.genres_other) }}
     </fieldset>
-    <div class="form-footer">
-        <button class="btn btn-primary" id="submittion" type="submit">Next</button>
     </div>
-    {% endif %}
+    <div class="form-footer">
+        <input class="btn btn-primary add" type="submit" value="Next &raquo;" />
+    </div>
+    {# {% include "_form_debug_errors.html" %} #}
 </form>
-<hr>
-    {% if form.errors %}
-            {{ form.errors }}
-        {% endif %}
-    {% if data is defined %}
-            <p>Received data: {{ data }}</p>
-        {% endif %}
 
 {% endblock main__content %}
 
-{% block form__footer %}
-<footer class="form__footer">
-<p>footer stuff</p>
-</footer>
-{% endblock form__footer %}
-
 {% block javascript %}
 
-{% assets "org_band_js" %}
-<script src="{{ ASSET_URL }}" ></script>
-{% endassets %}    
-
-    <script>
-        /* generate and select Towns dropdown menu */
-        const selected_county = "Antrim";
-        choiceSelect("select.origin-county", selected_county);
-        loadTowns(selected_county)
-        .then(data => document.querySelector("select.origin-town").innerHTML = data)
-        .then( () => ("{{ selected_town }}" == "none")? true : choiceSelect("select.origin-town", "{{ selected_town }}"));
-        /* async check on uniqueness of band name */
-        const bname = document.querySelector('input[name=band_name]');
-        bname.addEventListener("keyup", checkband)
-        async function checkband() {
-            const response = await fetch('/check_band_name?q=' + bname.value)
-            const json = await response.json()
-            toggleUniqueMessage(json) 
-        };
-        function toggleUniqueMessage(tOrf=false){
-            if(tOrf == true){
-                bname.nextElementSibling.classList.remove("yes");
-                bname.nextElementSibling.classList.add("no");
-                bname.nextElementSibling.innerHTML = "<li>Error: Band name NOT unique!</li>";
-            }else{
-                bname.nextElementSibling.classList.remove("no");
-                bname.nextElementSibling.classList.add("yes");
-                bname.nextElementSibling.innerHTML = "<li>Band name unique, OK</li>";
-            }
-        }
-    </script>
+<script>
+/* can't set default in wtforms */
+{% if not form.errors %}
+document.addEventListener("DOMContentLoaded", function(){
+    document.querySelector("input[value='rock']").checked = true
+})
+{% endif %}
+</script>
 
 {% endblock javascript %}

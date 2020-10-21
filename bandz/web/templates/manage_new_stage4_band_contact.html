@@ -1,52 +1,61 @@
+{% from "_render_label_field.html" import render_field %}
 {% extends "base_form.html" %}
 
-{% from "_render_grid_field.html" import render_field %}
-
-
-{% block main__header %}
-<header class="main__header">
-<div class="header--mgt">
-<h1>{{ title }}</h1>
+{% block header__lns %}
+<div id="lns--top">
+{% set breadcrumbs = [{ 'text': 'Manage Bands', 'url': url_for('.mhome')},
+                      { 'text': 'Add Band', 'url': url_for('.add_band', stage=1) },
+                      { 'text': '1. Check Name', 'url': url_for('.add_band', stage=1) },
+                      { 'text': '2. Description', 'url': url_for('.add_band', stage=2) },
+                      { 'text': '3. Profile', 'url': url_for('.add_band', stage=3) },
+                      { 'text': '4. Promotion'}]  %}
+{% include "_include_breadcrumbs.html" %}
 </div>
-</header>
-{% endblock main__header %}
+{% endblock header__lns %}
 
 {% block main__content %}
-
-<form method="POST" action="{{ url_for('manage.add_band', stage=4) }}">
-    {% if stage == 4  %}
-
-        {{ form.hidden_tag() }}
+<form method="POST" action="{{ url_for('manage.add_band', stage=4) }}" class="new-band stage4">
+{{ form.hidden_tag() }}
     <div class="form-header">
-     <h1>{{ bname }}</h1>
+        <h1 class="centered">{{ bname }} Promotion</h1>
     </div>
-    <fieldset class="half">
-        <legend>Promotion</legend>
+    <div class="form-body">
         {{ render_field(form.featured_video) }}
         {{ render_field(form.contact_details.contact_name) }}
         {{ render_field(form.contact_details.contact_title) }}
         {{ render_field(form.contact_details.contact_emails.email_title) }}
         {{ render_field(form.contact_details.contact_emails.email_address) }}
+        <fieldset id="contact_phone"><legend>Contact Number</legend>
         <ul id="contact_details-contact_numbers-mobile">
             <li><input id="contact_details-contact_numbers-mobile-0" name="contact_details-contact_numbers-mobile" type="radio" {{ 'checked' if form.contact_details.contact_numbers.mobile.data!=0 else '' }} value=1> <label for="contact_details-contact_numbers-mobile-0">mobile</label></li>
             <li><input id="contact_details-contact_numbers-mobile-1" name="contact_details-contact_numbers-mobile" type="radio" {{ 'checked' if form.contact_details.contact_numbers.mobile.data==0 else '' }} value=0> <label for="contact_details-contact_numbers-mobile-1">landline</label></li>
         </ul>
-        {{ render_field(form.contact_details.contact_numbers.region) }}
-        {{ render_field(form.contact_details.contact_numbers.phone) }}
-    </fieldset>
-    <div class="form-footer">
-        <button class="btn btn-primary" id="submittion" type="submit">Next</button>
+        <ul id="contact_details-contact_numbers-region">
+            <li><input checked="" id="contact_details-contact_numbers-region-0" name="contact_details-contact_numbers-region" type="radio" value="IE"> <label for="contact_details-contact_numbers-region-0">Ireland</label></li>
+            <li><input id="contact_details-contact_numbers-region-1" name="contact_details-contact_numbers-region" type="radio" value="GB"> <label for="contact_details-contact_numbers-region-1">N.I./UK</label></li>
+            <li><input id="contact_details-contact_numbers-region-2" name="contact_details-contact_numbers-region" type="radio" value="None"> <label for="contact_details-contact_numbers-region-2">Other</label></li>
+        </ul>
+        <div id="phone_int">
+            {% if form.contact_details.contact_numbers.phone.errors %}
+                {{ form.contact_details.contact_numbers.phone(class_="is-invalid")  }}
+                <ul class="invalid-feedback">
+                {% for error in form.contact_details.contact_numbers.phone.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                {{ form.contact_details.contact_numbers.phone }}
+            {% endif %}
+        </div>
+        </fieldset>
     </div>
-    {% endif %}
-</form>
-<hr>
-    {% if form.errors %}
-            {{ form.errors }}
-        {% endif %}
-    {% if data is defined %}
-            <p>Received data: {{ data }}</p>
-        {% endif %}
+    <div class="form-footer">
+        <input class="btn btn-primary add" type="submit" value="Complete" />
+    </div>
+    {# {% include "_form_debug_errors.html" %} #}
 
+</form>
+    
 {% endblock main__content %}
 
 {% block form__footer %}
@@ -63,47 +72,44 @@
 
     <script>
 
-    // individual ids 
-    var wtf_phone_field = document.getElementById('contact_details-contact_numbers-phone');
-    wtf_phone_field.style.position = 'absolute';
-    wtf_phone_field.style.top = '-9999px';
-    wtf_phone_field.style.left = '-9999px';
-    wtf_phone_field.parentElement.insertAdjacentHTML('beforeend', '<div><span style="font-size:.8em;">Phone Number:</span><input type="tel" id="_phone"></div>');
-    var fancy_phone_field = document.getElementById('_phone');
-    var fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
-        initialCountry:"ie",
-        preferredCountries: ["ie","gb", "fr", "nl", "de", "es", "us" ],
-        //separateDialCode: true,
+    /** IntlTelInput :: jQuery International Telephone Formatter
+     * https://intl-tel-input.com/
+     * extended to include Flags toggle avoid IE,UK for NI => checkRegionState 
+     */
+    const wtf_phone_field = document.getElementById('contact_details-contact_numbers-phone')
+    wtf_phone_field.style.position = 'absolute'
+    wtf_phone_field.style.top = '-9999px'
+    wtf_phone_field.style.left = '-9999px'
+    wtf_phone_field.parentElement.insertAdjacentHTML('beforeend', '<div><span style="font-size:.8em;">Phone Number:</span><input type="tel" id="_phone"></div>')
+    const fancy_phone_field = document.getElementById('_phone')
+    const fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
+        initialCountry: "ie",
+        preferredCountries: ["ie", "gb", "fr", "nl", "de", "es", "us"],
         nationalMode: true,
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
-    });    
-    fancy_phone_iti.setNumber(wtf_phone_field.value);
+    })
+    fancy_phone_iti.setNumber(wtf_phone_field.value)
     fancy_phone_field.addEventListener('blur', function() {
         if(checkRegionState()){
-            wtf_phone_field.value = fancy_phone_iti.getNumber();
+            wtf_phone_field.value = fancy_phone_iti.getNumber()
         }else{
             wtf_phone_field.value = fancy_phone_field.value
         }
-    }); 
-
+    })
+    
     function checkRegionState(){
-    let radios = document.querySelectorAll("#contact_details-contact_numbers-region input[type=radio]")
-    let i = radios.length - 1
-    if (radios[i].checked && radios[i].value == "None") {
-        document.querySelector(".iti__flag-container").classList.remove("hide")
-        return true
-    }else{
-        
-        document.querySelector(".iti__flag-container").classList.add("hide")
-        return false
-    }
-    }
+        let radios = document.querySelectorAll("#contact_details-contact_numbers-region input[type=radio]")
+        let i = radios.length - 1
+        if (radios[i].checked && radios[i].value == "None") {
+            document.querySelector(".iti__flag-container").classList.remove("hide")
+            return true
+        }else{
+            document.querySelector(".iti__flag-container").classList.add("hide")
+            return false
+    }}
 
     document.querySelectorAll("#contact_details-contact_numbers-region input[type=radio]").forEach( el => el.addEventListener("click", checkRegionState));
-
-    document.addEventListener("DOMContentLoaded", function(){
-    checkRegionState()
-    })
+    document.addEventListener("DOMContentLoaded", function(){ checkRegionState() });
     </script>
 
 {% endblock javascript %}

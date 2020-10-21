@@ -21,11 +21,12 @@ html, body {
 body {
     background-color: rgba(0, 66, 48, 1);
     display: grid;
-    grid-template-rows: auto 0 auto 1fr auto auto;
+    grid-template-rows: auto 0 auto auto 1fr auto auto;
     grid-template-columns: minmax(1em,1fr) minmax(260px, 500px) minmax(1em,1.1fr);
     grid-template-areas: "gns gns gns"
                          "gns gns gns"
                          ". lns ."
+                         ". flash ."
                          ". main ." //  ". sidebar ."
                          ". lnsb ."
                          "foot foot foot";
@@ -35,19 +36,23 @@ body {
       url(../img/bg.jpg);
       background-size: cover;
       grid-template-rows: auto auto 1fr auto auto;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: minmax(2em, 1fr) repeat(6, 2fr) minmax(2em, 1fr);
       grid-template-areas: 
                           "gns gns gns gns gns gns gns gns"
                           ". lns lns lns lns lns lns ."
+                          ". flash flash flash flash flash flash ."
                           ". main main main main main main ."
                           ". lnsb lnsb lnsb lnsb lnsb lnsb ."
                           "foot foot foot foot foot foot foot foot";      
       }
+    @media (min-width: 800px) {
+      grid-template-columns: repeat(8, 1fr);
+    }
     min-height: 100vh;
 }
 
 .alert {
-  grid-area: lns;
+  grid-area: flash;
 }
 
 main {
@@ -253,7 +258,7 @@ dl.enquiries {
     display: none;
     position:fixed; 
     top: calc(50% - 100px); // half of height
-    left: calc(50% - 150px); // half of width
+    left: calc(48% - 150px); // half of width
     width: 320px;
     z-index: 1000;
     background: white;
@@ -275,6 +280,7 @@ dl.enquiries {
     width: 100%;
   }
   
+
 
 /** Fluid Video Wrapper
 * ref: https://css-tricks.com/fluid-width-video/
@@ -309,6 +315,7 @@ dl.enquiries {
 }
 
 .no-lnsb {
+  grid-area: main;
   max-height: 100%;
   @media (min-width: 600px){
     margin-top: 3em;

@@ -2,11 +2,13 @@
 {% block main__header %}
 {% endblock main__header %}
 {% block main__content %}
-<div class="content-block">
+<div class="content-block register">
     <form method="POST" action="" class="sign-in-up">
     {{ form.hidden_tag() }}
-    <fieldset>
-        <legend>Join Today</legend>
+    <div class="form-header">
+    <h3>Join Today</h3>
+    </div>
+    <div class="form-body">
         {{ form.username.label(class="") }}
             {% if form.username.errors %}
                 {{ form.username(class="is-invalid") }}
@@ -51,7 +53,7 @@
             {% else %}
                 {{ form.confirm_password }}
             {% endif %}
-    </fieldset>
+    </div>
     <div class="form-footer">
         {{ form.submit(class='btn-form-submit') }}
     </div>
@@ -67,6 +69,6 @@
 
 {% block form__footer %}
     <footer class="footer">
-    {% include 'include_footer.html' %}
+    {% include '_include_footer.html' %}
     </footer>
 {% endblock form__footer %}

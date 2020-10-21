@@ -32,6 +32,20 @@ def save_picture(form_picture, band=False, output_size=default_size ):
     i.save(picture_path)
     return picture_fn
 
+
+def get_video_service_and_id(url):
+    video = {}
+    if "youtu" in url:
+        video["service"] = "youtube"
+    elif "vimeo" in url:
+        video["service"] = "vimeo"
+    else:
+        return None
+    v = re.search("(?:https?:\/\/)?(?:www\.)?(?:vimeo.com\/|youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[^&\s\?]+(?!\S))\/)|(?:\S*v=|v\/))))([^&\s\?]+)", url)
+    video["vid"] = v.group(1).split("=")[1] if v.group(1).startswith("v=") else v.group(1)
+    return video
+
+
 #lstrip , rstrip and hashtag cataloging
 # regex split
 def de_article(bandname):

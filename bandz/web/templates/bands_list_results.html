@@ -3,7 +3,7 @@
 <!-- HEADER LNS -->
 {% block header__lns %}
 <div id="lns--top">
-    {% include "include_breadcrumbs.html" %}
+    {% include "_include_breadcrumbs.html" %}
     {% if alphabet is defined %}
     <nav class="pagelinks pagelinks--letters" aria-label="letters of the alphabet">
         <ul>{%- for beta in alphabet.keys() -%}
@@ -38,7 +38,7 @@
 {% block main__header %}{% endblock main__header %}
 <!-- CONTENT -->
 {% block main__content %}
-        {% include "include_bands_list_cards.html" %}
+        {% include "_include_bands_list_cards.html" %}
 {% endblock main__content %}
 <!-- MAIN FOOTER -->
 {% block main__footer %}{% endblock main__footer %}

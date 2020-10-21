@@ -12,7 +12,6 @@ from bandz.models.db import initialise_db
 
 app = Flask(__name__,
             static_url_path='', 
-
             static_folder='web/static',
             template_folder='web/templates')
 

@@ -2,16 +2,20 @@ import re
 from flask import jsonify, Blueprint, request
 from bandz.models.entities import Band, Towns
 
-
 api = Blueprint('api', __name__)
 
 @api.route("/genrez")
 def list_genres():
-    return list(Band.objects.aggregate([
-        {"$unwind": "$genres"},
-        {"$group": { "_id": "null", "genres": {"$addToSet": "$genres"} }},
-        {"$sort": {"genres": 1 }}
-    ]))[0]["genres"]
+    if Band.objects():
+        #print("there are bands")
+        genres = list(Band.objects.aggregate([
+            {"$unwind": "$genres"},
+            {"$group": { "_id": "null", "genres": {"$addToSet": "$genres"} }},
+            {"$sort": {"genres": 1 }}
+        ]))[0]["genres"]
+    else:
+        genres = ["rock"] #prevent choking on setup
+    return genres
 
 
 @api.route('/towns/<county>')
@@ -41,7 +45,7 @@ def getz_townz():
 @api.route('/check_band_name')
 def check():
     bandname = re.sub(' {2,}', ' ', request.args.get("q"))
-    print(bandname)
+    #print(bandname)
     results = list(Band.objects(band_name__iexact=bandname))
     lastmatch = ""
     if len(bandname) < 1 or len(results) < 1 :

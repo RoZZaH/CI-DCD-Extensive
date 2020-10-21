@@ -1,11 +1,16 @@
-{% extends "base.html" %}
+{% extends "base_form.html" %}
 {% block main__content %}
-<div class="content-block">
-    <h1>Initial Setup</h1>
+<hr>
+<form method="POST" action="" class="form-page sign-in-up">
+<div class="form-header">
+    <h1 class="white-text">Initial Setup !</h1>
+</div>
+<div class="form-body">
     <p class="warning">Once you create a user, JSON will be loaded into the MongoDB,<br/>
-    <p>there are <b>3K dummy records for bands and 1K Towns</b> for this can take a little while - approx 30secs!</p> 
-    <form method="POST" action="">
+    <p>there are <b>3K dummy records for bands and 1K Towns</b> for this can take a little while - approx 30secs!<br>
+    You will know when setup is complete as huge list of JSONified bands with be returned</p> 
     {{ form.hidden_tag() }}
+    
     <fieldset>
         <legend>Initial Setup</legend>
         {{ form.username.label(class="") }}
@@ -56,13 +61,11 @@
     <div class="form-footer">
         {{ form.submit(class='btn-form-submit') }}
     </div>
-    </form>
-</div>
-
+</form>
 {% endblock main__content %}
 
 {% block form__footer %}
     <footer class="footer">
-    {% include 'include_footer.html' %}
+    {% include '_include_footer.html' %}
     </footer>
 {% endblock form__footer %}

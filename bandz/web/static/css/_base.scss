@@ -83,6 +83,7 @@ img {
    
 
 .alert {
+  grid-area: flash;
   display: block;
   border-radius: 4px;
   padding: .5em;
@@ -213,6 +214,10 @@ dd.featured-img {
   visibility: hidden;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .centered {
   text-align: center;
 }
@@ -256,5 +261,9 @@ dd.featured-img {
 .colon-after:after  {
   content: ' : ';
   white-space: pre;
+}
+
+.no-bg {
+  background: transparent !important;
 }
 

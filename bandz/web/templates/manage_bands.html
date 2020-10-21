@@ -3,7 +3,7 @@
 {% extends "base.html" %}
 {% block header__lns %}
 <div id="lns--top">
-{% include "include_breadcrumbs.html" %}
+{% include "_include_breadcrumbs.html" %}
 {% if request.view_args['band_view'] == 'recent'|string or request.view_args['band_view'] is undefined %}
     <h1 class="headline--alphabet">Recently Edited Bands</h1>
 <!-- paging first -->
@@ -58,11 +58,13 @@
         <h2 class="card-title"><a href="{{ url_for('manage.preview_band', band_view=band_view , bname=band.band_name , letter=band.catalogue_name[0]|lower ) }}">{{ band.band_name }}</a></h2> {#  {{ band._cls }} #}
         <p class="card-body">{{ band.description }}</p>    
         <p>{{ band.hometown.town }}, Co.{{ band.hometown.county }}</p>
+        {% if band.band_members %}
         <ul>
             {% for member in band.band_members %}
             <li>{{ member.musician }}</li>
             {% endfor %}
         </ul>
+        {% endif %}
         <div class="card-footer">
             <ul>
                 <li><a href="{{ url_for('manage.update_band_profile', bname=band.band_name, letter=band.catalogue_name[0]|lower, band_view=band_view ) }}" class="btn btn-subform add edit">Edit</a></li>

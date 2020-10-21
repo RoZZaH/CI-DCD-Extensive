@@ -1,19 +1,18 @@
 {% extends "base_no_lnsb.html" %}
 {% block header__lns %}
 <div id="lns--top">
-    {% include "include_breadcrumbs.html" %}
+    {% include "_include_breadcrumbs.html" %}
 </div>
 {% endblock header__lns %}
-
 {% block main__header %}
 <div class="user-settings">
 <header class="header--main">
- <div class="header--mgt">
-        <div class="headlines">
-            <h1 class="headline">Account Settings for <span class="highlight">{{ current_user.username }}</span></h1>
-            <h4 class="headline--strapline">{{ current_user.email }}</h4>
-        </div>
- </div>
+  <div class="header--mgt">
+    <div class="headlines">
+        <h1 class="headline">Account Settings for <span class="highlight">{{ current_user.username }}</span></h1>
+        <h4 class="headline--strapline">{{ current_user.email }}</h4>
+    </div>
+  </div>
 </header>
 {% endblock main__header %}
 {% block main__content %}
@@ -58,7 +57,7 @@
                     </div>
                 {% endif %}
         </fieldset>
-                    {{ form.submit(class="btn btn-outline-info") }}
+        {{ form.submit(class="btn btn-outline-info") }}
     </form>
 <!-- /.user-settings -->
 </div>

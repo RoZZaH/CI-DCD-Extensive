@@ -1,8 +1,7 @@
-*.json
 *.csv
 *.txt
-*.cfg
 *.code-workspace
+config.py
 misc
 **/__pycache__
 **/static/.webassets-cache/*

@@ -7,11 +7,15 @@
 
 .btn-subform{
   font-size: 0.95rem;
+  line-height: 1.15em;
+  padding: .25em .5em;
   width: auto;
   color: white;
   text-decoration: none;
   text-decoration: none;
-  border: none;
+  border: 1px solid $text-main;
+  border-radius: 3px;
+  box-shadow: none;
 }
 
 
@@ -22,18 +26,68 @@
 }
 
 .add{
-  background: mediumseagreen !important;
+  background: $add-btn !important;
+  color: $white !important;
 }
+
+#subforms-container-member + .add {
+  margin-top: .5em;
+}
+
+.add:hover,
+.add:focus {
+  cursor: pointer;
+  background-color: $add-btn-light !important;
+}
+
 
 .header--mgt .add {
   position: relative;
   top: -.25em;
 }
 
+.search .add {
+  white-space: nowrap;
+  letter-spacing: .15em;
+  margin-left: 1em;
+  @media (min-width: 600px){
+    font-size: 1.25rem;
+    
+  }
+}
+
 .remove {
+  font-size: 0.85rem; 
+  white-space: nowrap;
+  align-self: end;
   justify-self: end; 
   grid-column: 2;
   background: tomato !important;
+  height: 2em;
+}
+
+.remove .btn-text {
+  @media (max-width: 599px){
+    display: none; 
+  }
+}
+
+.cancel {
+  background-color: $text-secondary !important;
+}
+
+.del-band {
+  font-size: 0.65rem;
+  position: relative;
+  top: -0.25em;
+  @media (min-width: 600px){
+    font-size: 0.8rem;
+  }
+}
+
+.del-band:hover,
+.del-band:focus {
+  cursor: pointer;
 }
 
 /* Bands by Location Leaderboard 

@@ -1,46 +1,50 @@
-{% extends "base_no_lnsb.html" %}
-
+{% extends "base_form.html" %}
+{% block header__lns %}
+<div id="lns--top">
+{% include "_include_breadcrumbs.html" %}
+</div>
+{% endblock header__lns %}
 {% block main__content %}
-<form method="GET" action="{{ url_for('public.results')}}" >
+<form method="GET" action="{{ url_for('public.results')}}" class="form-page search">
 {# render_field #}
+<div class="form-header">
+    <h1>Search Bandz</h1>
+</div>
+<div class="form-body">
     <div id="search">
-        {{ form.q }}<button type="submit">Search</button>
+        {{ form.q }}<button type="submit" class="btn btn-subform add">Search &raquo;</button>
     </div>
     <fieldset id="genres">
         <legend class="colon-after">By Genre</legend>
         <ul id="genres">
-            <li id="andor-any"><b>Match</b> <label for="andor-0"><input id="andor-0" name="andor" type="radio" checked value="f"> any selected</label> <label for="andor-1"><input id="andor-1" name="andor" type="radio" value="t"> ALL&nbsp;selected</label></li>
-            {# <li id="andor-all"></li> #}
-            <li id="genres-all"><label for="g-all">Select All <input type="checkbox" id="g-all" value="all"></label></li>
+            <li id="andor-any"><span class="bold">Match</span> <label for="andor-0"><input id="andor-0" name="andor" type="radio" checked value="f"> any selected</label> <label for="andor-1"><input id="andor-1" name="andor" type="radio" value="t"> ALL selected</label></li>
+            <li id="genres-all"><label for="g-all"><input type="checkbox" id="g-all" value="all"> Select All</label></li>
         {% for genre in genrelist|sort %}
             <li><input id="g-{{genre}}" class="debug" type="checkbox" name="genres" value="{{genre}}" ><label for="g-{{genre}}">{{genre | title}}</label></li>
         {% endfor %}
         </ul>
     </fieldset>
-    {# {{ form.origin_county.label }}
-        {{ form.origin_county }} #}
-
-    <fieldset id="counties">
-    <legend class="colon-after">By Location</legend>
-    {% for province in province_counties %}
-    <fieldset class="province" id="{{ province._id|lower }}">
-     <ul>
-        <li><span class="province-title">{{ province._id }}</span><input class="debug" type="checkbox" name="{{ province._id|lower }}" value="all"></li>
-        {% for county in province.counties|sort %}
-        <li><input id="{{ county }}" class="debug" type="checkbox" name="counties" value="{{county}}"><label for="{{ county }}">{{ 'L/Derry' if county=="Derry" else county }}</label></li>
+    <fieldset id="counties"><legend class="colon-after">By Location</legend>
+        {% for province in province_counties %}
+        <fieldset class="province" id="{{ province._id|lower }}">
+        <ul>
+            <li><span class="province-title">{{ province._id }}</span><input class="debug" type="checkbox" name="{{ province._id|lower }}" value="all"></li>
+            {% for county in province.counties|sort %}
+            <li><input id="{{ county }}" class="debug" type="checkbox" name="counties" value="{{county}}"><label for="{{ county }}">{{ 'L/Derry' if county=="Derry" else county }}</label></li>
+            {% endfor %}
+        </ul>
+        </fieldset>
         {% endfor %}
-    </ul>
     </fieldset>
-    {% endfor %}
-
-
-    </fieldset>
-
-
-
-<input name="page" type="hidden" value="1">
-<button type="submit">Search</button>
+    <input name="page" type="hidden" value="1">
+    <button type="submit" class="btn btn-subform add foota">Search  &raquo;</button>
+</div>
+<div class="form-footer">
+</div>
+<!-- /form -->
+{# {% include "_form_debug_errors.html" %} #}
 </form>
+
 
 {% endblock main__content %}
 

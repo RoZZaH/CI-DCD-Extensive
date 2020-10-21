@@ -1,201 +1,225 @@
-#datab {
-    // border: 2px solid red;
-    grid-column: 1/-1;
-    font-size: 1.25rem;
-    padding-bottom:  1.5em;
-    min-height: 100wh;
-    position: relative; // positioning context;
-}
-
-.auth > form {
-    @media (max-width: 599px){
-        font-size: .8rem;
-        grid-column: 1/-1;
-        padding: 0;
+.sign-in-up,
+.form-page,
+.search,
+.stage4,
+.update-band {
+    display: flex;
+    flex-direction: column;
+    background-color: $lns-bg;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-bottom: 15px;
+    margin-bottom: 2em;
+    @media (min-width: 600px){
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
     }
 }
 
-
-#band-details {
-    order: -1;
+.form-page li {
+    list-style: none;
+    padding-left: 0;
 }
 
-fieldset {
-    grid-column: 2 / span 1;
-    margin: .75em;
-}
-
-fieldset > fieldset {
-    margin: 0;
-    grid-column: auto;
-}
-
-
-fieldset > legend {
-    width: auto;
-    padding: .25em;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-}
-
-#band-image {
-    margin-top: 0;
-}
-
-.hint {
-    font-size: .85rem;
-    // color: $text-secondary;
-}
-
-#media_assets-featured_image {
-    width: 90%;
-}
-
-// fieldset > *,
-// .subform > * {
-//    display: block;
-//    width: 100%;
-// }
-
-
-
-fieldset input:not([type="radio"]):not([type="checkbox"]):not(#media_assets-featured_image),
-fieldset textarea {
-    font-size: 0.8rem;
-    height: auto;
-    @media (min-width: 600px) {
-        font-size: 1rem;
-        height: 1.75em;
-        width: 100%;
-        border-radius: 3px;
-        border: 1px solid transparent;
-        border-top: none;
-        border-bottom: 1px solid #DDD;
-        box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
-        padding: .25em .5em;
+.form-header {
+    padding: .75em 1em;
+    @media (min-width: 600px){
+        grid-area: form__header;
     }
 }
 
-textarea#profile {
-    min-height: 200px;
+.form-footer input {
+    margin-left: auto;
 }
 
-.fieldset > label,
-.subform > label {
-    box-shadow: none;
+.sign-in-up .form-header {
+    background-color: $text-main;
+    @media (min-width: 600px){
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
 }
 
-input[type="submit"]{
-    grid-column: 2;
+.sign-in-up h3 {
+    color: $white;
 }
 
-fieldset textarea {
-    height: 16em; // less on desktop - wider
-    resize: none;
-    // font-size: 0.9rem;
+.form-body {
+    display: flex;
+    flex-direction: column;
+    margin: 0 1em;
+    @media (min-width: 600px){
+        display: grid;
+        grid-gap: .5em;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: max-content;
+    }
+    @media (min-width: 800px){
+        font-size: 0.95rem;
+        grid-gap: 2em;
+    }
+}
+
+.sign-in-up .form-body {
+    display: flex;
+    flex-direction: column;
+    margin: 0 1em;
+    @media (min-width: 600px){
+        display: flex;
+        grid-gap: 0;
+    }
+}
+
+.sign-in-up label,
+.sign-in-up input {
+    width: 100% ;
+    margin-bottom: .5em;
+}
+
+.sign-in-up label:first-of-type {
+    margin-top: 0.75em;
 }
 
 
-label, input :not([type="radio"]):not([type="checkbox"]), textarea, select {
-    margin: .25em 0 .5em;
-}
-
-
-
-.numbers-radio-wrapper {
-    align-items: baseline;
-}
-
-.numbers-radio-wrapper label {
-    font-size: 1.25rem;
-    line-height: 2em;
-    padding: .25em 0;
-}
-
-.numbers-radio-wrapper input[type="radio"] {
-    margin-right: 1em;
-}
-
-input[type=checkbox],
-input[type=radio] {
-    width: auto;
-}
-
-
-input#remember  {
-    line-height: initial;
-    margin: 0;
-    width: 10px;
-    justify-self: end;
-}
-
-#remeber {
+.remember {
+    margin-left: 1em;
+    flex-direction: row;
     align-items: center;
 }
 
-
-
-#genres ul,
-.phone-wrapper ul#mobile,
-.phone-wrapper ul#region {
-    list-style: none;
-    display: flex;
-    padding-left: 0;
-  
+.remeber label,
+.remember input {
+    width: auto;
+    display: inline-block;
+    margin-right: 0;
 }
 
-.phone-wrapper ul#mobile li {
+
+.form-footer {
+    display: flex;
+    flex-direction: row;
+    padding: 0.5em 1em;
+    align-items: center;
+    justify-content: end;
+}
+
+.form-footer input {
+    width: auto;
+    padding: .65em 1.25em;
+    box-shadow: none;
+    border: 1px solid $text-main;
+}
+
+.form-footer input[type='submit'] {
+    margin-right: 0;
+}
+
+.forgot-password {
+    order: -1;
+    margin-left: auto;
+}
+
+.invalid-feedback {
+    margin: 0;
+    padding: .2em;
+    background-color: $alert-danger-bg;
+    color: $alert-danger-txt;
+}
+
+.invalid-feedback li {
+
+}
+
+#solo {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    @media (min-width: 600px){
+        grid-column: 2 / span 4;
+    }
+}
+#solo label:first-of-type {
     margin-right: 1em;
 }
 
-/* PHONE SEARCH Box? */
-#search {
-    margin: 2em 0 0;
-    padding: 2em 0;
-    // border-bottom: 1px solid $accent;
-}
-
-#search input {
-    height: 2.25em;
+.form-body .field {
+    padding: .2em .3em;
     width: 100%;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    border-top: none;
-    border-bottom: 1px solid #DDD;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
-    padding: .25em .5em;
-
 }
 
-#genres ul{
+.form-body fieldset .field {
+    padding: .2em 0;
+}
+
+.field .label-text{
+    display: block;
+    width: 100%;
+}
+
+select[id='hometown-origin_county'],
+select[id='hometown-origin_town'],
+input[id='band_name'],
+input[id='strapline'],
+input[id='description'],
+#genres input[type='text'],
+textarea[id='profile'],
+input[id="featured_video"],
+input[id^="contact_details"] {
+    width: 100%;
+}
+
+input[id$='featured_image'],
+input[id='contact_details-contact_numbers-phone'],
+input[id='_phone'] {
+    width: 85%;
+}
+
+#contact_details-contact_numbers-mobile,
+#contact_details-contact_numbers-region {
+    display: flex;
+    padding: 0;
+}
+
+#contact_details-contact_numbers-mobile input,
+#contact_details-contact_numbers-region input {
+    width: auto;
+}
+
+#contact_details-contact_emails-email_address li,
+#contact_details-contact_numbers-mobile li,
+#contact_details-contact_numbers-region li,
+.invalid-feedback li
+{
+    list-style: none;
+}
+
+#contact_details-contact_numbers-mobile li:not(:last-of-type),
+#contact_details-contact_numbers-region li:not(:last-of-type){
+    margin-right: 1em;
+}
+
+
+#genres ul:not(.invalid-feedback){
+    margin: .5em;
+    padding: 0;
     display: grid;
     font-size: .85rem;
     width: 100%;
     letter-spacing: .075em;
-    // grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(7, minmax(1em, 1fr));
+    grid-template-rows: repeat(6, minmax(1em, 1fr));
     grid-auto-flow: column dense;
-    align-items: center;
+    align-items: end;
     grid-gap: .5em .35em;
 }
 
 li#andor-any,
-// li#andor-all,
 li#genres-all {
-grid-auto-flow: row;
-margin-bottom: .75em;
+    grid-auto-flow: row;
 }
 
-li#andor-any {
-    grid-column: 1 / span 2;
-    
-}
-// li#andor-all {
-//     grid-column: 3;
-// }
-li#genres-all {
-    grid-column: -1;
-}
+li#andor-any { grid-column: 1 / -2; }
+li#genres-all { grid-column: -1; }
 
 
 #genres li:not(#andor-all):not(#andor-any):not(#genres-all) label {
@@ -204,24 +228,93 @@ li#genres-all {
     margin-left: 1.5em;
 }
 
-// label#g-all {
-//     display: block; 
-//     margin: 0em !important; 
-//     padding: 0em !important;
-// }
+textarea#profile,
+fieldset textarea {
+    resize: none;
+    min-height: 16em;
+ }
+
+
+.search #search {
+    grid-row: 1;
+    grid-column: 1/-1;
+    display: flex;
+    margin-bottom: .5em;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    @media (min-width: 600px){
+        justify-content: space-between;
+        align-items: center;
+    }
+    @media (min-width: 800px){
+        justify-content: space-around;
+    }
+    @media (min-width: 900px){
+        justify-content: center;
+    }
+}
+.search #search input {
+    width: 30ch;
+    margin: .25em 0;    
+    @media (min-width: 600px){
+        font-size: 1.25rem;
+    }
+}
+
+.search #genres {
+    grid-row: 2;
+    grid-column: 2/-2;
+}
+
+.search #genres #andor-any .bold {
+    display: block;
+    @media (min-width: 600px) {
+        display: initial;
+    }
+}
+
+.search #genres label[for="andor-1"],
+.search #genres label[for="andor-0"] {
+    white-space: nowrap;
+}
+
+.search #counties {
+    grid-row: 3;
+    grid-column: 1/-1;
+    @media (min-width: 800px) {
+        grid-column: 2/-2;
+    }
+}
+
+.search .foota {
+    grid-row: 4;
+    grid-column: -2;
+    @media (min-width:800px){
+        grid-column: -3;
+    }
+}
+
 
 #counties {
-    margin: 2em 0;
+    margin: 1em 0;
+    padding: 5px;
     display: grid;
-    grid-template-columns: repeat(2, minmax(1em, 1fr));
+    grid-gap: .5em;
     letter-spacing: .075em;
+    @media (min-width: 600px){
+        margin: 2em 0;
+        grid-gap: 1em 1em;
+        grid-template-columns: repeat(2, minmax(1em, 1fr));
+    }
 }
 
 .province {
     grid-column: span 1;
     display: grid;
-    grid-template-columns: minmax(1em, 1fr) minmax(130px, 250px) minmax(1em, 1fr) ;
-    grid-template-rows: 2em repeat(auto-fill, 1fr);
+    grid-template-columns: minmax(1em, 1fr) minmax(130px, 250px) minmax(1em, 1fr);
+    @media (min-width: 600px){
+        grid-template-rows: 2em repeat(auto-fill, 1fr);
+    }
 }
 
 .province ul {
@@ -266,324 +359,255 @@ li#genres-all {
 
 
 
-#connacht {
-    order: -1;
+#connacht { order: -3; }
+#ulster   { order: -2; }
+#munster  { order: -1; }
+#leinster { order: 1;  }
 
+@media (min-width: 600px){
+    .field:not(.sign-in-up .form-body .field) {
+        display: grid;
+    }
+
+    /* stage1 fields */
+    label[for='band_name'] {
+            display: grid;
+            grid-row: 2;
+            grid-column: 2 / span 4;
+    }
+    label[for="hometown-origin_county"] {
+        grid-row-start: 3;
+        grid-column: 2 / span 2;
+    }
+    label[for="hometown-origin_town"] {
+        grid-row-start: 3;
+        grid-column: 4 / span 2;
+    }
+    .stage1 input[type='submit'],
+    .stage2 input[type='submit'] {
+        grid-row-start: 4;
+        grid-column: 5;
+        justify-self: end;
+    }
+    /* stage2 fields */
+    
+    label[for='description'] {
+        grid-row-start: 1;
+        grid-column: 2 / span 4;
+    }
+    label[for='strapline'] {
+        grid-row-start: 2;
+        grid-column: 2 / span 4;
+    }
+    #genres {
+        grid-row-start: 3;
+        grid-column: 2/-2;
+    }
+    /* stage3 fields */
+    label[for='profile'] {
+        grid-row-start: 1;
+        grid-column: 1 / span 4;
+    }
+    fieldset#band-image
+    {
+        margin-top: .5em;
+        order: 2;
+        grid-row-start: 1;
+        grid-column: 5 / span 2;
+    }
+
+    fieldset.half {
+        order: 1;
+        grid-row-start: 2;
+        grid-column: 1/-1;
+    }
+
+    #subforms-container-member {
+        display: contents;
+    }
+
+    .subform {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-flow: column dense;
+        grid-gap: 1em 2em;
+    }
+
+    .subform .label-text {
+        width: 100%;
+        display: block;
+    }
+    
+    .subform > label[for$='musician'] {
+        grid-column: 1 / span 2;
+    }
+    
+    .subform > label[for$='instruments'] {
+        grid-column: 3 / span 3;
+    }
+
+    
+    .subform label input {
+        width: 100%;
+    }
+
+    .subform .remove {
+        grid-column: -2;
+    }
+
+    .subform + .subform {
+        margin-top: .5em;
+    }
+
+    /* stage4 fields */
+    label[for='featured_video']{
+        grid-row: 1;
+        grid-column: 1 / -1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        border-bottom: 1px solid rgb(236, 236, 236);
+    }
+    label[for='featured_video'] .label-text {
+        display: inline-block;
+        margin-right: 1em;
+        flex-basis: 150px;
+        white-space: nowrap;
+        // flex: 0 0 0;
+        margin-bottom: 0.5em;
+    }
+    label[for='featured_video'] input {
+        flex-basis: 450px;
+    }
+    label[for='featured_video'] ul.invalid-feedback{
+        display: block;
+        margin-left: calc(150px + 1.75em);
+        flex-basis: 450px;
+    }
+
+    label[for='contact_details-contact_name'] {
+        width: auto;
+        grid-row: 2;
+        grid-column: 1 / span 3;
+    }
+    label[for='contact_details-contact_title']
+     {
+        width: auto;
+        grid-row: 2;
+        grid-column: 4 / span 3;
+    }
+    label[for='contact_details-contact_emails-email_title'] {
+        grid-row: 3;
+        grid-column: 1/4;
+    }
+    label[for='contact_details-contact_emails-email_address']
+     {
+        grid-row: 3;
+        grid-column: 4/7;
+    }
+    #contact_phone {
+        grid-row: 4;
+        grid-column: 2/-2;
+    }
+    #contact_phone .invalid-feedback {
+        position: relative;
+        grid-row: 5;
+        grid-column: 3/-3;
+    }
+
+    /* update long form */
+    .update-band {
+        grid-gap: 0 2em;
+        @media (max-width: 800px){
+            fieldset,
+            .field {
+                padding: 6px;
+            }
+        }
+    }
+    .update-band-details{
+        grid-row: 1 / span 3;
+        grid-column: 1 / span 3;
+    }
+    .update-band-image {
+        grid-row: 2 / span 2;
+        grid-column: 4 /span 3;
+    }
+    .update-band-image input[id='media_assets-featured_image'] {
+        padding-bottom: 0.75em;
+        margin-bottom: 0.75em;
+        border-bottom: 1px solid rgb(236, 236, 236);
+    }
+    .update-band-image input[id='media_assets-featured_video'] {
+        width: 100%;
+    }
+    .update-band .update-booking-contact {
+        grid-row: 1 / span 1;
+        grid-column: 4 / span 3;
+    }
+    .update-band #genres {
+        grid-row: 4 / span 1;
+        grid-column: 2 / span 4;
+    }
+    .update-band .half {
+        grid-row: 5 / span 1;
+        grid-column: 1 / -1;
+    }
+    
 }
 
-#ulster {
-    order: -2;
+@media (min-width: 800px){
+     .update-band-details{
+        grid-row: 1 / span 3;
+        grid-column: 1 /span 4;
+    }
+    .update-band-image {
+        grid-row: 2 / span 2;
+        grid-column: 5 /span 2;
+    }
+    .update-band .update-booking-contact {
+        grid-row: 1 / span 1;
+        grid-column: 5 / span 2;
+    }
 }
 
-#munster {
-    order: -3;
-}
-
-#leinster  {
-  order: 1;
-}
-
-
-.is-invalid {
-    border: 1px solid red !important;
-    font-size: 1.1rem;
-    padding: 0.2em;
-}
-
-.invalid-feedback {
-    margin: 0;
-    padding: 0;
-    grid-column: 2 / span 2;
-    color: firebrick;
-    font-size: 1rem;
-    line-height: 1em;
-}
-
-input#contact_details-contact_emails-email_title {
-    width: 50%;
-}
-
-ul#contact_details-contact_numbers-mobile,
-ul#contact_details-contact_numbers-region, {
-    list-style: none;
-    display: flex;
-    padding-left: 0;
-}
-
-ul#contact_details-contact_numbers-mobile li:first-child,
-ul#contact_details-contact_numbers-region li:first-child {
-    margin-left: 0;
-    margin-right: 2em;
-}
-
-ul#contact_details-contact_numbers-region li {
-    margin-right: 2em;
+@media (min-width: 900px){
+    .update-band .half {
+        grid-row: 4 / span 1;
+        grid-column: 1 / span 4;
+    }
+    .update-band #genres {
+        grid-row: 4 / span 1;
+        grid-column: 5 / span 2;
+    }
 }
 
 
-.iti__flag {
-    background-image: url("../img/flags.png");
+.line-break {
+    width: 100%;
 }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .iti__flag {background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/10.0.2/img/flags@2x.png");}
-}
-
-input#_phone  {
-    margin: 2.5em;
-    width: 15ch;
-}
-
-.iti .iti--allow-dropdown{
-    background: grey;
-}
 
 ul.unique-band-yes-no {
     display: block;
     line-height: initial;
-    margin-top: 0;
+    margin: 0;
+    padding: 0;
     border-radius: 3px;
     font-size: 0.8rem;
     margin-left: 0;
 }
 
-form ul.yes > li {
-    padding: .25em .5em;
+ul.unique-band-yes-no.no li,
+ul.unique-band-yes-no.yes li {
+    margin-left: 0;
+    padding: .25em 0;
     color: $alert-success-txt;
     background: $alert-success-bg;
 }
 
 ul.unique-band-yes-no.no li {
-    padding: .25em .5em;
     color: $alert-danger-txt;
     background: $alert-danger-bg;
 }
 
-form .content-block {
-    display: flex;
-    flex-direction: column;
-}
-
-form .content-block.center {
-    margin: 0 0 3em;
-    align-items: center;
-}
-
-form .content-block.center p {
-    font-size: 1.25rem;
-    text-align: center;
-}
-
-// form,
-// .form-part {
-//     display: grid;
-//     justify-content: space-evenly;
-// }
-
-form ul, form li {
-    list-style: none;
-    margin-left: 0;
-    padding-left: 0;
-}
-
-ul.invalid-feedback,
-ul.unique-band-yes-no {
-    margin: 0;
-}
-ul.invalid-feedback {
-    padding: 4px;
-    border: 3px;
-    color: $alert-danger-txt;
-    background: $alert-danger-bg;
-}
-
-// #band-details {
-//     order: -2;
-// }
-
-// #genres {
-//     order: -1;
-// }
-
-fieldset {
-    grid-column: 1 / span 2;
-    margin-bottom: .5em;
-}
-
-fieldset:last-of-type {
-    // margin-bottom: 0;
-}
-
-// fieldset > fieldset {
-//     margin: 0;
-//     grid-column: auto;
-// }
-
-
-fieldset > legend {
-    width: auto;
-    padding: .25em;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-}
-
-#band-image {
-    // margin-top: 0.5em;
-}
-
-.hint {
-    font-size: .85rem;
-    // color: $text-secondary;
-}
-
-#media_assets-featured_image {
-    width: 90%;
-}
-
-fieldset input:not([type="radio"]):not([type="checkbox"]):not(#media_assets-featured_image),
-fieldset textarea {
-    height: 1.75em;
-    width: 100%;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    border-top: none;
-    border-bottom: 1px solid #DDD;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
-    padding: .25em .5em;
-}
-
-.fieldset > label,
-.subform > label {
-    box-shadow: none;
-}
-
-
-
-
-footer.form__footer {
-    grid-area: foot;
-    background: red;
-    border-top: 1px solid $text-secondary;
-    overflow: hidden;
-}
-
-footer.form__footer > p{
-    grid-column: 2;
-}
-
-ul.unique-band-yes-no {
-    display: block;
-    line-height: initial;
-    grid-column: 2;
-    margin: 2px 0;
-    padding: 4px 6px;
-    font-size: .9rem;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    background-color: inherit;
-}
-
-ul.yes {
-    color: $alert-success-txt;
-    background: $alert-success-bg;
-}
-
-ul.no {
-    color: $alert-danger-txt;
-    background: $alert-danger-bg;
-}
-
-
-
-form {
-    //margin: 1em auto;
-    padding: 1em;
-    grid-column: 1 / -1;
-    grid-area: main__content;
-    display: grid;
-    grid-auto-rows: auto;
-    grid-template-columns: 1fr;
-    background-color: $lns-bg;
-    grid-gap: 0 1em;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 12px;
-    @media (min-width: 600px){
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-    }
-    max-width: 60ch;
-}
-
-
-
-.field {
-    grid-column: 1;
-    display: grid;
-    margin-bottom: 2em;
-    grid: inherit;
-    grid-template-columns: 1fr;
-    grid-gap: inherit;
-    align-items: end;
-}
-
-label[for="band_name"].field .label-text {
-    font-weight: 700;
-    font-size: 1.2rem;
-}
-
-ul.invalid-feedback{
-    grid-column: 1 / span 2;
-    margin-bottom: .5em;
-    padding: 4px 6px;
-    font-size: .9rem;
-    border-radius: 3px;
-}
-
-
-.label-text:after {
-    content: ' : '
-}
-
-.form-header {
-    display: grid;
-    grid-row: 1;
-    grid-column: 1 / -1;
-    font-size: .85rem;
-}
-
-.form-footer {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-
-}
-
-.content-block .form-footer {
-    margin: 0 2em;
-}
-
-
-
-input[name="band_name"]:not(output):-moz-ui-invalid {
-    box-shadow: none;
-}
-
-input[name="band_name"]:not(output):-moz-ui-invalid:-moz-focusring {
-    box-shadow: 0 0 2px 2px rgba(42, 255, 31, 0.4);
-}
-
-
-@media (min-width: 600px){
-
-    form {
-        grid-template-columns: max-content 1fr;
-        grid-column: 1 / span 2;
-    }
-    .field {
-        grid-template-columns: max-content 1fr;
-        grid-template-columns: subgrid;
-        grid-column: 1 / span 2;
-
-    }
-}

@@ -1,27 +1,29 @@
 {% extends "base_no_lnsb.html" %}
-{% from "_render_grid_field.html" import render_field %}
+{% from "_render_label_field.html" import render_field %}
 
 {% block main__header %}
 {% endblock main__header %}
 
 {% block main__content %}
-<div class="content-block">
     <form method="POST" action="" class="sign-in-up">
     {{ form.hidden_tag() }}
     <div class="form-header">
     <h3>Sign In</h3>
     </div>
+    <div class="form-body">
         {{ render_field(form.email) }}
         {{ render_field(form.password) }}
-       
-        {{ form.remember }}
-        {{ form.remember.label }}
+        <div class="remember">
+            {{ form.remember }}
+            {{ form.remember.label }}
+        </div>
+    </div>
     <div class="form-footer">
         {{ form.submit(class='btn-form-submit') }}
         <span class="forgot-password"><small><a href="#">Forgot Password?</a></small></span>
     </div>
     </form>
-</div>
+
 <div class="footer--main centered floating-info">
     <small>Don't have an Account? <a href="{{ url_for('user.register') }}">Sign Up Today</a></small>
 </div>

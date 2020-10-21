@@ -28,7 +28,7 @@ def view_manage_dlc(*args, **kwargs):
     if request.referrer and request.referrer != request.url_root:
         referrer = request.referrer.replace(request.url_root,'')
         referrer = referrer.split("/",5) if len(referrer) > 0 else ['mhome']
-        print(referrer)
+        #print(referrer)
         if referrer[0] == 'mhome':
             return [{'text': 'Manage My Bands'}]
         if len(referrer) > 2:
@@ -67,7 +67,8 @@ def mhome():
     bands = Band.objects(created_by=user).order_by('-date_updated', '-date_created').paginate(per_page=PER_PAGE, page=page)
     alphabet = { key:0 for key in ALPHABET }
     return render_template("manage_bands.html", bands=bands, display_breadcrumbs=True, alphabet=alphabet)
-    
+
+
 @manage.route("/bands/")
 @manage.route("/bands/<path:band_view>")
 @manage.route("/bands/<path:band_view>/<string:letter>/")
@@ -107,39 +108,13 @@ def manage_bands_home(band_view='recent', letter='a'):
             return 'no bands created' #redirect
 
 
-# @manage.route("/bands/")
-# def redirector():
-#     return redirect(url_for("manage.manage_bands_home"))
-
-
-def get_video_service_and_id(url):
-    video = {}
-    if "youtu" in url:
-        video["service"] = "youtube"
-    elif "vimeo" in url:
-        video["service"] = "vimeo"
-    else:
-        return None
-    v = re.search("(?:https?:\/\/)?(?:www\.)?(?:vimeo.com\/|youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[^&\s\?]+(?!\S))\/)|(?:\S*v=|v\/))))([^&\s\?]+)", url)
-    video["vid"] = v.group(1).split("=")[1] if v.group(1).startswith("v=") else v.group(1)
-    return video
-
-
-# @manage.route('/bands/checkband')
-# def checkband():
-#     form = CreateBandForm1()
-#     genres = list_genres()
-#     return render_template('manage_new_stage1_band_check.html', form=form, genrelist=genres) #form_legend = form_legend, title=title or form_legend, step=step, )
-
-
 @manage.route('/bands/new/', defaults={'stage': 1}, methods=("GET","POST"))
 @manage.route('/bands/new/<int:stage>/', methods=("GET","POST"))
 def add_band(stage):
     genres = list_genres()
     if stage == 1:
         form = CreateBandForm1()
-        if request.method == "POST" and form.validate_on_submit(): 
-            #return request.form
+        if request.method == "POST" and form.validate_on_submit():
             if form.band_name.validate(form):
                 catalogue_name = de_article(form.band_name.data) if int(form.solo.data) == 0 else de_singularise(form.band_name.data)
             session["band"] = { 
@@ -150,26 +125,26 @@ def add_band(stage):
             }
             form = CreateBandForm2()
             stage=2
-            return render_template("manage_new_stage2_band_details.html", form=form, stage=stage, genrelist=genres, bname=session["band"]["band_name"])
+            return render_template("manage_new_stage2_band_details.html", form=form, formpage=True, display_breadcrumbs=True, stage=stage, genrelist=genres, bname=session["band"]["band_name"])
         else: 
             form = CreateBandForm1()
-            return render_template('manage_new_stage1_band_check.html', form=form, stage=1)
+            return render_template('manage_new_stage1_band_check.html', form=form, formpage=True, display_breadcrumbs=True, stage=1, title="Band/Artist Name")
     
     if stage == 2:
         form = CreateBandForm2()
         if request.method == "POST" and form.validate_on_submit():
-            returned_genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]
+            returned_genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genres') for genre in gl.split(',') ]
+            returned_genrelist.extend(genre.strip().replace(' ', '-').lower() for genre in form.genres_other.data.split(',')) if form.genres_other.data else None
             session["band"]["strapline"] = form.strapline.data
             session["band"]["description"] = form.description.data
             session["band"]["genres"] = list(filter(None, set(returned_genrelist)))
             session.modified = True
             form = CreateBandForm3()
             stage = 3
-           # return jsonify(session["band"])
-            return render_template("manage_new_stage3_band_profile.html", form=form, stage=stage, bname=session["band"]["band_name"])
+            return render_template("manage_new_stage3_band_profile.html", form=form, formpage=True, display_breadcrumbs=True, stage=stage, bname=session["band"]["band_name"])
         else:
             stage = 2
-            return render_template("manage_new_stage2_band_details.html", form=form, stage=stage, genrelist=genres, bname=session["band"]["band_name"])
+            return render_template("manage_new_stage2_band_details.html", form=form, formpage=True, display_breadcrumbs=True, stage=stage, genrelist=genres, bname=session["band"]["band_name"])
          
     if stage == 3:
         form = CreateBandForm3()
@@ -181,14 +156,14 @@ def add_band(stage):
                 featured_image = "defaultband.jpg"
             session["band"]["featured_image"] = featured_image
             session["band"]["profile"] = form.profile.data
-            session["band"]["members"] = [{**member} for member in form.members.data ]
+            session["band"]["members"] = [ {**member} for member in form.members.data ]
             session.modified = True
             form = CreateBandForm4()
             stage = 4
-            return render_template("manage_new_stage4_band_contact.html", form=form, stage=stage, bname=session["band"]["band_name"])
+            return render_template("manage_new_stage4_band_contact.html", form=form, formpage=True, display_breadcrumbs=True, stage=stage, bname=session["band"]["band_name"])
         else:
             stage = 3
-            return render_template("manage_new_stage3_band_profile.html", form=form, stage=stage, bname=session["band"]["band_name"])
+            return render_template("manage_new_stage3_band_profile.html", form=form, formpage=True, display_breadcrumbs=True, stage=stage, bname=session["band"]["band_name"])
 
     if stage == 4:
         form = CreateBandForm4()
@@ -237,12 +212,12 @@ def add_band(stage):
                 )
             band.save()
             band_id = band.id
-            # user.update(push__posts=post) remember to add band to user
+            # user.update(push__posts=post) if associating band to user
             band = Band.objects(id=band_id).first()
-            return render_template("band_detail.html", band=band)
+            return redirect(url_for('manage.preview_band', band_view='alpha', letter=band.catalogue_name[0], bname=band.band_name))
         else:
             stage = 4
-            return render_template("manage_new_stage4_band_contact.html", form=form, stage=stage, bname=session["band"]["band_name"])
+            return render_template("manage_new_stage4_band_contact.html", form=form, stage=stage, bname=session["band"]["band_name"], display_breadcrumbs=True)
 
 
 
@@ -303,24 +278,21 @@ def update_band_profile(bname, letter, band_view):
         band.date_updated = datetime.utcnow
         band.description = form.description.data
         band.genres.clear()
-        genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genre') for genre in gl.split(',') ]
-        band.genres = list(filter(None, set(genrelist)))
+        returned_genrelist = [genre.strip().replace(' ', '-').lower() for gl in request.form.getlist('genres') for genre in gl.split(',') ]
+        returned_genrelist.extend(genre.strip().replace(' ', '-').lower() for genre in form.genres_other.data.split(',')) if form.genres_other.data else None
+        band.genres = list(filter(None, set(returned_genrelist)))
         band.hometown= {"town": form.hometown.origin_town.data, "county": form.hometown.origin_county.data}
         band.profile = form.profile.data
         band.strapline = form.strapline.data
         band.contact_details = contact
         band.links = weblinks
         band.band_members.clear()
-        for member in form.members.data:
-            new_member = BandMember()
-            new_member.musician = member["musician"]
-            new_member.instruments = member["instruments"]
-            band.band_members.append(new_member)
+        band.band_members = [ BandMember(**member) for member in form.members.data ]
         band.save()
         flash("Band details updated!", "success")
         return redirect(url_for('manage.manage_bands_home', toggle='recent'))
     elif request.method == "GET":
-        form.solo.data = False if band.solo else True
+        form.solo.data = band.solo
         form.band_name.data = band.band_name
         form.description.data = band.description
         form.strapline.data = band.strapline
@@ -336,12 +308,11 @@ def update_band_profile(bname, letter, band_view):
         form.contact_details.contact_emails.email_address.data = band.contact_details.contact_emails.email_address
         form.media_assets.featured_video.data = (("https://www.youtube.com/watch?v=" if band.media_assets.featured_video["service"] == "youtube" else "https://www.vimeo.com/"  )   +band.media_assets.featured_video["vid"]) if band.media_assets.featured_video else None
         form.genres.data = ",".join(map(str,band.genres))
-        form.enquiries_url.data = band.links.enquiries
     selected_county = band.hometown["county"] if band.hometown["county"] is not None else "Antrim"
     selected_town = band.hometown["town"] if band.hometown["town"] is not None else "none"
     genres = list_genres()
     form_legend="Edit Band Profile"
-    return render_template("manage_band_update_form.html", form=form, genrelist=genres, form_legend="Edit Band Profile",
+    return render_template("manage_band_update_form.html", form=form, genrelist=genres, form_legend="Edit Band Profile", formpage=True,
                             selected_county=selected_county, selected_town=selected_town, band=band, display_breadcrumbs=True)
 
 
@@ -352,5 +323,5 @@ def delete_band(bname):
     if band.created_by.id != current_user.id:
         abort(403)
     band.delete()
-    flash("Band has been deleted!", "success")
+    flash("Band has been deleted!", "danger")
     return redirect(url_for("manage.manage_bands_home", band_view='recent'))

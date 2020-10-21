@@ -2,9 +2,11 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
 from bandz.models.entities import User, Band, Towns
-from wtforms import (BooleanField, DateField, Form, FormField, FieldList, HiddenField, 
-                      PasswordField, RadioField, SelectField, StringField, SubmitField, TextAreaField,)
+from wtforms import (BooleanField, DateField, Form, FormField, FieldList, HiddenField,
+                      PasswordField, RadioField, SelectField, SelectMultipleField, StringField, SubmitField, TextAreaField,)
 from wtforms.validators import DataRequired, Email, EqualTo, InputRequired, Length, Optional, URL, ValidationError, StopValidation
+from wtforms.widgets import ListWidget, CheckboxInput
+from bandz.api.routes import list_genres
 import phonenumbers
 
 class HomeTownForm(Form):
@@ -55,6 +57,15 @@ class BandMemberFormlet(Form):
     musician = StringField("Musician's Name")
 
 
+def validate_phone(self, phone):
+    try:
+        p = phonenumbers.parse(phone.data, self.region.data)
+        if not phonenumbers.is_valid_number(p):
+            raise ValueError()
+    except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+        raise ValidationError('Invalid phone number')
+
+
 class PhoneFormlet(Form):
     mobile = RadioField("Mobile Y/N", 
                         choices=[(1, "mobile"),(0,"landline")],
@@ -65,20 +76,8 @@ class PhoneFormlet(Form):
                                     ('IE', 'Ireland'),
                                     ('GB', 'N.I./UK'),
                                     ('None','Other')
-
                         ], default='IE')
-    phone = StringField('', validators=[DataRequired()])
-    # number = StringField("Number",
-    #                     render_kw={"placeholder":"+353", "class":"number-field", "id":"phone"},
-    #                     validators=[Length(max=15)])  
-
-    def validate_phone(self, phone):
-        try:
-            p = phonenumbers.parse(phone.data, self.region.data)
-            if not phonenumbers.is_valid_number(p):
-                raise ValueError()
-        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
-            raise ValidationError('Invalid phone number')
+    phone = StringField('', validators=[Length(max=15), validate_phone])
 
 
 class MediaAssetsFormlet(Form):
@@ -110,6 +109,13 @@ class ContactFormlet(Form):
     contact_numbers = FormField(PhoneFormlet)
 
 
+class MultiCheckboxField(SelectMultipleField):
+    widget = ListWidget(prefix_label=False)
+    option_widget = CheckboxInput()
+
+def check_genres_length(form, field):
+    if (form.genres.data == None or len(form.genres.data) <= 0) and field.data == '':
+        raise ValidationError("Please select or add at least one music genre for your band.")
 
 class CreateUpdateBandForm(FlaskForm):
     solo = RadioField("Band or Individual", 
@@ -123,15 +129,16 @@ class CreateUpdateBandForm(FlaskForm):
     description = StringField("Description",
                             render_kw={"placeholder": "Ska Reggae Band from Belfast"},
                             validators=[DataRequired()])
-    strapline = StringField("Band Motto / Strapline",
-                            render_kw={"id": "testLower"})
+    strapline = StringField("Band Motto / Strapline")
     profile = TextAreaField("Profile",
                             render_kw={"placeholder": "Brief Bio/History, band origins and direction"},
                             validators=[DataRequired()])
-    genres = StringField("Musical Genres", 
-                            render_kw={"id": "testInput",
-                                       "style":"text-transform: lowercase;",
-                                       })
+    genres = MultiCheckboxField("Genres", 
+                            choices=[(genre.lower(), genre.title()) for genre in list_genres()],
+                            default="rock")
+    genres_other = StringField("Genres Other", 
+                            render_kw={"style":"text-transform: lowercase;"},
+                            validators=[check_genres_length])
     hometown = FormField(HomeTownForm)
     members = FieldList(FormField(BandMemberFormlet), min_entries=1)
     created_by = HiddenField()
@@ -161,23 +168,21 @@ class CreateBandForm1(FlaskForm):
 
 
 class CreateBandForm2(FlaskForm):
-    # band_name = StringField("Band Name",
-    #                         render_kw={"placeholder": "Org Name / Band / Venue"},
-    #                         validators=[DataRequired()])
     description = StringField("Description",
                             render_kw={"placeholder": "Ska Reggae Band from Belfast"},
                             validators=[DataRequired()])
-    strapline = StringField("Band Motto / Strapline",
-                            render_kw={"id": "testLower"})
-    genres = StringField("Musical Genres", 
-                            render_kw={"id": "testInput",
-                                       "style":"text-transform: lowercase;",})
+    strapline = StringField("Band Motto / Strapline")
+    genres = MultiCheckboxField("Genres", 
+                            choices=[(genre.lower(), genre.title()) for genre in list_genres()],
+                            default="rock")
+    genres_other = StringField("Genres Other", 
+                            render_kw={"style":"text-transform: lowercase;"},
+                            validators=[check_genres_length])
     created_by = HiddenField()
     submit = SubmitField("Next")
     
     
 class CreateBandForm3(FlaskForm):
-    # hometown = FormField(HomeTownForm)
     profile = TextAreaField("Profile",
                             render_kw={"placeholder": "Brief Bio/History, band origins and direction"},
                             validators=[DataRequired()]
