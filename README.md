@@ -44,24 +44,31 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
     * ![](/docs/create-cluser.png)
     * ![](/docs/cluster-name.png)
     * should end up with something like this:<br> ![](/docs/cluster-created.png)
-4. create a database called 'bandz' and a initial collection called 'user'
-    * ![](/docs/create-db.png)
-    * ![](/docs/user-collection.png)
-    * other collections will be created during the setup phase on launching the flask app
-5. create a database user with read/write access
+4. While you are waiting for the cluster to be provisioned - you can create a database user by clicking **Database Access** in the left navigation
+    * create a database user with read/write access
     * ![](/docs/create-db-user.png)
     * use a password with uppercase and lowercase letters and numbers but without special characters like hyphens as this aids simple connections using a mongodb_uri
+    * You will need to note this username and password down as the connection string will need to be edited to include these credientals
     * ![](/docs/create-db-user2.png)
-6. The database user should have read/write access 
+5. The database user should have read/write access 
     *    ![](/docs/database-access.png)
-7. Change Network access so that all IP addresses are whitelisted; this can be made more secure if deploying to production like Heroku.
+6. You will probably still be waiting on the cluster, so change **Network Access** (again in the left hand-side navbar)
+    * Set all IP addresses are whitelisted; this can be made more secure if deploying to production like Heroku.
     * ![](/docs/network-access.png)
     * ![](/docs/ip-access.png)
-8. Finally copy the mongodb_uri/srv connection string; click the three ... little dots<br>
-   beside collections
+7. The Cluster should now be provisioned and you can add a new database
+    * click **Collections** under the Cluster name 
+    * in the collection area click **Add My Own Data** to open a pop-up
+    * create a database called 'bandz' and a initial collection called 'user'
+    * ![](/docs/create-db.png)
+    * ![](/docs/user-collection.png)
+    * other collections will be created during the setup phase on launching the flask app 
+8. Finally copy the mongodb_uri/srv connection string; either click the Command Line Tools tab over to the extreme right of the Collections or Overview tabs or go up one level in the breadcrumb trail to the project name from here click **Connect** under the Cluster Name choose *Connect your application* change the driver to python, version 3.6 or later
+    * click copy
     * ![](/docs/mongo-uri.png)
-9. Paste / add this connection string to the __init__.py or [config.py object](https://flask.palletsprojects.com/en/1.1.x/config/) depending on how you are deploying
-10. Amend to include the 'bandz' (or whatever you called the database) and the database user's password
+9. Paste / add this connection string to the __init__.py or [config.py object](https://flask.palletsprojects.com/en/1.1.x/config/) depending on how and where you  are deploying i.e. a mongo uri in a localhost deploy is not so bad but it would be better as an environmental variable e.g.
+    * set up and environmental variable by typing `export MONGO_CONNECTION="<paste-connection-edit-with-database-username-and-password>"` (ammend before saving / hitting Enter) and reference this in the __init__.py
+10. Amend to include the 'bandz' (or whatever you called the database) and the database user's credientals (username and password)
     * **N.B.** MongoEngine uses **MONGO_SETTINGS** Object as opposed to the usual MONGODB_URI with PyMongo
     * 
     ```python
@@ -71,6 +78,5 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
     "host" : <uri/short-srv connection string>
     }
     ```
-
 
 
