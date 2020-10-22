@@ -85,3 +85,4 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
     * this will take a little while
 2. Back in Mongo Atlas the database should have grown to include Towns and Bands (and the initial User credientals)
     * ![](/docs/db-tables-post-import.png)
+3. On first run it only returns one genre so you need to shutdown and restart the server (may require pushing again to heroku ) the next time it reads the genres
