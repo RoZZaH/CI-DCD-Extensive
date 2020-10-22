@@ -1,11 +1,11 @@
-##DEPLOYMENT
+## DEPLOYMENT
 
 
-###CLONE THE GIT REPOSITORY
+### CLONE THE GIT REPOSITORY
 
 1. Clone the Git Repo<br>
     if using [VSCode](https://code.visualstudio.com/) Ctrl+Shift+P (Win) or Cmd+Shift+P (Mac) type 'Clone' (Git:Clone)<br>
-..* Paste in this Git URI -> https://github.com/RoZZaH/CI-DCD-Extensive.git
+    * Paste in this Git URI -> https://github.com/RoZZaH/CI-DCD-Extensive.git
 
 2. Create a Virtual Environment using venv or [pipenv](https://realpython.com/pipenv-guide/) or virtualenv
 
@@ -22,9 +22,9 @@ or use `pipenv shell` if using pipenv
 5.   use the requirements.txt to install dependicies <br>
 N.B. if deploying to heroku uncomment the line for gunicorn
 
-6.  pip install -r requirements.txt | pipenv install requirements.txt
+6.  `pip install -r requirements.txt` or alternatively `pipenv install requirements.txt`
 
-7. N.B. If deploying to Heroku rther than testing on localhost you should probably delete or move the Pipfile and Pipfile.lock into a 'misc' folder this is set to be ignored by .gitignore (this interferes with Heroku deployment)
+7. **N.B.** If deploying to Heroku rther than testing on localhost you should probably delete or move the Pipfile and Pipfile.lock into a 'misc' folder this is set to be ignored by .gitignore (this interferes with Heroku deployment)
 
 8. VSCode will probably ask to install python extension and linter for the python language
 
@@ -34,7 +34,7 @@ N.B. if deploying to heroku uncomment the line for gunicorn
 
 
 
-###MONGO_SETTINGS
+### MONGO_SETTINGS
 
 Presuming no localhost MongoDB available simplest set up is create a free Database/Cluster on MongoDB Database-as-a-service offering MongoDB Atlas.
 
