@@ -28,7 +28,7 @@
         {% for province in province_counties %}
         <fieldset class="province" id="{{ province._id|lower }}">
         <ul>
-            <li><span class="province-title">{{ province._id }}</span><input class="debug" type="checkbox" name="{{ province._id|lower }}" value="all"></li>
+            <li><label class="province-title">{{ province._id }}&nbsp;<input class="debug" type="checkbox" name="{{ province._id|lower }}" value="all"></label></li>
             {% for county in province.counties|sort %}
             <li><input id="{{ county }}" class="debug" type="checkbox" name="counties" value="{{county}}"><label for="{{ county }}">{{ 'L/Derry' if county=="Derry" else county }}</label></li>
             {% endfor %}

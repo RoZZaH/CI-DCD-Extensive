@@ -206,9 +206,9 @@ def results():
     page = request.args.get("page", 1, type=int)
     if request.args:
         text_query = request.args.get("q")
-        if text_query != None:
-            if len(text_query) == 0:
-                text_query = None
+        print(text_query)
+        if text_query != None and len(text_query) == 0:
+            text_query = None
         genres = request.args.getlist("genres")
         andor = request.args.get("andor")
         letter = request.args.get("letter") if "letter" in request.args else "a"
@@ -234,13 +234,14 @@ def results():
             else:
                 search_terms = f"<b>{genres[0]}</b> bands" if (len(genres) <= 1) else "<b>" + "-".join(genres) + " bands</b>"
         if len(counties) > 0:
-            search_terms += f" in County {counties[0]}" if (len(counties) <= 1) else " in counties: " + ", ".join(counties[:-1]) + " and " + counties[-1]
+            search_terms += f" in County {counties[0].title()}" if (len(counties) <= 1) else " in counties: " + ", ".join(counties[:-1]) + " and " + counties[-1]
         if len(genres) == 0 and len(counties) == 0:
             search_terms = "bands"
         if text_query:
             search_terms += f" containing <b>'{text_query}'</b>"
         if text_query==None:
             search_terms += f" beginning with the letter <b>{letter.upper()}</b>"
+        
         # build QSet filters ala mongoengine
         if len(genres) == 0:
             pass
@@ -255,24 +256,28 @@ def results():
                     filters['genres__in']=genres
 
         if len(counties) > 0:
-            if len(counties) == 1:
-                    county = counties.pop()
-                    filters['hometown__county__iexact'] = county
-            else:
-                filters['hometown__county__in'] = counties
+            filters['hometown__county__in'] = counties
 
-    queryset = Q(**filters) # use _AND or _OR Q Node Combinations
-    # print(pipeline)
     if text_query != None:
-        bands = Band.objects.filter(queryset) #text has to be first pipeline
-        pipeline = [{ "$match": { "$text": { "$search": text_query } }}, 
-                    { "$facet": {
+        pipeline = [{ "$match": { "$text": { "$search": text_query } }}] #text has to be first pipeline
+        if 'genres' in filters.keys():
+            pipeline.append({ "$match": { "genres": filters['genres'] } })
+        if 'genres__in' in filters.keys():
+            pipeline.append({ "$match": { "genres": {"$in": filters['genres__in'] } } })
+        if 'genres__all' in filters.keys():
+            pipeline.append({ "$match": { "genres": {"$all": filters['genres__all'] } } })
+        if 'genres__all' in filters.keys():
+            pipeline.append({ "$match": { "genres": {"$all": filters['genres__all'] } } })
+        if 'hometown__county__in' in filters.keys():
+            pipeline.append({ "$match": { "hometown.county": {"$in": filters['hometown__county__in']}}})
+        # end with facets
+        pipeline.extend([{ "$facet": {
                         "numbers_by_letter": [ {"$group": { "_id": { "$substr": [ "$catalogue_name", 0, 1]}, 
                                                             "number_of_bands": { "$sum": 1 }}} ],
                         "bands_by_letter":   [ { "$project": {"_id": 1, "band_name": 1, "strapline": 1, "hometown": 1,
                                                               "profile": 1, "description": 1, "genres": 1, "media_assets": 1, "letter": {"$toLower": { "$substr": [ "$catalogue_name", 0, 1]}}}} ]
-                    }}]
-        result = list(bands.aggregate(pipeline))[0]
+                    }}])
+        result = list(Band.objects.aggregate(pipeline))[0]
         bands = Pagination(result["bands_by_letter"], page, 12)
         _alphabet = 'abcdefghijklmnopqrstuvwxyz_'
         alphabet = { obj["_id"].lower():int(obj["number_of_bands"]) for obj in result["numbers_by_letter"] }
@@ -283,12 +288,15 @@ def results():
             bands_total = bands.total
             search_terms = search_terms.replace('bands', 'band') if bands_total == 1 else search_terms
             return render_template("bands_list_results.html", bands=bands, search=search, count=count, bands_total=bands_total, search_terms=search_terms, letter=letter)
+        else:
+            return render_template("bands_list_results.html", display_breadcrumbs=True, search_terms=search_terms, no_results=True)
     
     else:
         if not filters: # mobile test, smaller PER_PAGE?
             return redirect(url_for("public.home"))
 
         if filters:
+            queryset = Q(**filters) # use _AND or _OR Q Node Combinations
             pipeline = [{"$facet": {
                         "numbers_by_letter": [ {"$group": { "_id": { "$substr": [ "$catalogue_name", 0, 1]}, 
                                                             "number_of_bands": { "$sum": 1 }}} ],
@@ -308,9 +316,11 @@ def results():
                 total_bands_in_query = sum(alphabet.values())
                 search_terms += f'; there are {total_bands_in_query} resullts in total - use the alphabet to navigate between them.'
                 return render_template("bands_list_results.html", bands=bands, search=search, count=count, bands_total=bands_total, search_terms=search_terms, alphabet=alphabet, letter=letter)
-            else:
+            elif len(list(Band.objects.filter(queryset))) > 0: #some results irrespective of letter
                 alphaset = [ ltr for ltr in alphabet.keys() if alphabet[ltr] > 0]
                 return render_template("bands_list_results.html", closest_letters=closest_letters(alphaset, letter), search=search, display_breadcrumbs=True, alphabet=alphabet, letter=letter)
+            else:
+                return render_template("bands_list_results.html", display_breadcrumbs=True, search_terms=search_terms, no_results=True)
     
 
 

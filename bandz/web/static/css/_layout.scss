@@ -323,11 +323,24 @@ dl.enquiries {
   }
 }
 
-.spacer-3em {
+.no-results {
+  display: flex;
+  align-items: center;
+  padding: 3em;
+  grid-area: main;
+  min-height: 50vh;
+  background-color: $body-bg;
+  @media (max-width: 599px) {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}
+
+.spacer-3em-lsnb {
   grid-area: lnsb;
   display: block;
   min-height: 40px;
   @media (min-width: 600px){
-  min-height: 120px;
+    min-height: 120px;
   }
 }

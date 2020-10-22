@@ -27,8 +27,10 @@
         {{ search_results_pages_nav(bands, search, letter) }}
         </nav>
         {% endif %}
-    {% else %}
+    {% elif letter %}
         <p class="centered">No Results under <b>{{ letter|upper }} </b></p>
+    {% else %}
+        <p class="centered">...No Results...</p>
     {%- endif -%}
     </section>
 </div>
@@ -38,7 +40,16 @@
 {% block main__header %}{% endblock main__header %}
 <!-- CONTENT -->
 {% block main__content %}
-        {% include "_include_bands_list_cards.html" %}
+        {% if no_results %}
+        <div class="no-results">
+            <div class ="content-block">
+                <h3>Sorry...</h3>
+                <p><b>No results found</b> for: {{ search_terms|safe }} </p>
+            </div>
+        </div>
+        {% else %}
+            {% include "_include_bands_list_cards.html" %}
+        {% endif %}
 {% endblock main__content %}
 <!-- MAIN FOOTER -->
 {% block main__footer %}{% endblock main__footer %}

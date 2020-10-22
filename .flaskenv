@@ -1,2 +1,2 @@
-FLASK_ENV = "production"
+FLASK_ENV = "devlopment"
 FLASK_APP = "run.py"
