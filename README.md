@@ -41,29 +41,29 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
 1. Login/Sign up for [MongoDB Atlas](https://account.mongodb.com/account/login)
 2. Create a Project if you like
 3. Create a free AWS Cluster - there should be one available in Dublin just make sure M0, Free Forever Tier, is available.
-..* ![](/docs/create-cluster.png)
-..* ![](/docs/cluster-name.png)
-..* should end up with something like this:<br> ![](/docs/cluster-created.png)
+    * ![](/docs/create-cluser.png)
+    * ![](/docs/cluster-name.png)
+    * should end up with something like this:<br> ![](/docs/cluster-created.png)
 4. create a database called 'bandz' and a initial collection called 'user'
-..* ![](/docs/create-db.png)
-..* ![](/docs/user-collection.png)
-..* other collections will be created during the setup phase on launching the flask app
+    * ![](/docs/create-db.png)
+    * ![](/docs/user-collection.png)
+    * other collections will be created during the setup phase on launching the flask app
 5. create a database user with read/write access
-..* ![](/docs/create-db-user.png)
-..* use a password with uppercase and lowercase letters and numbers but without special characters like hyphens as this aids simple connections using a mongodb_uri
-..* ![](/docs/create-db-user2.png)
+    * ![](/docs/create-db-user.png)
+    * use a password with uppercase and lowercase letters and numbers but without special characters like hyphens as this aids simple connections using a mongodb_uri
+    * ![](/docs/create-db-user2.png)
 6. The database user should have read/write access 
-..*    ![](/docs/database-access.png)
+    *    ![](/docs/database-access.png)
 7. Change Network access so that all IP addresses are whitelisted; this can be made more secure if deploying to production like Heroku.
-..* ![](/docs/network-access.png)
-..* ![](/docs/ip-access.png)
+    * ![](/docs/network-access.png)
+    * ![](/docs/ip-access.png)
 8. Finally copy the mongodb_uri/srv connection string; click the three ... little dots<br>
    beside collections
-..* ![](/docs/mongo-uri.png)
+    * ![](/docs/mongo-uri.png)
 9. Paste / add this connection string to the __init__.py or [config.py object](https://flask.palletsprojects.com/en/1.1.x/config/) depending on how you are deploying
 10. Amend to include the 'bandz' (or whatever you called the database) and the database user's password
-..* **N.B.** MongoEngine uses **MONGO_SETTINGS** Object as opposed to the usual MONGODB_URI with PyMongo
-..* 
+    * **N.B.** MongoEngine uses **MONGO_SETTINGS** Object as opposed to the usual MONGODB_URI with PyMongo
+    * 
     ```python
     SECRET_KEY = <some secret string or env variable>
     MONGODB_SETTINGS = {
