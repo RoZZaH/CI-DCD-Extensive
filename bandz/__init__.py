@@ -3,10 +3,10 @@ from flask import Flask, send_from_directory
 from flask_assets import Environment, Bundle
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from flask_breadcrumbs import Breadcrumbs  #from flask_breadcrumbs import current_breadcrumbs
+from flask_breadcrumbs import Breadcrumbs
 from flask_nav.elements import Navbar, Subgroup, View
 from bandz.utils.assets import bundles
-from bandz.utils.mongoengine_jsonencoder import MongoEngineJSONEncoder # Overcome Objectionable ObjectIds
+from bandz.utils.mongoengine_jsonencoder import MongoEngineJSONEncoder
 from bandz.utils.gns import nav, initialise_nav
 from bandz.models.db import initialise_db
 
@@ -17,11 +17,19 @@ app = Flask(__name__,
 
 app.json_encoder = MongoEngineJSONEncoder
 
+# config via object - remove/comment out if not using config.py, see simple config below
 os.sys.path.append('../')
 if app.config["ENV"] == "production":
     app.config.from_object("config.ProductionConfig")
 else:
     app.config.from_object("config.DevelopmentConfig")
+
+# simple config add secret key + MONGODB_SETTINGS not MONGODB_URI for MongoEngine
+# SECRET_KEY = <some secret string> #or wrap in env variable if not localhost
+# MONGODB_SETTINGS = {
+#     "db" : <dbname>, #e.g. "bandz"
+#     "host" : <mongo srv uri> #or wrap in env variable
+# }
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
