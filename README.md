@@ -79,4 +79,9 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
     }
     ```
 
-
+## FIRST FLASK RUN
+1. You should see this page
+    * ![](/docs/setup.png)
+    * this will take a little while
+2. Back in Mongo Atlas the database should have grown to include Towns and Bands (and the initial User credientals)
+    * ![](/docs/db-tables-post-import.png)
