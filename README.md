@@ -5,7 +5,7 @@
 
 1. Clone the Git Repo<br>
     if using [VSCode](https://code.visualstudio.com/) Ctrl+Shift+P (Win) or Cmd+Shift+P (Mac) type 'Clone' (Git:Clone)<br>
-...* Paste in this Git URI -> https://github.com/RoZZaH/CI-DCD-Extensive.git
+..* Paste in this Git URI -> https://github.com/RoZZaH/CI-DCD-Extensive.git
 
 2. Create a Virtual Environment using venv or [pipenv](https://realpython.com/pipenv-guide/) or virtualenv
 
@@ -13,7 +13,8 @@
 ```python
     python3 -m venv ci_bandz
     source ci_bandz/bin/activate #to activate
-``` or use `pipenv shell` if using pipenv
+``` 
+or use `pipenv shell` if using pipenv
 
 4.  usually the pip version is outdated install old version of pip
     `pip install --upgrade pip`
