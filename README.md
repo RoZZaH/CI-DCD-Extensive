@@ -39,7 +39,7 @@ N.B. if deploying to heroku uncomment the line for gunicorn
 Presuming no localhost MongoDB available simplest set up is create a free Database/Cluster on MongoDB Database-as-a-service offering MongoDB Atlas.
 
 1. Login/Sign up for [MongoDB Atlas](https://account.mongodb.com/account/login)
-2. Create a Project if you like
+2. Create a new Project first, by clicking the folder icon - as you are limited to one free cluster per project
 3. Create a free AWS Cluster - there should be one available in Dublin just make sure M0, Free Forever Tier, is available.
     * ![](/docs/create-cluser.png)
     * ![](/docs/cluster-name.png)
