@@ -67,15 +67,15 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
     * click copy
     * ![](/docs/mongo-uri.png)
 9. Paste / add this connection string to the __init__.py or [config.py object](https://flask.palletsprojects.com/en/1.1.x/config/) depending on how and where you  are deploying i.e. a mongo uri in a localhost deploy is not so bad but it would be better as an environmental variable e.g.
-    * set up and environmental variable by typing `export MONGO_CONNECTION="<paste-connection-edit-with-database-username-and-password>"` (ammend before saving / hitting Enter) and reference this in the __init__.py
-10. Amend to include the 'bandz' (or whatever you called the database) and the database user's credientals (username and password)
+    * set up and environmental variable by typing `export MONGO_CONNECTION="<paste-connection-edit-with-database-and-password>"` (ammend before saving / hitting Enter) and reference this in the __init__.py
+10. Amend to include the 'bandz' (or whatever you called the database) and the database user's password
     * **N.B.** MongoEngine uses **MONGO_SETTINGS** Object as opposed to the usual MONGODB_URI with PyMongo
     * 
     ```python
     SECRET_KEY = <some secret string or env variable>
     MONGODB_SETTINGS = {
     "db" : "bandz", #this name takes precedence
-    "host" : <uri/short-srv connection string>
+    "host" : "<uri/short-srv connection string>"
     }
     ```
 
