@@ -120,23 +120,23 @@ Heroku will need this or to know about it in the requirements file.
 
 ### Heroku Command Line
 Presumes you have signed up for a free Heroku account. We will deploy using [Heroku Command Line Tools](https://devcenter.heroku.com/articles/heroku-cli) - this is basically setting up a remote git repository to push our local files too.
-    1. Initialise a local repo
-        * `git init`
-    2. add everything
-        * `git add .`
-    3. make an inital commit
-        * `git commit -m"Initial Heroku Push"`
-    4. now use the following command to initialise the remote destination
-        * `heroku create <project-name>`
-        * VS Code will prompt you to open a web link and ask you to sign in to heroku
-        * once it verifies your credientals it will create the remote destination
-        * next add this destination as a remote location by typing
-        * ```
-            git remote -v
-            https://git.heroku.com/<project-name>/git
-            ```
-    5. Finally push the local files (new master branch) to heroku
-        * `git push heroku master`
-    6. See Section on **FIRST FLASK RUN** above
-    7. As noted above genres not setup correctly on first running the server
-        * use `heroku restart` to restart the server, you should be able to see more than one genre category when adding a new band
+
+1. Initialise a local repo
+    * `git init`
+2. add everything
+    * `git add .`
+3. make an inital commit
+    * `git commit -m"Initial Heroku Push"`
+4. now use the following command to initialise the remote destination
+    * `heroku create <project-name>`
+    * VS Code will prompt you to open a web link and ask you to sign in to heroku
+    * once it verifies your credientals it will create the remote destination
+    * next add this destination as a remote location by typing
+    * ```
+        git remote -v
+        https://git.heroku.com/<project-name>/git```
+5. Finally push the local files (new master branch) to heroku
+    * `git push heroku master`
+6. See Section on **FIRST FLASK RUN** above
+7. As noted above genres not setup correctly on first running the server
+    * use `heroku restart` to restart the server, you should be able to see more than one genre category when adding a new band
