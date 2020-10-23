@@ -6,16 +6,16 @@ This project is a speculative music website where artists and managers can creat
 ### Demo
 
 A live demo can be found on [Heroku](http://bandz-ie.herokuapp.com/)
-Tester Credientals:
-    username: tester@testing.com
-    password: Tester
+* Tester Credientals:
+  * username: tester@testing.com
+   * password: Tester
 
 If deploying again, there are instructions below, please note that you can register as a new user but password reset is not implemented so<br>
 **Note Down your Password**
 The reason to register is so that the dummy data is associated with your account and you can edit / delete some live records.
 
 ## USER STORIES
-There is a [wireframe PDF](/docs/bandz-wireframe.pdf) of the project showing the main CRUD functionality.
+There is a [wireframe PDF](/docs/bandz_wireframe.pdf) of the project showing the main CRUD functionality.
 Users (Band Leaders and Managers) can:
     * register to manage their own or multiple bands
     * write a comprehensive band/artist bio including
@@ -43,7 +43,7 @@ The alphaebtical paging was quite challenging at involved using a combination of
 
 ## REFLECTIONS + DIRECTIONS
 Mongoengine seemed like a good idea initially but I used Mongo aggregations / pipelines so much that I probably could have stuck with Pymongo.
-The alphabetical paging was tough to work out and also meant a lot of logic now resides in the Jinja templates; I can see why these apps are seperated out into a backend API and a Javascript App. Also I can see the benefit of using Class-based views (possible but involved in Flask) over the Function-based views - that's probably where Django comes in. Search is rather naively implemented with equal weighting given across text-fields, obviously this needs further work you would want to weight a band name, or genres higher that words in a bio - but it is amazing how quickly mongo retunred results.
+The alphabetical paging was tough to work out and also meant a lot of logic now resides in the Jinja templates; I can see why these apps are seperated out into a backend API and a Javascript App. Also I can see the benefit of using Class-based views (possible but involved in Flask) over the Function-based views - that's probably where Django comes in. Search is rather naively implemented with equal weighting given across text-fields, obviously this needs further work you would want to weight a band name, or genres higher that words in a bio - but it is amazing how quickly mongo returned results.
 
 ## DEPLOYMENT
 
@@ -200,11 +200,11 @@ Presumes you have signed up for a free Heroku account. We will deploy using [Her
 I found Chrome and Edge a little flaky when testing the grid/responsive layouts - they appear to break but if you do a refresh there actually working.
 Firefox Developer Edition has much better tools for this.
 As I've tried to detail above, music genres need a restart to stick - I'm not sure whether it's a caching issue but the list_genres route doesn't work the first time, even though browse by Genre seems to have unwound the mongo records post import.
-The dummy data was generating using band names taken from the [IrishMusicDB](http://www.irishmusicdb.com) and a combination of mockaroo and some generation using the Towns data (which is largely accurate taken from OS and Census data in ROI/NI). And the genres are out - again I was trying to get bands/results to spread across genre and location, Sharon Shannon is not a Belfast Funk Artist in real life! 
+The dummy data was generating using band names taken from the [IrishMusicDB](http://www.irishmusicdb.com) and a combination of mockaroo and some generation using the Towns data (which is largely accurate taken from OS and Census data in ROI/NI). And the genres are out - again I was trying to get bands/results to spread across genre and location, Sharon Shannon is not a Belfast Funk Artist in real life! The band description could be longer but it would've made the csv/json document very difficult to wrangle the odd typo or extra space in front of band names.
 
 ## Credits
 Youtubers [Julian Nash](https://www.youtube.com/channel/UC5_oFcBFlawLcFCBmU7oNZA) and [Corey Schafer](https://www.youtube.com/watch?v=YYXdXT2l-Gg&list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU) do a brilliant job of getting people up and running with Flask.
 
-Two other individuals who helped a great deal on going beyond the basics of MongoDB are John Dupuy AKA Needless Process who has a great short playlist on [MongoEngine and the various fieldtypes](https://www.youtube.com/playlist?list=PL6RpFCvmb5SGUCLmzTc_wS6gvG0c3GIrS) and Bogdan Stashchuk a comprehensive playlist on the [Mongo Aggregation Framework](https://www.youtube.com/watch?v=A3jvoE0jGdE&list=PLWkguCWKqN9OwcbdYm4nUIXnA2IoXX0LI)
+Two other individuals who helped a great deal on going beyond the basics of MongoDB are John Dupuy AKA [Needless Process](https://www.youtube.com/c/needlessprocess) who has a great short playlist on [MongoEngine and the various fieldtypes](https://www.youtube.com/playlist?list=PL6RpFCvmb5SGUCLmzTc_wS6gvG0c3GIrS) and [Bogdan Stashchuk](https://www.youtube.com/channel/UCiyasqPIZz8zzbJp7-17dJw) has a very comprehensive playlist on the [Mongo Aggregation Framework](https://www.youtube.com/watch?v=A3jvoE0jGdE&list=PLWkguCWKqN9OwcbdYm4nUIXnA2IoXX0LI)
 
 MongoDB University is also a great resource and offers [free courses and certification](https://university.mongodb.com)
