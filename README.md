@@ -129,13 +129,19 @@ Presumes you have signed up for a free Heroku account. We will deploy using [Her
 3. make an inital commit
     * `git commit -m"Initial Heroku Push"`
 4. now use the following command to initialise the remote destination
+   1. starting fresh:
     * `heroku create <project-name>`
     * VS Code will prompt you to open a web link and ask you to sign in to heroku
     * once it verifies your credientals it will create the remote destination
     * check that **heroku** is an available remote destination
     * ```
         git remote -v
-        https://git.heroku.com/<project-name>/git```
+        https://git.heroku.com/<project-name>/git
+      ```
+    2. starting again:
+        * `git remote add heroku https://git.heroku.com/<project-name>/git`
+        * you may need to force push
+        * `git push -f heroku master`
 5. Finally push the local files (new master branch) to heroku
     * `git push heroku master`
 6. See Section on **FIRST FLASK RUN** above
