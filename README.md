@@ -161,7 +161,7 @@ Heroku will need this or to know about it in the requirements file.
            SECRET_KEY=<some-secret-key>
            MONGO_CONNEX=<whatever-mongodb-uri>
            ```
-    * ![](heroku-envvars.png)
+    * ![](/docs/heroku-envvars.png)
 7.  If using .flash-env for amaned 'production' - although Heroku probably reads from the Environmental Variables set above
 8. the app may crash immediately after building but the heroku logs are verbose but useful (you will see a command for this on the webpage for your app). Environmental varibales are available via settings from the app dashboard
 
