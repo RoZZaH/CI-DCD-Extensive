@@ -1,0 +1,14 @@
+{% extends "base_no_lnsb.html" %}
+{% block main__header %}
+<header class="header--main">
+<h1 class="mt-1 centered">Setup Almost Complete</h1>
+</header>
+{% endblock main__header %}
+{% block main__content %}
+<h2>Please Restart The Server</h2>
+<p>CTRL+C and start flask again</p>
+<p>If deployed on <b>Heroku</b> use the following command</p>
+    <pre>heroku restart</pre>
+<p><small>This is to ensure music <b>genres</b> are available when creating a new band</small></p>
+
+{% endblock main__content %}

@@ -55,8 +55,11 @@ def initial_setup():
         return render_template("setup.html", form=form, fullpage=True)
     else:
         flash(f"Initial Setup Complete", "success")
-        return redirect(url_for("public.home"))
+        return redirect(url_for("user.restart"))
 
+@user.route("/restart")
+def restart():
+    return render_template("restart.html", fullpage=True)
 
 @user.route("/register", methods=("GET", "POST"))
 @register_breadcrumb(user, '.register', 'Register')
