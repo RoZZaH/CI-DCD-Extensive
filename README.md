@@ -67,14 +67,14 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
     * click copy
     * ![](/docs/mongo-uri.png)
 9.
-    1. Paste / add this connection string into [config.py object](https://flask.palletsprojects.com/en/1.1.x/config/) 
+    1. Paste / add the mongodb_uri/srv connection string into [config.py object](https://flask.palletsprojects.com/en/1.1.x/config/) 
        * Ammend the string the the correct database name and database user's password 
        * Add `SECRET_KEY` and set `PICTURES_FOLDER="media"`
        * Here is a [sample](/sample_config.py)
        * For more on this Julian Nash has a [good video](https://www.youtube.com/watch?v=GW_2O9CrnSU) on using the config object 
     2. Alternatively you can use Environmental Variables
        * rename the current __init__.py file to __init__.bak
-       * rename the __init__.env sample file to __init__.py
+       * rename the __init__.env sample file to __init__.py and move into the **bandz** folder 
        * set Environmental Variables for:
          * `SECRET_KEY`
          * `MONGO_CONNECTION_URI` (containing the appropriate db details)
@@ -82,10 +82,61 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
          * `$env:MONGO_CONNECTION="<paste-connection-edit-with-database-and-password>"` is the equivalent Windows Powershell command
 
 
-## FIRST FLASK RUN
+### FIRST FLASK RUN - LOCALLY
 1. You should see this page
     * ![](/docs/setup.png)
     * this will take a little while
 2. Back in Mongo Atlas the database should have grown to include Towns and Bands (and the initial User credientals)
     * ![](/docs/db-tables-post-import.png)
-3. On first run it only returns one genre so you need to shutdown and restart the server (may require pushing again to heroku ) the next time it reads the genres
+3. If you were to add a band straight away there would only be one **genre**, rock, available, so you need to shutdown and restart the server, the next time it correctly unwinds the newly imported records and defines available genres (you can also add your own by adding to a band - you can add more than one by using commas in bewteen)
+
+
+### DEPLOYING TO HEROKU
+If you did not uncomment the gunicorn line in the `requirements.txt` then gunicorn webserver has not been installed.
+Heroku will need this or to know about it in the requirements file.
+1. you need run `pip install gunicorn`
+2. next run `pip freeze > requirements.txt` so that it becomes part of the requirements file that Heroku will use in its deployment of the app
+3. the next file to create is a Procfile (capital P no extension) this file is a simple one line that tells Heroku you are deploying a web app and what is the starting file gunicorn will run in this case the run.py is the Flask [factory](https://flask.palletsprojects.com/en/1.1.x/patterns/appfactories/) the following code should suffice:
+    * `web: gunicorn run:app`
+
+4. apart from the **requirements.txt** you also need a **runtime.txt** specificying the version of python to use. The current version is python-3.6.12 on the heroku free tier
+    * use `echo "python-3.6.12" > runtime.txt` to create this one line file
+
+5. Deploying to Heroku is similar to push a repo to Git but **the current .gitignore needs to be edited**
+    * remove the line to ignore `*.txt` to make sure that the requirements.txt and runtime.txt are pushed
+    * if using a configuration object remove the line `config.py` - see comments above
+    * Alternatively use environmental variables but you will need to add these key:value pairs to Heroku dashboard
+    * for example:
+        ```FLASK_ENV=production
+           FLASK_RUN=run.py
+           PICTURES_FOLDER=media
+           SECRET_KEY=<some-secret-key>
+           MONGO_CONNEX=<whatever-mongodb-uri>
+           ```
+    * ![](heroku-envvars.png)
+
+6. the app may crash immediately after building but the heroku logs are verbose but useful (you will see a command for this on the webpage for your app). Environmental varibales are available via settings from the app dashboard
+
+
+### Heroku Command Line
+Presumes you have signed up for a free Heroku account. We will deploy using [Heroku Command Line Tools](https://devcenter.heroku.com/articles/heroku-cli) - this is basically setting up a remote git repository to push our local files too.
+    1. Initialise a local repo
+        * `git init`
+    2. add everything
+        * `git add .`
+    3. make an inital commit
+        * `git commit -m"Initial Heroku Push"`
+    4. now use the following command to initialise the remote destination
+        * `heroku create <project-name>`
+        * VS Code will prompt you to open a web link and ask you to sign in to heroku
+        * once it verifies your credientals it will create the remote destination
+        * next add this destination as a remote location by typing
+        * ```
+            git remote -v
+            https://git.heroku.com/<project-name>/git
+            ```
+    5. Finally push the local files (new master branch) to heroku
+        * `git push heroku master`
+    6. See Section on **FIRST FLASK RUN** above
+    7. As noted above genres not setup correctly on first running the server
+        * use `heroku restart` to restart the server, you should be able to see more than one genre category when adding a new band
