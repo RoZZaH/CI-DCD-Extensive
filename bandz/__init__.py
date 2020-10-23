@@ -24,16 +24,21 @@ if app.config["ENV"] == "production":
 else:
     app.config.from_object("config.DevelopmentConfig")
 
-# simple config add secret key + MONGODB_SETTINGS not MONGODB_URI for MongoEngine
-# SECRET_KEY = <some secret string> #or wrap in env variable if not localhost
+# simple config add using Environmental Variables for
+# SECRET_KEY + MONGO_CONNECTION_URI 
+# N.B. Note MongoEngine uses MONGODB_SETTINGS Object not MONGODB_URI as normal with PyMongo
+# SECRET_KEY = os.environ.get("SECRET_KEY") #or simple string if localhost
 # MONGODB_SETTINGS = {
 #     "db" : <dbname>, #e.g. "bandz"
-#     "host" : <mongo srv uri> #or wrap in env variable
+#     "host" : os.environ.get("MONGO_CONNECTION_URI") # or "<whatever-mongo-connection-uri>" if localhost
 # }
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-
+# comment out the following if using env-vars
 PICTURES_FOLDER = app.config['PICTURES_FOLDER']
+# uncomment the following if using env-vars
+# app.config["PICTURES_FOLDER"] = "media"
+# app.config["SECRET_KEY"] = SECRET_KEY
 
 js_folder = os.path.join(app.static_folder, 'js')
 
@@ -56,6 +61,9 @@ pictures_folder = os.path.join(app.root_path, PICTURES_FOLDER)
 def static_media(filename):
     return send_from_directory(pictures_folder, filename)
 
+@app.route('/favicon.ico') 
+def favicon(): 
+    return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 assets = Environment(app)
 assets.register(bundles)

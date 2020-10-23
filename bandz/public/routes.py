@@ -44,7 +44,8 @@ def band_dlc(*args,**kwargs):
                 return [{'text': 'A-Z', 'url': url_for('public.a2z') }, { 'text': letter.upper(), 'url': url_for('public.a2z', letter=letter.lower()) }, {'text': bname, 'url': url_for('public.band_detail', bname=bname, letter=letter.lower())}]
             if bname:
                 return [{'text': 'A-Z', 'url': url_for('public.a2z') }, {'text': bname, 'url': url_for('public.band_detail', bname=bname)}]
-
+    else:
+         return [{'text': 'A-Z', 'url': url_for('public.a2z') }, { 'text': letter.upper(), 'url': url_for('public.a2z', letter=letter.lower()) }, {'text': bname, 'url': url_for('public.band_detail', bname=bname, letter=letter.lower())}]
 
 @public.route("/band/", methods=('GET', 'POST'))
 @public.route("/band/<string:bname>/", methods=('GET', 'POST') )
