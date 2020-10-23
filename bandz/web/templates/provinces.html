@@ -19,7 +19,7 @@
             <img src="/img/arrow.png" class="arrow">
             <label for="{{ county.county  | lower}}">Co. {{ county.county }}</label>
             {% if county.no_of_bands_per_county > 0 %}
-                <a href="/search/results/?counties={{ county.county|lower }}" class="no_of_bands">&nbsp;<b>{{ county.no_of_bands_per_county|string }}</b></a> <!-- county -->
+                <a href="/search/results/?counties={{ county.county }}" class="no_of_bands">&nbsp;<b>{{ county.no_of_bands_per_county|string }}</b></a> <!-- county -->
             {% else %}
                 &nbsp;<small>{{ county.no_of_bands_per_county|string }}</small>
             {% endif %}
