@@ -10,25 +10,26 @@ A live demo can be found on [Heroku](http://bandz-ie.herokuapp.com/)
   * username: tester@testing.com
    * password: Tester
 
-If deploying again, there are instructions below, please note that you can register as a new user but password reset is not implemented so<br>
-**Note Down your Password**
-The reason to register is so that the dummy data is associated with your account and you can edit / delete some live records.
+If deploying again, there are instructions below, please note that you can register as a new user but password reset is not implemented so..
+please **Note Down your Password** - the reason to register is so that the dummy data is imported and associated with your account and you can edit / delete some live records.
 
 ## USER STORIES
 There is a [wireframe PDF](/docs/bandz_wireframe.pdf) of the project showing the main CRUD functionality.
+
 Users (Band Leaders and Managers) can:
-    * register to manage their own or multiple bands
-    * write a comprehensive band/artist bio including
-        * uploading a band profile image (400 x 400 square). These may not remain on the Heroku app as files are wiped when it spins down.
-        * an embed to a promo video on youtube or vimeo - see **A-House** listing for an example of this
-        * contact details - including tel and email links
-        * ROI/NI and International phone number using [Intl Tel Input](https://intl-tel-input.com/)
-        * classify themselves or create new music genres
+* register to manage their own or multiple bands
+* write a comprehensive band/artist bio including
+  * uploading a band profile image (400 x 400 square). These may not remain on the Heroku app as files are wiped when it spins down.
+  * an embed to a promo video on youtube or vimeo - see **A-House** listing for an example of this
+  * contact details - including tel and email links
+  * ROI/NI and International phone number using [Intl Tel Input](https://intl-tel-input.com/)
+  * classify themselves or create new music genres
+
 Fans can:
-    * Search the database
-    * Browse by Location to a town or county
-    * Browse the site by Genre
-    * Browse the site alphabetically
+* Search the database
+* Browse Bands by Location to a town or county
+* Browse Bands by Genre
+* Browse Bands alphabetically
 
 ## TECHNOLOGIES AND FEATURES
 The site makes extensive use of a combination of CSS Grid and Flexbox to remain responsive at different resolutions.
@@ -201,6 +202,7 @@ I found Chrome and Edge a little flaky when testing the grid/responsive layouts 
 Firefox Developer Edition has much better tools for this.
 As I've tried to detail above, music genres need a restart to stick - I'm not sure whether it's a caching issue but the list_genres route doesn't work the first time, even though browse by Genre seems to have unwound the mongo records post import.
 The dummy data was generating using band names taken from the [IrishMusicDB](http://www.irishmusicdb.com) and a combination of mockaroo and some generation using the Towns data (which is largely accurate taken from OS and Census data in ROI/NI). And the genres are out - again I was trying to get bands/results to spread across genre and location, Sharon Shannon is not a Belfast Funk Artist in real life! The band description could be longer but it would've made the csv/json document very difficult to wrangle the odd typo or extra space in front of band names.
+As noted above you can register on Heroku, although password reset/user management is not fully implemented, it's best to use the credientals provided to have full control.
 
 ## Credits
 Youtubers [Julian Nash](https://www.youtube.com/channel/UC5_oFcBFlawLcFCBmU7oNZA) and [Corey Schafer](https://www.youtube.com/watch?v=YYXdXT2l-Gg&list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU) do a brilliant job of getting people up and running with Flask.
