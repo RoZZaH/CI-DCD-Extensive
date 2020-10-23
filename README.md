@@ -205,6 +205,8 @@ The dummy data was generating using band names taken from the [IrishMusicDB](htt
 As noted above you can register on Heroku, although password reset/user management is not fully implemented, it's best to use the credientals provided to have full control.
 
 ## Credits
+Kevin Powell's [course on Reponsive Design on Scrimba](https://scrimba.com/learn/responsive) is excellent.
+
 Youtubers [Julian Nash](https://www.youtube.com/channel/UC5_oFcBFlawLcFCBmU7oNZA) and [Corey Schafer](https://www.youtube.com/watch?v=YYXdXT2l-Gg&list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU) do a brilliant job of getting people up and running with Flask.
 
 Two other individuals who helped a great deal on going beyond the basics of MongoDB are John Dupuy AKA [Needless Process](https://www.youtube.com/c/needlessprocess) who has a great short playlist on [MongoEngine and the various fieldtypes](https://www.youtube.com/playlist?list=PL6RpFCvmb5SGUCLmzTc_wS6gvG0c3GIrS) and [Bogdan Stashchuk](https://www.youtube.com/channel/UCiyasqPIZz8zzbJp7-17dJw) has a very comprehensive playlist on the [Mongo Aggregation Framework](https://www.youtube.com/watch?v=A3jvoE0jGdE&list=PLWkguCWKqN9OwcbdYm4nUIXnA2IoXX0LI)
