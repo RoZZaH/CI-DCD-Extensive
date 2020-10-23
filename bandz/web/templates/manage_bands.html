@@ -79,7 +79,9 @@
 {% block footer__lnsb %}
 <div id="lns--bottom">
     <nav class="pagelinks pagelinks--pagenums"> <!-- next letter -->
-        {{ render_pages_nav(bands, 'manage.manage_bands_home', kwargs={"letter":'', "genre":''}) }}
+        {% set band_view = 'recent' if (request.view_args['band_view'] is undefined or request.view_args['band_view'] == 'recent') else 'alpha' %}
+        {% set letter = request.view_args['letter'] if 'letter' in request.view_args else 'a' %}
+        {{ render_pages_nav(bands, 'manage.manage_bands_home', kwargs={"letter": letter , "genre":'', 'band_view': band_view }) }}
     </nav>
 </div>
 {% endblock footer__lnsb %}
