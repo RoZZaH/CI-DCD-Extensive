@@ -1,3 +1,18 @@
+# BANDZ.ie
+## Milestone Project Three: Data-Centric Design - Code Institute
+
+This project is a speculative music website where artists and managers can create band bio and contact information. The was inspired by the wave of nostalgia for live events, favourite albums and bands that was a response to the current Covid-19 pandemic. Initially some inspiration drawn from [Discogs](https://www.discogs.com/) but I came across a fansite called [IrishMusicDB](http://www.irishmusicdb.com) that is obviously a labour of love, it's good to have a record of bands and music in Ireland, but the site is now showing its age. The idea would be for an Irish Music webiste for artists North and South, and then possibly extend to include artists from the Irish diaspora - so it would be a site celebrating music from artists past and present. The site could be extended to include Venues and Tour Dates (when they return!).
+
+### Demo
+
+A live demo can be found on [Heroku](http://bandz-ie.herokuapp.com/)
+
+UX
+User stories
+
+## FEATURES
+
+
 ## DEPLOYMENT
 
 
@@ -138,12 +153,13 @@ Presumes you have signed up for a free Heroku account. We will deploy using [Her
         git remote -v
         https://git.heroku.com/<project-name>/git
       ```
+    * Finally push the local files (new master branch) to heroku
+    * `git push heroku master`
     2. starting again:
         * `git remote add heroku https://git.heroku.com/<project-name>/git`
         * you may need to force push
         * `git push -f heroku master`
-5. Finally push the local files (new master branch) to heroku
-    * `git push heroku master`
-6. See Section on **FIRST FLASK RUN** above
-7. As noted above genres not setup correctly on first running the server
+
+5. See Section on **FIRST FLASK RUN** above
+6. As noted above genres not setup correctly on first running the server
     * use `heroku restart` to restart the server, you should be able to see more than one genre category when adding a new band
