@@ -67,18 +67,22 @@ Presuming no localhost MongoDB available simplest set up is create a free Databa
     * click copy
     * ![](/docs/mongo-uri.png)
 9.
-    a. Paste / add this connection string into [config.py object](https://flask.palletsprojects.com/en/1.1.x/config/) 
+    a) Paste / add this connection string into [config.py object](https://flask.palletsprojects.com/en/1.1.x/config/) 
+        
         * Ammend the string the the correct database name and database user's password 
+        * Add `SECRET_KEY` and set `PICTURES_FOLDER="media"`
         * Here is a [sample](/sample_config.py)
         * For more on this Julian Nash has a [good video](https://www.youtube.com/watch?v=GW_2O9CrnSU) on using the config object
-    b. Alternatively you can use Environmental Variables
+        
+    b) Alternatively you can use Environmental Variables
+        
         * rename the current __init__.py file to __init__.bak
         * rename the __init__.env sample file to __init__.py
         * set Environmental Variables for:
-            * SECRET_KEY
-            * MONGO_CONNECTION_URI (containing the appropriate db details)
-            * use `export MONGO_CONNECTION="<paste-connection-edit-with-database-and-password>"` - ammend before saving / hitting Enter 
-            * `$env:MONGO_CONNECTION="<paste-connection-edit-with-database-and-password>"` is the Windows Powershell command
+            * `SECRET_KEY`
+            * `MONGO_CONNECTION_URI` (containing the appropriate db details)
+            * use `export MONGO_CONNECTION="<paste-connection-edit-with-database-and-password>"` - on Mac/Unix, ammend before saving / hitting Enter 
+            * `$env:MONGO_CONNECTION="<paste-connection-edit-with-database-and-password>"` is the equivalent Windows Powershell command
 
 
 ## FIRST FLASK RUN
