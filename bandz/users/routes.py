@@ -55,7 +55,7 @@ def initial_setup():
         return render_template("setup.html", form=form, fullpage=True)
     else:
         flash(f"Initial Setup Complete", "success")
-        return redirect(url_for("user.restart"))
+        return redirect(url_for("public.home"))
 
 @user.route("/restart")
 def restart():
@@ -71,8 +71,8 @@ def register():
         hashed_password = generate_password_hash(form.password.data).decode("utf-8")
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         user.save()
-        flash(f"Account created for {form.username.data}! You are now able to log in.", "success")
-        return redirect(url_for("user.login"))
+        flash(f"Account created for superuser {form.username.data}! Please restart server.", "success")
+        return redirect(url_for("user.restart"))
     return render_template("register.html", title="Register", form=form, display_breadcrumbs=True)
 
 
