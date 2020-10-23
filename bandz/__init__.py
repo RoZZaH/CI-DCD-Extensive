@@ -34,10 +34,11 @@ else:
 # }
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-# comment out the following if using env-vars
+# comment out or set env-var Pictures Folder is "media" as below
 PICTURES_FOLDER = app.config['PICTURES_FOLDER']
 # uncomment the following if using env-vars
-# app.config["PICTURES_FOLDER"] = "media"
+# PICTURES_FOLDER = "media"
+# app.config["PICTURES_FOLDER"] = PICTURES_FOLDER
 # app.config["SECRET_KEY"] = SECRET_KEY
 
 js_folder = os.path.join(app.static_folder, 'js')
