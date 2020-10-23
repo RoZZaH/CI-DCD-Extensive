@@ -5,10 +5,13 @@
 </header>
 {% endblock main__header %}
 {% block main__content %}
+<div class="content-block">
 <h2>Please Restart The Server</h2>
 <p>CTRL+C and start flask again</p>
 <p>If deployed on <b>Heroku</b> use the following command</p>
-    <pre>heroku restart</pre>
+    <span style="background: #ccc">
+        <pre>heroku restart --app</pre>
+    </span>
 <p><small>This is to ensure music <b>genres</b> are available when creating a new band</small></p>
-
+</div>
 {% endblock main__content %}
