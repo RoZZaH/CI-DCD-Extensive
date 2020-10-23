@@ -101,11 +101,12 @@ Heroku will need this or to know about it in the requirements file.
 
 4. apart from the **requirements.txt** you also need a **runtime.txt** specificying the version of python to use. The current version is python-3.6.12 on the heroku free tier
     * use `echo "python-3.6.12" > runtime.txt` to create this one line file
-
-5. Deploying to Heroku is similar to push a repo to Git but **the current .gitignore needs to be edited**
+5.  Delete or Move the following **pipenv** files **Pipfile** and **Pipfile.lock** as these can confuse Heroku
+    * a **misc** folder is a safe location as this is registered and ignore in .gitignore
+6. Edit the current **.gitignore** - deploying to Heroku is similar to push a repo to Git but it needs to read .txt files
     * remove the line to ignore `*.txt` to make sure that the requirements.txt and runtime.txt are pushed
     * if using a configuration object remove the line `config.py` - see comments above
-    * Alternatively use environmental variables but you will need to add these key:value pairs to Heroku dashboard
+    * Alternatively use environmental variables but you will need to add these key:value pairs to [Heroku dashboard](https://devcenter.heroku.com/articles/config-vars)
     * for example:
         ```FLASK_ENV=production
            FLASK_RUN=run.py
@@ -114,8 +115,8 @@ Heroku will need this or to know about it in the requirements file.
            MONGO_CONNEX=<whatever-mongodb-uri>
            ```
     * ![](heroku-envvars.png)
-
-6. the app may crash immediately after building but the heroku logs are verbose but useful (you will see a command for this on the webpage for your app). Environmental varibales are available via settings from the app dashboard
+7.  If using .flash-env for amaned 'production' - although Heroku probably reads from the Environmental Variables set above
+8. the app may crash immediately after building but the heroku logs are verbose but useful (you will see a command for this on the webpage for your app). Environmental varibales are available via settings from the app dashboard
 
 
 ### Heroku Command Line
@@ -131,7 +132,7 @@ Presumes you have signed up for a free Heroku account. We will deploy using [Her
     * `heroku create <project-name>`
     * VS Code will prompt you to open a web link and ask you to sign in to heroku
     * once it verifies your credientals it will create the remote destination
-    * next add this destination as a remote location by typing
+    * check that **heroku** is an available remote destination
     * ```
         git remote -v
         https://git.heroku.com/<project-name>/git```
