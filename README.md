@@ -34,7 +34,7 @@ Fans can:
 ## TECHNOLOGIES AND FEATURES
 The site makes extensive use of a combination of CSS Grid and Flexbox to remain responsive at different resolutions.
 I concentrated on a small-size (mobile) view and a wider desktop view.
-As I could imagine a band or yound musician signing up and uploading their details on a phone, the create band feature is split over several pages/forms.
+As I could imagine a band or young musician signing up and uploading their details on a phone, the create band feature is split over several pages/forms.
 The site takes an All-Island approach to location, by calling it hometown and the towns are loaded into the towns dropdown as counties change.
 Genres are unwound from band data (which is why the server needs a restart post deploy).
 Locations are also unwound using a lookup, there is a slight lag on this page but I was challenging myself - there is 3,000+ bands and over 1,000 towns
